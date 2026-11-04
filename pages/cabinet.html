@@ -1,1 +1,133 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUTX — Shaxsiy kabinet</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f1f5f9;color:#172033}
+header{background:#101d36;color:white;padding:20px 7%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:27px;font-weight:bold;color:#55a6ff}
+header a{color:white;text-decoration:none}
+.container{max-width:1100px;margin:30px auto;padding:15px}
+.welcome{background:#176fc4;color:white;padding:30px;border-radius:14px;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{background:white;padding:24px;border-radius:12px;box-shadow:0 5px 18px #0000000d}
+.card h2{font-size:19px;margin-bottom:13px}
+.card p{color:#64748b;line-height:1.6;margin-bottom:15px}
+button{background:#1675d1;color:white;border:0;padding:12px 18px;border-radius:7px;cursor:pointer;font-weight:bold}
+button:hover{background:#105eae}
+input,select{width:100%;padding:12px;margin:8px 0 15px;border:1px solid #ccd5e1;border-radius:7px}
+label{font-weight:bold;font-size:14px}
+#cargoForm{display:none;margin-top:15px}
+.notice{display:none;background:#fff4df;color:#805500;padding:13px;border-radius:8px;margin-top:12px;line-height:1.5}
+.status{color:#a56a00;font-weight:bold}
+footer{text-align:center;padding:25px;color:#8490a3}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">MUTX</div>
+<a href="../index.html">Bosh sahifa</a>
+</header>
 
+<div class="container">
+<div class="welcome">
+<h1>Shaxsiy kabinet</h1>
+<p>MUTX platformasiga xush kelibsiz!</p>
+</div>
+
+<div class="grid">
+<div class="card">
+<h2>👤 Mening profilim</h2>
+<p>Foydalanuvchi: Yangi foydalanuvchi</p>
+<p>Telefon: Hali kiritilmagan</p>
+<p>Shaxsni tasdiqlash: <span class="status">Tasdiqlanmagan</span></p>
+<button onclick="verify()">Shaxsni tasdiqlash</button>
+<div class="notice" id="verifyNotice">
+Pasport/ID va yuzni tekshirish serverga ulanmagan. Bu keyingi bosqichda qo‘shiladi.
+</div>
+</div>
+
+<div class="card">
+<h2>🚚 Haydovchi bo‘limi</h2>
+<p>O‘zingizga mos yuk buyurtmalarini toping.</p>
+<button onclick="alert('Yuklar ro‘yxati keyingi bosqichda ulanadi')">Yuklarni ko‘rish</button>
+</div>
+
+<div class="card">
+<h2>📦 Yuk egasi bo‘limi</h2>
+<p>Yukingiz haqida ma’lumot kiriting.</p>
+<button onclick="toggleCargo()">Yuk joylashtirish</button>
+
+<form id="cargoForm">
+<label>Yuk nomi</label>
+<input id="cargoName" required placeholder="Masalan: G‘alla">
+
+<label>Og‘irligi (tonna)</label>
+<input id="weight" type="number" min="0.1" step="0.1" required placeholder="20">
+
+<label>Qayerdan</label>
+<input id="from" required placeholder="Jo‘natish manzili">
+
+<label>Qayerga</label>
+<input id="to" required placeholder="Yetkazish manzili">
+
+<label>Transport turi</label>
+<select id="transport" required>
+<option value="">Transport tanlang</option>
+<option>Yuk mashinasi</option>
+<option>Gazel</option>
+<option>Fura / tirkama</option>
+<option>Refrijerator</option>
+<option>Boshqa</option>
+</select>
+<button type="submit">Buyurtmani yuborish</button>
+</form>
+<div class="notice" id="cargoNotice"></div>
+</div>
+
+<div class="card">
+<h2>💰 MUTX xizmat haqi</h2>
+<p>Yuk egasi: 10 000 so‘m / tonna.</p>
+<p>Haydovchi: 10 000 so‘m / tonna.</p>
+<p>Jami: 20 000 so‘m / tonna.</p>
+</div>
+
+<div class="card">
+<h2>📋 Mening buyurtmalarim</h2>
+<p>Hozircha buyurtmalar mavjud emas.</p>
+<button onclick="alert('Buyurtmalar tarixi keyin ulanadi')">Tarixni ko‘rish</button>
+</div>
+
+<div class="card">
+<h2>🛡️ Xavfsizlik</h2>
+<p>Shaxsni tasdiqlash va akkaunt xavfsizligi.</p>
+<button onclick="verify()">Tekshiruv haqida</button>
+</div>
+</div>
+</div>
+
+<footer>© 2026 MUTX — Yuk va transport platformasi</footer>
+<script>
+function verify(){
+document.getElementById("verifyNotice").style.display="block";
+}
+function toggleCargo(){
+const f=document.getElementById("cargoForm");
+f.style.display=f.style.display==="block"?"none":"block";
+}
+document.getElementById("cargoForm").addEventListener("submit",function(e){
+e.preventDefault();
+const w=Number(document.getElementById("weight").value);
+if(w<=0){alert("Og‘irlikni to‘g‘ri kiriting");return;}
+const fee=w*10000;
+const notice=document.getElementById("cargoNotice");
+notice.style.display="block";
+notice.textContent="Buyurtma ma’lumotlari demo rejimida qabul qilindi. Yuk egasi xizmat haqi: "+fee.toLocaleString("uz-UZ")+" so‘m. Hozircha serverga yuborilmadi.";
+});
+</script>
+</body>
+</html>
