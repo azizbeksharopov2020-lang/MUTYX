@@ -1,1 +1,165 @@
+@media (max-width: 500px) {
+            .register-box {
+                padding: 23px 18px;
+            }
 
+            .roles {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">MUTX</div>
+    <a href="../index.html">Bosh sahifa</a>
+</header>
+
+<div class="container">
+    <div class="register-box">
+
+        <h1>Ro‘yxatdan o‘tish</h1>
+
+        <p class="subtitle">
+            MUTX platformasiga xush kelibsiz!
+        </p>
+
+        <form id="registerForm">
+
+            <div class="form-group">
+                <label for="fullname">Ism va familiya</label>
+                <input
+                    type="text"
+                    id="fullname"
+                    placeholder="Masalan: Azizbek Sharopov"
+                    required
+                    minlength="3"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Telefon raqam</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="+998901234567"
+                    pattern="\+998[0-9]{9}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Parol</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Kamida 8 ta belgi"
+                    minlength="8"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Parolni tasdiqlang</label>
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Parolni qayta kiriting"
+                    minlength="8"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Platformadagi rolingiz</label>
+
+                <div class="roles">
+
+                    <label class="role">
+                        <input
+                            type="checkbox"
+                            name="role"
+                            value="driver"
+                        >
+                        🚚 Haydovchi
+                    </label>
+
+                    <label class="role">
+                        <input
+                            type="checkbox"
+                            name="role"
+                            value="owner"
+                        >
+                        📦 Yuk egasi
+                    </label>
+
+                </div>
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="agreement" required>
+                <label for="agreement">
+                    MUTX foydalanish shartlari va maxfiylik
+                    siyosatiga roziman.
+                </label>
+            </div>
+
+            <button type="submit">
+                Ro‘yxatdan o‘tish
+            </button>
+
+            <div class="notice" id="notice"></div>
+
+        </form>
+
+        <div class="bottom-text">
+            Akkauntingiz bormi?
+            <a href="login.html">Kirish</a>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    © 2026 MUTX — Yuk va transport platformasi
+</footer>
+
+<script>
+    const form = document.getElementById("registerForm");
+    const notice = document.getElementById("notice");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const password =
+            document.getElementById("password").value;
+
+        const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+        const roles = document.querySelectorAll(
+            'input[name="role"]:checked'
+        );
+
+        if (password !== confirmPassword) {
+            alert("Parollar bir xil emas!");
+            return;
+        }
+
+        if (roles.length === 0) {
+            alert("Kamida bitta rolni tanlang!");
+            return;
+        }
+notice.style.display = "block";
+
+        notice.textContent =
+            "Ro‘yxatdan o‘tish sahifasi tayyor. " +
+            "Hozircha server, SMS tasdiqlash va akkaunt yaratish " +
+            "tizimi ulanmagan. Keyingi bosqichda backend ulanadi.";
+    });
+</script>
+
+</body>
+</html>
