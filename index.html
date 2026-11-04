@@ -1,256 +1,301 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MUTX — Yuk va transport platformasi</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172b4d}
-header{background:#102a43;color:white;padding:18px}
-.container{max-width:1100px;margin:auto;padding:15px}
-.logo{font-size:28px;font-weight:bold;color:white}
-.logo span{color:#f4b942}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
-button{padding:12px 16px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}
-nav button{background:#24445f;color:white}
-nav button:hover,.active{background:#1769aa}
-.primary{background:#1769aa;color:white}
-.gold{background:#f4b942;color:#102a43}
-.hero{background:linear-gradient(120deg,#102a43,#1769aa);color:white;padding:55px 20px}
-.hero h1{font-size:40px;max-width:700px}
-.hero p{font-size:18px;line-height:1.6}
-.section{padding:25px 0}
-.card{background:white;padding:20px;border-radius:13px;margin:12px 0;border:1px solid #dce5ee}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cbd7e2;border-radius:8px;margin:7px 0;font-size:15px}
-label{font-weight:bold;display:block;margin-top:12px}
-.page{display:none}
-.page.activePage{display:block}
-.notice{background:#fff5d9;padding:12px;border-radius:8px;color:#725516}
-.load{background:white;padding:17px;border-radius:12px;margin:12px 0}
-footer{background:#102a43;color:white;padding:25px;margin-top:30px}
-.small{font-size:13px;color:#667}
-@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h1{font-size:30px}nav button{font-size:12px;padding:10px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUTX — Yuk tashish platformasi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #17243b;
+    }
+
+    header {
+      background: #101d35;
+      color: white;
+      padding: 18px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 30px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .logo span {
+      color: #3996ff;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    nav a, .account a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 13px;
+      border-radius: 7px;
+    }
+
+    nav a:hover {
+      background: #263c60;
+    }
+
+    .account {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .account a {
+      background: #2679df;
+    }
+
+    .account a.register {
+      background: #13a878;
+    }
+
+    .hero {
+      margin: 35px auto;
+      width: 86%;
+      padding: 55px 30px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, #12366c, #2587ed);
+      color: white;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .hero a, button {
+      display: inline-block;
+      border: none;
+      background: #fff;
+      color: #1456a1;
+      padding: 13px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    section {
+      width: 86%;
+      margin: 35px auto;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 27px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 3px 15px #152b4810;
+    }
+
+    .card h3 {
+      margin-bottom: 12px;
+      color: #1769c2;
+    }
+
+    .card p {
+      line-height: 1.6;
+      color: #536176;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .actions a {
+      background: #176fd0;
+      color: white;
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+    }
+
+    .actions a.green {
+      background: #119b70;
+    }
+
+    .notice {
+      background: #e7f1ff;
+      padding: 18px;
+      border-radius: 10px;
+      line-height: 1.6;
+    }
+
+    footer {
+      background: #101d35;
+      color: white;
+      text-align: center;
+      padding: 25px;
+      margin-top: 50px;
+    }
+
+    @media(max-width: 700px) {
+      header {
+        justify-content: center;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      nav {
+        justify-content: center;
+      }
+
+      .account {
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <header>
-<div class="container">
-<div class="logo">MU<span>TX</span></div>
-<nav>
-<button class="active" onclick="showPage('home',this)">Bosh sahifa</button>
-<button onclick="showPage('loads',this)">Yuklar</button>
-<button onclick="showPage('post',this)">Yuk joylash</button>
-<button onclick="showPage('account',this)">Kabinet</button>
-<button onclick="showPage('rules',this)">Tariflar</button>
-</nav>
-</div>
+  <div class="logo">MU<span>TX</span></div>
+
+  <nav>
+    <a href="#home">Bosh sahifa</a>
+    <a href="#services">Xizmatlar</a>
+    <a href="#tariffs">Tariflar</a>
+    <a href="#about">Biz haqimizda</a>
+  </nav>
+
+  <div class="account">
+    <a href="pages/login.html">Kirish</a>
+    <a class="register" href="pages/register.html">Ro‘yxatdan o‘tish</a>
+  </div>
 </header>
 
-<main class="container">
+<main>
+  <div class="hero" id="home">
+    <h1>MUTX — Yuk tashish platformasi</h1>
+    <p>
+      Yuk egasi va haydovchilarni bir joyda birlashtiramiz.
+      Yukingizni joylang, mos haydovchini toping yoki yangi yuk toping.
+    </p>
+    <a href="pages/register.html">Platformaga qo‘shilish</a>
+  </div>
+<section id="services">
+    <h2>Bizning xizmatlar</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>🚛 Haydovchilar</h3>
+        <p>O‘zingizga mos yuklarni toping va buyurtmalarni qabul qiling.</p>
+      </div>
 
-<section id="home" class="page activePage">
-<div class="hero">
-<h1>Yukingizga mos transportni MUTX orqali toping!</h1>
-<p>Yuk egalari va haydovchilarni yagona platformada bog‘laymiz.</p>
-<button class="gold" onclick="showPage('post')">Yuk joylashtirish</button>
-<button onclick="showPage('loads')" class="primary">Yuklarni ko‘rish</button>
-</div>
+      <div class="card">
+        <h3>📦 Yuk egalari</h3>
+        <p>Yukingizni joylashtiring va kerakli transportni toping.</p>
+      </div>
 
-<div class="section">
-<h2>MUTX qanday ishlaydi?</h2>
-<div class="grid">
-<div class="card">
-<h3>📦 Yuk joylang</h3>
-<p>Yuk turi, og‘irligi va manzilini kiriting.</p>
-</div>
-<div class="card">
-<h3>🚚 Transport toping</h3>
-<p>Haydovchilar yuklarni ko‘rib, buyurtmani tanlaydi.</p>
-</div>
-<div class="card">
-<h3>🤝 Kelishuv qiling</h3>
-<p>Yuk egasi va haydovchi hamkorlik qiladi.</p>
-</div>
-</div>
-</div>
-</section>
+      <div class="card">
+        <h3>🛡️ Xavfsizlik</h3>
+        <p>Shaxsni tasdiqlash va nizolarni admin orqali ko‘rib chiqish tizimi.</p>
+      </div>
+    </div>
+  </section>
 
-<section id="loads" class="page section">
-<h2>Mavjud yuklar</h2>
-<input id="search" placeholder="Shahar yoki yuk nomini qidiring..." oninput="renderLoads()">
-<select id="filter" onchange="renderLoads()">
-<option value="">Barcha transportlar</option>
-<option>Yuk mashinasi</option>
-<option>Gazel</option>
-<option>Fura / tirkama</option>
-<option>Refrijerator</option>
-<option>Boshqa</option>
-</select>
-<div id="loadList"></div>
-</section>
+  <section>
+    <h2>Transport turlari</h2>
+    <div class="cards">
+      <div class="card"><h3>🚚 Yuk mashinasi</h3><p>Turli hajmdagi yuklar uchun.</p></div>
+      <div class="card"><h3>🚐 Gazel</h3><p>Kichik va o‘rta yuklar uchun.</p></div>
+      <div class="card"><h3>🚛 Fura / Tirkama</h3><p>Katta hajmdagi yuklar uchun.</p></div>
+      <div class="card"><h3>❄️ Refrijerator</h3><p>Sovuq holda tashilishi kerak bo‘lgan yuklar uchun.</p></div>
+      <div class="card"><h3>🚜 Boshqa</h3><p>Boshqa maxsus transport turlari.</p></div>
+    </div>
+  </section>
 
-<section id="post" class="page section">
-<h2>Yuk joylashtirish</h2>
-<div class="card">
-<div class="notice">Bu demo versiya. E’lonlar hozircha faqat shu qurilmada saqlanadi.</div>
-<form id="loadForm">
-<label>Yuk nomi</label>
-<input name="title" required placeholder="Masalan: Qurilish materiallari">
+  <section id="tariffs">
+    <h2>MUTX tariflari</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Yuk egasi</h3>
+        <p><strong>10 000 so‘m / tonna</strong></p>
+        <p>Yuk joylashtirish uchun xizmat haqi.</p>
+      </div>
 
-<label>Og‘irligi (tonna)</label>
-<input name="weight" type="number" min="0.1" step="0.1" required>
+      <div class="card">
+        <h3>Haydovchi</h3>
+        <p><strong>10 000 so‘m / tonna</strong></p>
+        <p>Buyurtma bo‘yicha xizmat haqi.</p>
+      </div>
 
-<label>Qayerdan</label>
-<input name="from" required placeholder="Toshkent">
+      <div class="card">
+        <h3>Jami</h3>
+        <p><strong>20 000 so‘m / tonna</strong></p>
+        <p>Har ikki tomon to‘laydigan jami xizmat haqi.</p>
+      </div>
+    </div>
+  </section>
 
-<label>Qayerga</label>
-<input name="to" required placeholder="Buxoro">
-<label>Transport turi</label>
-<select name="vehicle" required>
-<option value="">Tanlang</option>
-<option>Yuk mashinasi</option>
-<option>Gazel</option>
-<option>Fura / tirkama</option>
-<option>Refrijerator</option>
-<option>Boshqa</option>
-</select>
+  <section id="about">
+    <h2>Shaxsni tasdiqlash va xavfsizlik</h2>
+    <div class="notice">
+      MUTX platformasida foydalanuvchilar pasport yoki ID karta
+      va Face ID orqali shaxsini tasdiqlashi rejalashtirilgan.
+      Bekor qilingan buyurtmalar va nizolar admin tomonidan
+      dalillar asosida ko‘rib chiqiladi. Jarima shartlari
+      alohida tasdiqlanadi.
+    </div>
+  </section>
 
-<label>Taklif narxi (so‘m)</label>
-<input name="price" type="number" required>
-
-<label>Telefon raqami</label>
-<input name="phone" type="tel" required placeholder="+998">
-
-<label>Izoh</label>
-<textarea name="note"></textarea>
-
-<button class="primary">Yukni joylashtirish</button>
-</form>
-</div>
-</section>
-
-<section id="account" class="page section">
-<h2>Shaxsiy kabinet</h2>
-<div class="grid">
-<div class="card">
-<h3>Hisob ma’lumotlari</h3>
-<label>Foydalanuvchi turi</label>
-<select id="role">
-<option>Yuk egasi</option>
-<option>Haydovchi</option>
-</select>
-
-<label>Ism-familiya</label>
-<input id="name" placeholder="Ism Familiya">
-
-<label>Telefon</label>
-<input id="phone" placeholder="+998">
-
-<button class="primary" onclick="saveProfile()">Saqlash</button>
-</div>
-
-<div class="card">
-<h3>Shaxsni tasdiqlash</h3>
-<p>Telefon: Hozircha ulanmagan</p>
-<p>Pasport / ID: Tekshiruv kutilmoqda</p>
-<p>Face ID: Hozircha ulanmagan</p>
-<div class="notice">
-Haqiqiy shaxsni tasdiqlash uchun xavfsiz server va maxsus identifikatsiya provayderi kerak.
-</div>
-</div>
-</div>
-</section>
-
-<section id="rules" class="page section">
-<h2>MUTX tariflari va qoidalari</h2>
-<div class="grid">
-<div class="card">
-<h3>💳 Xizmat haqi</h3>
-<p>Yuk egasi: <b>10 000 so‘m / tonna</b></p>
-<p>Haydovchi: <b>10 000 so‘m / tonna</b></p>
-<h3>Jami: 20 000 so‘m / tonna</h3>
-</div>
-
-<div class="card">
-<h3>⚖️ Bekor qilish va nizolar</h3>
-<p>Jarima buyurtma qiymatiga qarab belgilanadi.</p>
-<p>Foiz va istisnolar hali yakuniy tasdiqlanmagan.</p>
-<p>Dalillar tekshirilmasdan jarima qo‘llanmaydi.</p>
-</div>
-
-<div class="card">
-<h3>🛡️ Xavfsizlik</h3>
-<p>Haydovchi va yuk egasi pasport yoki ID orqali shaxsini tasdiqlashi kerak.</p>
-<p>Face ID tekshiruvi maxsus provayder orqali ulanadi.</p>
-</div>
-</div>
-</section>
-
+  <section>
+    <h2>Shaxsiy kabinet</h2>
+    <div class="card">
+      <p>Buyurtmalar va profilingizni boshqarish uchun kabinetga kiring.</p>
+      <div class="actions">
+        <a href="pages/cabinet.html">Kabinetni ochish</a>
+        <a class="green" href="pages/register.html">Ro‘yxatdan o‘tish</a>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer>
-<div class="container">
-<div class="logo">MU<span>TX</span></div>
-<p>Yuk va transportni bog‘lovchi platforma.</p>
-<p class="small">MUTX demo versiyasi. Haqiqiy server, to‘lov va shaxsni tasdiqlash tizimi hali ulanmagan.</p>
-</div>
+  <p>© 2026 MUTX. Barcha huquqlar himoyalangan.</p>
+  <p>Yuk tashishning yangi imkoniyati.</p>
 </footer>
-
-<script>
-const KEY='mutx_loads';
-function showPage(id,btn){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('activePage'));
-document.getElementById(id).classList.add('activePage');
-document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-if(btn)btn.classList.add('active');
-if(id==='loads')renderLoads();
-}
-function getLoads(){
-try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}
-}
-function renderLoads(){
-let q=(document.getElementById('search')?.value||'').toLowerCase();
-let f=document.getElementById('filter')?.value||'';
-let arr=getLoads().filter(x=>
-(!f||x.vehicle===f)&&
-(!q||(x.title+x.from+x.to).toLowerCase().includes(q))
-);
-document.getElementById('loadList').innerHTML=arr.length?
-arr.map(x=>
-<div class="load">
-<h3>${x.title}</h3>
-<p>🚚 ${x.vehicle}</p>
-<p>📍 ${x.from} → ${x.to}</p>
-<p>⚖️ ${x.weight} tonna</p>
-<p>💰 ${Number(x.price).toLocaleString('uz-UZ')} so‘m</p>
-<p>☎ ${x.phone}</p>
-<p>${x.note||''}</p>
-</div>).join(''):
-'<div class="card">Hozircha yuk e’lonlari yo‘q.</div>';
-}
-document.getElementById('loadForm').onsubmit=function(e){
-e.preventDefault();
-let d=Object.fromEntries(new FormData(this));
-let arr=getLoads();
-arr.unshift(d);
-localStorage.setItem(KEY,JSON.stringify(arr));
-this.reset();
-alert('E’lon demo rejimida saqlandi!');
-showPage('loads');
-};
-function saveProfile(){
-localStorage.setItem('mutx_profile',JSON.stringify({
-role:document.getElementById('role').value,
-name:document.getElementById('name').value,
-phone:document.getElementById('phone').value
-}));
-alert('Profil saqlandi!');
-}
-renderLoads();
-</script>
 
 </body>
 </html>
