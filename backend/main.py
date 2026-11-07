@@ -1,4 +1,4 @@
-[07.11.2026 22:18] Azizbek Sharopov: """
+
 MUTX API (FastAPI)
 
 Muhim sozlamalar Render'dagi Environment bo'limida turadi (kodga yozilmaydi):
