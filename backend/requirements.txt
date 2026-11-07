@@ -1,4 +1,6 @@
-fastapi
-uvicorn
-passlib
-bcrypt==4.0.1
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+psycopg2-binary>=2.9.10
+pyjwt>=2.8
+pydantic>=2.5
