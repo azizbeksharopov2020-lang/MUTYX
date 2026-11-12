@@ -1,5 +1,4 @@
-
-MUTX API (FastAPI)
+"""MUTX API (FastAPI)
 
 Muhim sozlamalar Render'dagi Environment bo'limida turadi (kodga yozilmaydi):
   DATABASE_URL  - bazaga ulanish manzili (Supabase "Session pooler" manzili)
@@ -93,7 +92,7 @@ class Base(DeclarativeBase):
 
 
 class User(Base):
-    tablename = "mutx_users"
+    __tablename__ = "mutx_users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     full_name: Mapped[str] = mapped_column(String(80))
@@ -105,7 +104,7 @@ class User(Base):
 
 
 class Load(Base):
-    tablename = "mutx_loads"
+    __tablename__ = "mutx_loads"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("mutx_users.id"), index=True)
@@ -120,9 +119,9 @@ class Load(Base):
     status: Mapped[str] = mapped_column(String(12), default="new", index=True)  # new/accepted/done/cancelled
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
-[07.11.2026 22:18] Azizbek Sharopov: class Rating(Base):
-    tablename = "mutx_ratings"
-    table_args = (UniqueConstraint("load_id", "rater_id", name="uq_rating_once"),)
+class Rating(Base):
+    __tablename__ = "mutx_ratings"
+    __table_args__ = (UniqueConstraint("load_id", "rater_id", name="uq_rating_once"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     load_id: Mapped[int] = mapped_column(ForeignKey("mutx_loads.id"), index=True)
@@ -237,7 +236,7 @@ def user_public(user: User) -> dict:
         "verified": user.verified,
         "created_at": user.created_at.isoformat() if user.created_at else None,
     }
-[07.11.2026 22:18] Azizbek Sharopov: def load_public(load: Load, viewer_id: int) -> dict:
+def load_public(load: Load, viewer_id: int) -> dict:
     fee_each = round(load.tonna * FEE_PER_TONNA)
     if load.owner_id == viewer_id:
         my_role = "owner"
@@ -369,7 +368,7 @@ def me(user: User = Depends(current_user)):
 
 
 @app.get("/users/{user_id}")
-[07.11.2026 22:18] Azizbek Sharopov: def get_user(user_id: int, user: User = Depends(current_user)):
+def get_user(user_id: int, user: User = Depends(current_user)):
     # Faqat o'z ma'lumotini ko'ra oladi (boshqalarning telefoni yopiq)
     if user_id != user.id:
         raise HTTPException(status_code=403, detail="Boshqa foydalanuvchi ma'lumotini ko'rib bo'lmaydi")
@@ -475,7 +474,7 @@ def accept_load(load_id: int, user: User = Depends(current_user), db: Session = 
 
 @app.post("/loads/{load_id}/complete")
 def complete_load(load_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
-[07.11.2026 22:18] Azizbek Sharopov: result = db.execute(
+result = db.execute(
         update(Load)
         .where(Load.id == load_id, Load.status == "accepted", Load.driver_id == user.id)
         .values(status="done")
