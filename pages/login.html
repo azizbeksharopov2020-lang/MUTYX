@@ -197,18 +197,21 @@
 </footer>
 
 <script>
-    document.getElementById("loginForm")
-        .addEventListener("submit", function(event) {
-
-        event.preventDefault();
-
-        const message = document.getElementById("message");
-
-        message.style.display = "block";
-        message.textContent =
-            "Kirish tizimi hali serverga ulanmagan. " +
-            "Keyingi bosqichda xavfsiz autentifikatsiya qo‘shamiz.";
-    });
+const API = "https://mutyx-1.onrender.com";
+document.getElementById("loginForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const message = document.getElementById("message"); message.style.display = "block";
+  const btn = event.currentTarget.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Tekshirilmoqda...";
+  try {
+    const response = await fetch(API + "/login", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:document.getElementById("phone").value.trim(),password:document.getElementById("password").value})});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Kirish amalga oshmadi.");
+    localStorage.setItem("mutx_token", data.token);
+    message.textContent = "Tizimga muvaffaqiyatli kirdingiz.";
+    setTimeout(() => location.href = "cabinet.html", 500);
+  } catch (error) { message.textContent = error.message || "Server bilan aloqa yo‘q."; }
+  finally { btn.disabled = false; btn.textContent = "Kirish"; }
+});
 </script>
 
 </body>
