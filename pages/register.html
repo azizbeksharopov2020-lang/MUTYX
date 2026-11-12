@@ -368,42 +368,30 @@
 </footer>
 
 <script>
-    const form = document.getElementById("registerForm");
-    const notice = document.getElementById("notice");
-
-    form.addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        const password =
-            document.getElementById("password").value;
-
-        const confirmPassword =
-            document.getElementById("confirmPassword").value;
-
-        const roles = document.querySelectorAll(
-            'input[name="role"]:checked'
-        );
-
-        notice.style.display = "block";
-        notice.className = "notice";
-
-        if (password !== confirmPassword) {
-            notice.classList.add("error");
-            notice.textContent = "Parollar bir xil emas!";
-            return;
-        }
-
-        if (roles.length === 0) {
-            notice.classList.add("error");
-            notice.textContent =
-                "Kamida bitta rolni tanlang: haydovchi yoki yuk egasi.";
-            return;
-        }
-
-        notice.textContent =
-            "Ro‘yxatdan o‘tish formasi to‘g‘ri to‘ldirildi. " +
-            "Haqiqiy akkaunt yaratish uchun server va SMS tasdiqlash tizimi kerak.";
-    });
+const API = "https://mutyx-1.onrender.com";
+const form = document.getElementById("registerForm");
+const notice = document.getElementById("notice");
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  notice.style.display = "block"; notice.className = "notice";
+  const password = document.getElementById("password").value;
+  if (password !== document.getElementById("confirmPassword").value) {
+    notice.classList.add("error"); notice.textContent = "Parollar bir xil emas."; return;
+  }
+  const roles = Array.from(document.querySelectorAll('input[name="role"]:checked')).map(x => x.value);
+  if (!roles.length) { notice.classList.add("error"); notice.textContent = "Kamida bitta rolni tanlang."; return; }
+  const payload = {full_name:document.getElementById("fullname").value.trim(), phone:document.getElementById("phone").value.trim(), password, roles};
+  const btn = form.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Yuborilmoqda...";
+  try {
+    const response = await fetch(API + "/register", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Ro‘yxatdan o‘tishda xato.");
+    localStorage.setItem("mutx_token", data.token);
+    notice.classList.add("success"); notice.textContent = "Hisob yaratildi. Kabinet ochilmoqda...";
+    setTimeout(() => location.href = "cabinet.html", 700);
+  } catch (error) { notice.classList.add("error"); notice.textContent = error.message || "Server bilan aloqa yo‘q."; }
+  finally { btn.disabled = false; btn.textContent = "Ro‘yxatdan o‘tish"; }
+});
 </script>
 
 </body>
