@@ -404,7 +404,10 @@ def create_load(data: LoadIn, user: User = Depends(current_user), db: Session = 
         raise HTTPException(status_code=400, detail="Manzil nomi 2 dan 60 gacha belgi bo'lsin")
     if from_city.lower() == to_city.lower():
         raise HTTPException(status_code=400, detail="Jo'natish va yetkazish joyi bir xil bo'lmasin")
-    if data.transport not in TRANSPORTS:
+    transport = data.transport.strip()
+    if transport.lower() == "fura / tirkama":
+        transport = "Fura / Tirkama"
+    if transport not in TRANSPORTS:
         raise HTTPException(status_code=400, detail="Transport turi noto'g'ri")
     if data.price < 0:
         raise HTTPException(status_code=400, detail="Narx manfiy bo'lmasin")
@@ -417,7 +420,7 @@ def create_load(data: LoadIn, user: User = Depends(current_user), db: Session = 
         tonna=round(data.tonna, 1),
         from_city=from_city,
         to_city=to_city,
-        transport=data.transport,
+        transport=transport,
         price=data.price,
         note=note,
         status="new",
@@ -474,7 +477,7 @@ def accept_load(load_id: int, user: User = Depends(current_user), db: Session = 
 
 @app.post("/loads/{load_id}/complete")
 def complete_load(load_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
-result = db.execute(
+    result = db.execute(
         update(Load)
         .where(Load.id == load_id, Load.status == "accepted", Load.driver_id == user.id)
         .values(status="done")
