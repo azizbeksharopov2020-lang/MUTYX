@@ -1,133 +1,55 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MUTX — Shaxsiy kabinet</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f1f5f9;color:#172033}
-header{background:#101d36;color:white;padding:20px 7%;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:27px;font-weight:bold;color:#55a6ff}
-header a{color:white;text-decoration:none}
-.container{max-width:1100px;margin:30px auto;padding:15px}
-.welcome{background:#176fc4;color:white;padding:30px;border-radius:14px;margin-bottom:22px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.card{background:white;padding:24px;border-radius:12px;box-shadow:0 5px 18px #0000000d}
-.card h2{font-size:19px;margin-bottom:13px}
-.card p{color:#64748b;line-height:1.6;margin-bottom:15px}
-button{background:#1675d1;color:white;border:0;padding:12px 18px;border-radius:7px;cursor:pointer;font-weight:bold}
-button:hover{background:#105eae}
-input,select{width:100%;padding:12px;margin:8px 0 15px;border:1px solid #ccd5e1;border-radius:7px}
-label{font-weight:bold;font-size:14px}
-#cargoForm{display:none;margin-top:15px}
-.notice{display:none;background:#fff4df;color:#805500;padding:13px;border-radius:8px;margin-top:12px;line-height:1.5}
-.status{color:#a56a00;font-weight:bold}
-footer{text-align:center;padding:25px;color:#8490a3}
+*{box-sizing:border-box;font-family:Arial,sans-serif}body{margin:0;background:#f1f5f9;color:#172033}
+header{background:#101d36;color:white;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}
+header a{color:white;text-decoration:none}.logo{font-size:26px;font-weight:bold;color:#55a6ff}
+main{max-width:1050px;margin:25px auto;padding:15px}.welcome,.card{background:white;border-radius:12px;padding:22px;margin-bottom:18px;box-shadow:0 5px 18px #0000000d}
+.welcome{background:#176fc4;color:white}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+h2{font-size:19px;margin-top:0}label{display:block;font-weight:bold;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e1;border-radius:7px}
+button{background:#1675d1;color:white;border:0;padding:12px 17px;border-radius:7px;cursor:pointer;font-weight:bold;margin-top:12px}
+.notice{padding:12px;border-radius:8px;background:#fff4df;color:#805500;margin-top:12px;white-space:pre-wrap}
+.item{border-top:1px solid #e2e8f0;padding:13px 0}.muted{color:#64748b}
 @media(max-width:650px){.grid{grid-template-columns:1fr}}
-</style>
-</head>
+</style></head>
 <body>
-<header>
-<div class="logo">MUTX</div>
-<a href="../index.html">Bosh sahifa</a>
-</header>
-
-<div class="container">
-<div class="welcome">
-<h1>Shaxsiy kabinet</h1>
-<p>MUTX platformasiga xush kelibsiz!</p>
-</div>
-
+<header><div class="logo">MUTX</div><a href="../index.html">Bosh sahifa</a></header>
+<main>
+<section class="welcome"><h1>Shaxsiy kabinet</h1><p id="welcomeText">Ma’lumot yuklanmoqda...</p></section>
 <div class="grid">
-<div class="card">
-<h2>👤 Mening profilim</h2>
-<p>Foydalanuvchi: Yangi foydalanuvchi</p>
-<p>Telefon: Hali kiritilmagan</p>
-<p>Shaxsni tasdiqlash: <span class="status">Tasdiqlanmagan</span></p>
-<button onclick="verify()">Shaxsni tasdiqlash</button>
-<div class="notice" id="verifyNotice">
-Pasport/ID va yuzni tekshirish serverga ulanmagan. Bu keyingi bosqichda qo‘shiladi.
-</div>
-</div>
-
-<div class="card">
-<h2>🚚 Haydovchi bo‘limi</h2>
-<p>O‘zingizga mos yuk buyurtmalarini toping.</p>
-<button onclick="alert('Yuklar ro‘yxati keyingi bosqichda ulanadi')">Yuklarni ko‘rish</button>
-</div>
-
-<div class="card">
-<h2>📦 Yuk egasi bo‘limi</h2>
-<p>Yukingiz haqida ma’lumot kiriting.</p>
-<button onclick="toggleCargo()">Yuk joylashtirish</button>
-
+<section class="card"><h2>👤 Profilim</h2><div id="profile" class="muted">Yuklanmoqda...</div><button id="logout">Chiqish</button></section>
+<section class="card"><h2>📦 Yuk joylashtirish</h2>
 <form id="cargoForm">
-<label>Yuk nomi</label>
-<input id="cargoName" required placeholder="Masalan: G‘alla">
-
-<label>Og‘irligi (tonna)</label>
-<input id="weight" type="number" min="0.1" step="0.1" required placeholder="20">
-
-<label>Qayerdan</label>
-<input id="from" required placeholder="Jo‘natish manzili">
-
-<label>Qayerga</label>
-<input id="to" required placeholder="Yetkazish manzili">
-
-<label>Transport turi</label>
-<select id="transport" required>
-<option value="">Transport tanlang</option>
-<option>Yuk mashinasi</option>
-<option>Gazel</option>
-<option>Fura / tirkama</option>
-<option>Refrijerator</option>
-<option>Boshqa</option>
-</select>
-<button type="submit">Buyurtmani yuborish</button>
-</form>
-<div class="notice" id="cargoNotice"></div>
-</div>
-
-<div class="card">
-<h2>💰 MUTX xizmat haqi</h2>
-<p>Yuk egasi: 10 000 so‘m / tonna.</p>
-<p>Haydovchi: 10 000 so‘m / tonna.</p>
-<p>Jami: 20 000 so‘m / tonna.</p>
-</div>
-
-<div class="card">
-<h2>📋 Mening buyurtmalarim</h2>
-<p>Hozircha buyurtmalar mavjud emas.</p>
-<button onclick="alert('Buyurtmalar tarixi keyin ulanadi')">Tarixni ko‘rish</button>
-</div>
-
-<div class="card">
-<h2>🛡️ Xavfsizlik</h2>
-<p>Shaxsni tasdiqlash va akkaunt xavfsizligi.</p>
-<button onclick="verify()">Tekshiruv haqida</button>
-</div>
-</div>
-</div>
-
-<footer>© 2026 MUTX — Yuk va transport platformasi</footer>
+<label>Yuk nomi</label><input id="cargo" required maxlength="60" placeholder="Masalan: G‘alla">
+<label>Og‘irligi (tonna)</label><input id="tonna" type="number" min="0.1" max="100" step="0.1" required>
+<label>Qayerdan</label><input id="from" required maxlength="60">
+<label>Qayerga</label><input id="to" required maxlength="60">
+<label>Transport turi</label><select id="transport" required><option value="">Tanlang</option><option>Yuk mashinasi</option><option>Gazel</option><option>Fura / Tirkama</option><option>Refrijerator</option><option>Boshqa</option></select>
+<label>Izoh (ixtiyoriy)</label><textarea id="note" maxlength="300"></textarea>
+<p class="muted" id="fee"></p><button type="submit">Buyurtmani yuborish</button>
+</form><div id="cargoNotice"></div></section>
+<section class="card"><h2>🚚 Mavjud yuklar</h2><button id="refreshAvailable">Yangilash</button><div id="available"></div></section>
+<section class="card"><h2>📋 Mening buyurtmalarim</h2><button id="refreshMine">Yangilash</button><div id="mine"></div></section>
+</div></main>
 <script>
-function verify(){
-document.getElementById("verifyNotice").style.display="block";
-}
-function toggleCargo(){
-const f=document.getElementById("cargoForm");
-f.style.display=f.style.display==="block"?"none":"block";
-}
-document.getElementById("cargoForm").addEventListener("submit",function(e){
-e.preventDefault();
-const w=Number(document.getElementById("weight").value);
-if(w<=0){alert("Og‘irlikni to‘g‘ri kiriting");return;}
-const fee=w*10000;
-const notice=document.getElementById("cargoNotice");
-notice.style.display="block";
-notice.textContent="Buyurtma ma’lumotlari demo rejimida qabul qilindi. Yuk egasi xizmat haqi: "+fee.toLocaleString("uz-UZ")+" so‘m. Hozircha serverga yuborilmadi.";
-});
-</script>
-</body>
-</html>
+const API="https://mutyx-1.onrender.com";
+const token=localStorage.getItem("mutx_token");
+const headers={"Content-Type":"application/json","Authorization":"Bearer "+token};
+const el=id=>document.getElementById(id);
+function show(id,msg){el(id).className="notice";el(id).textContent=msg;}
+async function request(path,options={}){const r=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.detail||"Server xatosi: "+r.status);return d;}
+if(!token){location.href="login.html";}
+async function loadProfile(){try{const u=await request("/me");el("welcomeText").textContent="Xush kelibsiz, "+u.full_name+"!";el("profile").innerHTML="<p><b>Ism:</b> "+u.full_name+"</p><p><b>Telefon:</b> "+u.phone+"</p><p><b>Rol:</b> "+u.roles.join(", ")+"</p><p><b>Shaxs tasdig‘i:</b> "+(u.verified?"Tasdiqlangan":"Hali tasdiqlanmagan")+"</p>";}catch(e){show("profile",e.message);if(e.message.includes("Sessiya")||e.message.includes("Avval")){localStorage.removeItem("mutx_token");location.href="login.html";}}}
+function drawLoads(id,items,available){el(id).innerHTML="";if(!items.length){el(id).textContent="Hozircha buyurtma yo‘q.";return;}items.forEach(x=>{const d=document.createElement("div");d.className="item";const p=document.createElement("p");p.textContent=x.cargo+" — "+x.tonna+" t | "+x.from_city+" → "+x.to_city+" | "+x.transport+" | Holat: "+x.status;d.appendChild(p);const fee=document.createElement("p");fee.className="muted";fee.textContent="Xizmat haqi: har bir tomon uchun "+Number(x.fee_each).toLocaleString("uz-UZ")+" so‘m";d.appendChild(fee);if(available){const b=document.createElement("button");b.textContent="Yukni qabul qilish";b.onclick=async()=>{if(!confirm("Ushbu yukni qabul qilasizmi?"))return;try{await request("/loads/"+x.id+"/accept",{method:"POST"});alert("Yuk Sizga biriktirildi.");await refreshAvailable();await refreshMine();}catch(e){alert(e.message)}};d.appendChild(b);}el(id).appendChild(d);});}
+async function refreshAvailable(){try{drawLoads("available",await request("/loads?scope=available"),true)}catch(e){show("available",e.message)}}
+async function refreshMine(){try{drawLoads("mine",await request("/loads?scope=mine"),false)}catch(e){show("mine",e.message)}}
+el("tonna").addEventListener("input",()=>{const n=Number(el("tonna").value)||0;el("fee").textContent=n>0?"Sizning xizmat haqingiz: "+(n*10000).toLocaleString("uz-UZ")+" so‘m. Haydovchi haqi ham "+(n*10000).toLocaleString("uz-UZ")+" so‘m.":"Har bir tomon uchun 10 000 so‘m / tonna.";});
+el("cargoForm").addEventListener("submit",async e=>{e.preventDefault();try{const d=await request("/loads",{method:"POST",body:JSON.stringify({cargo:el("cargo").value,tonna:Number(el("tonna").value),from_city:el("from").value,to_city:el("to").value,transport:el("transport").value,price:0,note:el("note").value})});show("cargoNotice","Buyurtma joylashtirildi. ID: "+d.id);e.target.reset();el("fee").textContent="";await refreshMine();}catch(err){show("cargoNotice",err.message)}});
+el("refreshAvailable").onclick=refreshAvailable;el("refreshMine").onclick=refreshMine;
+el("logout").onclick=()=>{localStorage.removeItem("mutx_token");location.href="login.html";};
+loadProfile();refreshAvailable();refreshMine();
+</script></body></html>
