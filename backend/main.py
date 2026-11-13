@@ -22,7 +22,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -150,6 +150,21 @@ class AdminAudit(Base):
     target_user_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     details: Mapped[str] = mapped_column(String(500), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class Complaint(Base):
+    __tablename__ = "mutx_complaints"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    load_id: Mapped[int] = mapped_column(ForeignKey("mutx_loads.id"), index=True)
+    reporter_id: Mapped[int] = mapped_column(ForeignKey("mutx_users.id"), index=True)
+    reason: Mapped[str] = mapped_column(String(500))
+    status: Mapped[str] = mapped_column(String(20), default="open", index=True)
+    admin_id: Mapped[Optional[int]] = mapped_column(ForeignKey("mutx_users.id"), nullable=True)
+    decision: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    penalty_amount: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Rating(Base):
@@ -420,7 +435,7 @@ def admin_users(
 
 class AdminGrantIn(BaseModel):
     user_id: int
-    permissions: List[str] = []
+    permissions: List[str] = Field(default_factory=list)
 
 
 ALLOWED_ADMIN_PERMISSIONS = {
@@ -447,7 +462,7 @@ def grant_admin(
         raise HTTPException(status_code=400, detail="O'zingizga admin vakolati berib bo'lmaydi")
     if any(p not in ALLOWED_ADMIN_PERMISSIONS for p in data.permissions):
         raise HTTPException(status_code=400, detail="Noma'lum ruxsat turi")
-    access = admin_access(target, db)
+    access = db.scalar(select(AdminAccess).where(AdminAccess.user_id == target.id))
     if access and access.role == "superadmin":
         raise HTTPException(status_code=409, detail="Super Admin vakolatini bu yerdan o'zgartirib bo'lmaydi")
     if access is None:
@@ -483,6 +498,96 @@ def revoke_admin(
     db.add(AdminAudit(actor_id=user.id, action="admin_revoked", target_user_id=target_user_id))
     db.commit()
     return {"success": True, "message": "Admin vakolati bekor qilindi"}
+
+
+class ComplaintIn(BaseModel):
+    load_id: int
+    reason: str
+
+
+class ComplaintDecisionIn(BaseModel):
+    decision: str
+    penalty_amount: int = 0
+    status: str = "resolved"
+
+
+@app.post("/complaints")
+def create_complaint(
+    data: ComplaintIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    load = db.get(Load, data.load_id)
+    reason = data.reason.strip()
+    if load is None or user.id not in (load.owner_id, load.driver_id):
+        raise HTTPException(status_code=404, detail="Buyurtma topilmadi")
+    if load.status not in ("accepted", "done", "cancelled"):
+        raise HTTPException(status_code=409, detail="Shikoyat faqat boshlangan buyurtma bo'yicha yuboriladi")
+    if not 5 <= len(reason) <= 500:
+        raise HTTPException(status_code=400, detail="Sabab 5 dan 500 belgigacha bo'lsin")
+    existing = db.scalar(select(Complaint).where(
+        Complaint.load_id == load.id,
+        Complaint.reporter_id == user.id,
+        Complaint.status == "open",
+    ))
+    if existing:
+        raise HTTPException(status_code=409, detail="Bu buyurtma bo'yicha ochiq shikoyatingiz bor")
+    complaint = Complaint(load_id=load.id, reporter_id=user.id, reason=reason)
+    db.add(complaint)
+    db.commit()
+    db.refresh(complaint)
+    return {"success": True, "complaint_id": complaint.id, "status": complaint.status}
+
+
+@app.get("/admin/complaints")
+def admin_complaints(
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    require_admin(user, db, "complaints.manage")
+    rows = db.scalars(select(Complaint).order_by(Complaint.id.desc()).limit(200))
+    return [{
+        "id": c.id, "load_id": c.load_id, "reporter_id": c.reporter_id,
+        "reason": c.reason, "status": c.status, "admin_id": c.admin_id,
+        "decision": c.decision, "penalty_amount": c.penalty_amount,
+        "created_at": c.created_at.isoformat() if c.created_at else None,
+        "resolved_at": c.resolved_at.isoformat() if c.resolved_at else None,
+    } for c in rows]
+
+
+@app.post("/admin/complaints/{complaint_id}/decision")
+def decide_complaint(
+    complaint_id: int,
+    data: ComplaintDecisionIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    require_admin(user, db, "complaints.manage")
+    complaint = db.get(Complaint, complaint_id)
+    if complaint is None:
+        raise HTTPException(status_code=404, detail="Shikoyat topilmadi")
+    decision = data.decision.strip()
+    if not 5 <= len(decision) <= 500:
+        raise HTTPException(status_code=400, detail="Qaror 5 dan 500 belgigacha bo'lsin")
+    if data.penalty_amount < 0 or data.penalty_amount > 100_000_000:
+        raise HTTPException(status_code=400, detail="Jarima miqdori noto'g'ri")
+    if data.status not in ("resolved", "rejected"):
+        raise HTTPException(status_code=400, detail="Holat resolved yoki rejected bo'lishi kerak")
+    if complaint.status != "open":
+        raise HTTPException(status_code=409, detail="Bu shikoyat avval ko'rib chiqilgan")
+    complaint.status = data.status
+    complaint.admin_id = user.id
+    complaint.decision = decision
+    complaint.penalty_amount = data.penalty_amount
+    complaint.resolved_at = utcnow()
+    db.add(AdminAudit(
+        actor_id=user.id, action="complaint_decided",
+        target_user_id=complaint.reporter_id,
+        details=f"complaint={complaint.id}; status={data.status}; penalty={data.penalty_amount}",
+    ))
+    db.commit()
+    return {"success": True, "complaint_id": complaint.id, "status": complaint.status,
+            "penalty_amount": complaint.penalty_amount}
 
 
 @app.get("/admin/audit")
