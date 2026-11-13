@@ -22,7 +22,9 @@ from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StringConstraints
+from typing_extensions import Annotated
+from openai import AsyncOpenAI
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -602,6 +604,53 @@ def admin_audit(user: User = Depends(current_user), db: Session = Depends(get_db
          "created_at": row.created_at.isoformat() if row.created_at else None}
         for row in rows
     ]
+
+
+
+# ---------------------------- MUTX AI yordamchisi ---------------------------
+AI_SYSTEM_PROMPT = """
+Siz MUTX logistika platformasining rasmiy AI yordamchisisiz.
+Faqat MUTX xizmatlari: ro'yxatdan o'tish, haydovchi/yuk egasi, yuk joylash,
+buyurtma qabul qilish, tariflar, admin va shikoyatlar haqida o'zbek tilida
+aniq va xushmuomala javob bering. MUTX qoidalarida noma'lum bo'lgan narsani
+to'qib chiqarmang; "bu masalani admin tasdiqlashi kerak" deb ayting.
+Har bir tomon uchun xizmat haqi 1 tonnaga 10 000 so'm deb tushuntiring.
+Parol, SMS-kod, karta raqami, CVV, API kalit yoki pasport ma'lumotlarini
+so'ramang. To'lovni bajarmang, jarima tayinlamang, admin vakolatini bermang.
+Huquqiy, moliyaviy yoki xavfsizlik bo'yicha yakuniy qaror chiqarmang.
+AI ekaningizni yashirmang. Kerak bo'lsa admin/operatorga murojaat qilishni tavsiya qiling.
+"""
+
+
+class AIChatIn(BaseModel):
+    message: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2000)]
+
+
+@app.post("/ai/chat")
+async def ai_chat(data: AIChatIn, user: User = Depends(current_user)):
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="AI hozircha ulanmagan. Render Environment bo'limiga OPENAI_API_KEY qo'shilishi kerak.",
+        )
+    try:
+        client = AsyncOpenAI(api_key=api_key, timeout=25.0, max_retries=1)
+        response = await client.responses.create(
+            model=os.getenv("OPENAI_MODEL", "gpt-5.5"),
+            instructions=AI_SYSTEM_PROMPT,
+            input=f"Foydalanuvchi roli: {','.join(role_list(user))}. Savol: {data.message}",
+            max_output_tokens=500,
+            store=False,
+        )
+        answer = (response.output_text or "").strip()
+        if not answer:
+            raise HTTPException(status_code=502, detail="AI javobi bo'sh qaytdi. Qayta urinib ko'ring.")
+        return {"answer": answer, "assistant": "MUTX AI"}
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=502, detail="AI xizmatida vaqtinchalik xatolik. Keyinroq urinib ko'ring.")
 
 
 @app.get("/health")
