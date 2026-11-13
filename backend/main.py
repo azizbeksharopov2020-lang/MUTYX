@@ -134,6 +134,10 @@ class Load(Base):
     status: Mapped[str] = mapped_column(String(12), default="new", index=True)  # new/accepted/done/cancelled
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    pickup_lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    pickup_lng: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dropoff_lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dropoff_lng: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
 class AdminAccess(Base):
     __tablename__ = "mutx_admin_access"
 
@@ -187,6 +191,17 @@ class Rating(Base):
 
 
 Base.metadata.create_all(engine)
+
+# Mavjud bazaga lokatsiya ustunlarini qo‘shish.
+def migrate_load_location_columns():
+    from sqlalchemy import inspect, text
+    existing = {c["name"] for c in inspect(engine).get_columns("mutx_loads")}
+    with engine.begin() as connection:
+        for name in ("pickup_lat", "pickup_lng", "dropoff_lat", "dropoff_lng"):
+            if name not in existing:
+                connection.execute(text(f"ALTER TABLE mutx_loads ADD COLUMN {name} FLOAT"))
+
+migrate_load_location_columns()
 
 
 def get_db():
@@ -338,6 +353,10 @@ def load_public(load: Load, viewer_id: int) -> dict:
         "fee_each": fee_each,
         "fee_total": fee_each * 2,
         "my_role": my_role,
+        "pickup_lat": load.pickup_lat if my_role in ("owner", "driver") else None,
+        "pickup_lng": load.pickup_lng if my_role in ("owner", "driver") else None,
+        "dropoff_lat": load.dropoff_lat if my_role in ("owner", "driver") else None,
+        "dropoff_lng": load.dropoff_lng if my_role in ("owner", "driver") else None,
     }
 
 
@@ -773,6 +792,10 @@ class LoadIn(BaseModel):
     transport: str
     price: int = 0
     note: Optional[str] = None
+    pickup_lat: Optional[float] = None
+    pickup_lng: Optional[float] = None
+    dropoff_lat: Optional[float] = None
+    dropoff_lng: Optional[float] = None
 
 
 @app.post("/loads")
@@ -799,6 +822,12 @@ def create_load(data: LoadIn, user: User = Depends(current_user), db: Session = 
         raise HTTPException(status_code=400, detail="Transport turi noto'g'ri")
     if data.price < 0:
         raise HTTPException(status_code=400, detail="Narx manfiy bo'lmasin")
+    coords = (data.pickup_lat, data.pickup_lng, data.dropoff_lat, data.dropoff_lng)
+    if any(v is not None for v in coords):
+        if any(v is None for v in coords):
+            raise HTTPException(status_code=400, detail="Olish va yetkazish lokatsiyalarining ikkalasini ham belgilang")
+        if not (-90 <= data.pickup_lat <= 90 and -180 <= data.pickup_lng <= 180 and -90 <= data.dropoff_lat <= 90 and -180 <= data.dropoff_lng <= 180):
+            raise HTTPException(status_code=400, detail="Xarita koordinatalari noto‘g‘ri")
     if note and len(note) > 300:
         raise HTTPException(status_code=400, detail="Izoh 300 belgidan oshmasin")
 
@@ -811,6 +840,10 @@ def create_load(data: LoadIn, user: User = Depends(current_user), db: Session = 
         transport=transport,
         price=data.price,
         note=note,
+        pickup_lat=data.pickup_lat,
+        pickup_lng=data.pickup_lng,
+        dropoff_lat=data.dropoff_lat,
+        dropoff_lng=data.dropoff_lng,
         status="new",
     )
     db.add(load)
