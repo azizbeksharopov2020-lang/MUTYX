@@ -20,9 +20,11 @@ from typing import List, Optional
 import jwt
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 from sqlalchemy import (
+    Boolean,
     DateTime,
     Float,
     ForeignKey,
@@ -48,8 +50,16 @@ if DATABASE_URL.startswith("postgres://"):
 
 IS_SQLITE = DATABASE_URL.startswith("sqlite")
 
-SECRET_KEY = os.getenv("SECRET_KEY") or secrets.token_urlsafe(48)
-TOKEN_DAYS = 7
+SECRET_KEY = os.getenv("SECRET_KEY", "")
+if not SECRET_KEY:
+    if os.getenv("RENDER"):
+        raise RuntimeError("Render Environment'da SECRET_KEY majburiy. Kamida 64 ta tasodifiy belgi kiriting.")
+    SECRET_KEY = secrets.token_urlsafe(48)
+if len(SECRET_KEY) < 32:
+    raise RuntimeError("SECRET_KEY kamida 32 belgidan iborat bo'lishi kerak.")
+TOKEN_DAYS = 1
+JWT_ISSUER = "mutx-api"
+JWT_AUDIENCE = "mutx-users"
 
 FEE_PER_TONNA = 10000  # har bir tomon uchun so'm / tonna
 
@@ -192,7 +202,12 @@ DUMMY_HASH = hash_password("mutx-dummy-password")
 
 
 def make_token(user_id: int) -> str:
-    payload = {"sub": str(user_id), "exp": utcnow() + timedelta(days=TOKEN_DAYS)}
+    payload = {
+        "sub": str(user_id), "iat": utcnow(),
+        "exp": utcnow() + timedelta(days=TOKEN_DAYS),
+        "iss": JWT_ISSUER, "aud": JWT_AUDIENCE,
+        "jti": secrets.token_urlsafe(16),
+    }
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
 
@@ -206,7 +221,11 @@ def current_user(
     if cred is None:
         raise HTTPException(status_code=401, detail="Avval tizimga kiring")
     try:
-        data = jwt.decode(cred.credentials, SECRET_KEY, algorithms=["HS256"])
+        data = jwt.decode(
+            cred.credentials, SECRET_KEY, algorithms=["HS256"],
+            issuer=JWT_ISSUER, audience=JWT_AUDIENCE,
+            options={"require": ["sub", "iat", "exp", "iss", "aud", "jti"]},
+        )
         user = db.get(User, int(data["sub"]))
     except Exception:
         raise HTTPException(status_code=401, detail="Sessiya tugagan, qayta kiring")
@@ -308,6 +327,21 @@ def load_public(load: Load, viewer_id: int) -> dict:
 
 app = FastAPI(title="MUTX API")
 
+if os.getenv("RENDER"):
+    app.add_middleware(HTTPSRedirectMiddleware)
+
+@app.middleware("http")
+async def security_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(self)"
+    if request.url.scheme == "https":
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -321,7 +355,7 @@ def admin_me(user: User = Depends(current_user), db: Session = Depends(get_db)):
     access = require_admin(user, db)
     return {
         "role": access.role,
-        "permissions": [p for p in access.permissions.split(",") if p],
+        "permissions": (["*"] if access.role == "superadmin" else [p for p in access.permissions.split(",") if p]),
         "active": access.active,
     }
 
@@ -366,13 +400,13 @@ def admin_users(
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ):
-    require_admin(user, db, "users.read")
+    access = require_admin(user, db, "users.read")
     users = db.scalars(select(User).order_by(User.id.desc()).limit(200))
     return [
         {
             "id": item.id,
             "full_name": item.full_name,
-            "phone": item.phone,
+            "phone": item.phone if access.role == "superadmin" else item.phone[:4] + "****" + item.phone[-2:],
             "roles": role_list(item),
             "verified": item.verified,
             "created_at": item.created_at.isoformat() if item.created_at else None,
@@ -407,6 +441,8 @@ def grant_admin(
     target = db.get(User, data.user_id)
     if target is None:
         raise HTTPException(status_code=404, detail="Foydalanuvchi topilmadi")
+    if not target.verified:
+        raise HTTPException(status_code=409, detail="Admin qilishdan oldin foydalanuvchi shaxsini tasdiqlash kerak")
     if data.user_id == user.id:
         raise HTTPException(status_code=400, detail="O'zingizga admin vakolati berib bo'lmaydi")
     if any(p not in ALLOWED_ADMIN_PERMISSIONS for p in data.permissions):
@@ -449,6 +485,20 @@ def revoke_admin(
     return {"success": True, "message": "Admin vakolati bekor qilindi"}
 
 
+@app.get("/admin/audit")
+def admin_audit(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    access = require_admin(user, db)
+    if access.role != "superadmin":
+        raise HTTPException(status_code=403, detail="Audit tarixini faqat Super Admin ko'radi")
+    rows = db.scalars(select(AdminAudit).order_by(AdminAudit.id.desc()).limit(200))
+    return [
+        {"id": row.id, "actor_id": row.actor_id, "action": row.action,
+         "target_user_id": row.target_user_id, "details": row.details,
+         "created_at": row.created_at.isoformat() if row.created_at else None}
+        for row in rows
+    ]
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "database": "sqlite" if IS_SQLITE else "postgresql"}
@@ -480,8 +530,8 @@ def register(data: RegisterIn, db: Session = Depends(get_db)):
             status_code=400,
             detail="Telefon raqam +998 formatida bo'lishi kerak (masalan +998901234567)",
         )
-    if not 8 <= len(data.password) <= 100:
-        raise HTTPException(status_code=400, detail="Parol kamida 8 ta belgidan iborat bo'lsin")
+    if not 12 <= len(data.password) <= 128:
+        raise HTTPException(status_code=400, detail="Parol kamida 12 ta belgidan iborat bo'lsin")
 
     roles = []
     for r in data.roles:
