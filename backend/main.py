@@ -9,6 +9,7 @@ haqiqiy foydalanish uchun DATABASE_URL shart.
 """
 
 import hashlib
+import logging
 import hmac
 import os
 import re
@@ -25,6 +26,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field, StringConstraints
 from typing_extensions import Annotated
 from openai import AsyncOpenAI
+
+logger = logging.getLogger('mutx.ai')
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -649,8 +652,15 @@ async def ai_chat(data: AIChatIn, user: User = Depends(current_user)):
         return {"answer": answer, "assistant": "MUTX AI"}
     except HTTPException:
         raise
-    except Exception:
-        raise HTTPException(status_code=502, detail="AI xizmatida vaqtinchalik xatolik. Keyinroq urinib ko'ring.")
+    except Exception as exc:
+        # Render Logs'da xato turi va OpenAI statusi ko'rinadi; maxfiy kalit logga yozilmaydi.
+        logger.exception(
+            "MUTX AI request failed (type=%s, status=%s, code=%s)",
+            type(exc).__name__,
+            getattr(exc, "status_code", None),
+            getattr(exc, "code", None),
+        )
+        raise HTTPException(status_code=502, detail="AI xizmatida vaqtinchalik xatolik. Render Logs orqali tekshirilmoqda.")
 
 
 @app.get("/health")
