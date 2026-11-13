@@ -119,6 +119,29 @@ class Load(Base):
     status: Mapped[str] = mapped_column(String(12), default="new", index=True)  # new/accepted/done/cancelled
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+class AdminAccess(Base):
+    __tablename__ = "mutx_admin_access"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("mutx_users.id"), unique=True, index=True)
+    role: Mapped[str] = mapped_column(String(20))  # admin yoki superadmin
+    permissions: Mapped[str] = mapped_column(String(1000), default="")
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_by: Mapped[Optional[int]] = mapped_column(ForeignKey("mutx_users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class AdminAudit(Base):
+    __tablename__ = "mutx_admin_audit"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    actor_id: Mapped[int] = mapped_column(ForeignKey("mutx_users.id"), index=True)
+    action: Mapped[str] = mapped_column(String(80))
+    target_user_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    details: Mapped[str] = mapped_column(String(500), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class Rating(Base):
     __tablename__ = "mutx_ratings"
     __table_args__ = (UniqueConstraint("load_id", "rater_id", name="uq_rating_once"),)
@@ -227,6 +250,24 @@ def require_role(user: User, role: str) -> None:
         raise HTTPException(status_code=403, detail="Bu amal faqat " + nom + " uchun.")
 
 
+def admin_access(user: User, db: Session) -> Optional[AdminAccess]:
+    return db.scalar(
+        select(AdminAccess).where(AdminAccess.user_id == user.id, AdminAccess.active.is_(True))
+    )
+
+
+def require_admin(user: User, db: Session, permission: Optional[str] = None) -> AdminAccess:
+    access = admin_access(user, db)
+    if access is None:
+        raise HTTPException(status_code=403, detail="Admin ruxsati talab qilinadi")
+    if access.role == "superadmin":
+        return access
+    permissions = [p for p in access.permissions.split(",") if p]
+    if permission and permission not in permissions:
+        raise HTTPException(status_code=403, detail="Bu amal uchun ruxsatingiz yo'q")
+    return access
+
+
 def user_public(user: User) -> dict:
     return {
         "id": user.id,
@@ -273,6 +314,139 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/admin/me")
+def admin_me(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    access = require_admin(user, db)
+    return {
+        "role": access.role,
+        "permissions": [p for p in access.permissions.split(",") if p],
+        "active": access.active,
+    }
+
+
+class SuperAdminSetupIn(BaseModel):
+    setup_key: str
+
+
+@app.post("/setup/superadmin")
+def setup_superadmin(
+    data: SuperAdminSetupIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    # Birinchi Super Admin faqat Render Environment'dagi maxfiy kalit
+    # va SUPERADMIN_PHONE bilan mos kelgan ro'yxatdan o'tgan akkauntga beriladi.
+    expected_key = os.getenv("SUPERADMIN_SETUP_KEY", "")
+    expected_phone = os.getenv("SUPERADMIN_PHONE", "").strip()
+    if not expected_key or not expected_phone:
+        raise HTTPException(status_code=503, detail="Super Admin sozlamalari serverda hali kiritilmagan")
+    if not hmac.compare_digest(data.setup_key, expected_key):
+        raise HTTPException(status_code=403, detail="Sozlash kaliti noto'g'ri")
+    if user.phone != expected_phone:
+        raise HTTPException(status_code=403, detail="Bu akkaunt Super Admin uchun belgilangan emas")
+    if db.scalar(select(AdminAccess).where(AdminAccess.role == "superadmin")):
+        raise HTTPException(status_code=409, detail="Super Admin allaqachon sozlangan")
+    access = AdminAccess(
+        user_id=user.id,
+        role="superadmin",
+        permissions="*",
+        active=True,
+        created_by=user.id,
+    )
+    db.add(access)
+    db.add(AdminAudit(actor_id=user.id, action="superadmin_bootstrap", target_user_id=user.id))
+    db.commit()
+    return {"success": True, "role": "superadmin", "message": "Super Admin sozlandi"}
+
+
+@app.get("/admin/users")
+def admin_users(
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    require_admin(user, db, "users.read")
+    users = db.scalars(select(User).order_by(User.id.desc()).limit(200))
+    return [
+        {
+            "id": item.id,
+            "full_name": item.full_name,
+            "phone": item.phone,
+            "roles": role_list(item),
+            "verified": item.verified,
+            "created_at": item.created_at.isoformat() if item.created_at else None,
+            "admin_role": (
+                admin_access(item, db).role if admin_access(item, db) else None
+            ),
+        }
+        for item in users
+    ]
+
+
+class AdminGrantIn(BaseModel):
+    user_id: int
+    permissions: List[str] = []
+
+
+ALLOWED_ADMIN_PERMISSIONS = {
+    "users.read", "users.manage", "loads.read", "loads.manage",
+    "complaints.manage", "finance.read",
+}
+
+
+@app.post("/admin/admins")
+def grant_admin(
+    data: AdminGrantIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    actor_access = require_admin(user, db)
+    if actor_access.role != "superadmin":
+        raise HTTPException(status_code=403, detail="Adminni faqat Super Admin tayinlaydi")
+    target = db.get(User, data.user_id)
+    if target is None:
+        raise HTTPException(status_code=404, detail="Foydalanuvchi topilmadi")
+    if data.user_id == user.id:
+        raise HTTPException(status_code=400, detail="O'zingizga admin vakolati berib bo'lmaydi")
+    if any(p not in ALLOWED_ADMIN_PERMISSIONS for p in data.permissions):
+        raise HTTPException(status_code=400, detail="Noma'lum ruxsat turi")
+    access = admin_access(target, db)
+    if access and access.role == "superadmin":
+        raise HTTPException(status_code=409, detail="Super Admin vakolatini bu yerdan o'zgartirib bo'lmaydi")
+    if access is None:
+        access = AdminAccess(user_id=target.id, role="admin", active=True, created_by=user.id)
+        db.add(access)
+    access.role = "admin"
+    access.permissions = ",".join(sorted(set(data.permissions)))
+    access.active = True
+    access.created_by = user.id
+    db.add(AdminAudit(
+        actor_id=user.id,
+        action="admin_granted",
+        target_user_id=target.id,
+        details=access.permissions,
+    ))
+    db.commit()
+    return {"success": True, "user_id": target.id, "role": "admin", "permissions": data.permissions}
+
+
+@app.delete("/admin/admins/{target_user_id}")
+def revoke_admin(
+    target_user_id: int,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    actor_access = require_admin(user, db)
+    if actor_access.role != "superadmin":
+        raise HTTPException(status_code=403, detail="Adminni faqat Super Admin bekor qiladi")
+    access = db.scalar(select(AdminAccess).where(AdminAccess.user_id == target_user_id))
+    if access is None or access.role != "admin":
+        raise HTTPException(status_code=404, detail="Admin topilmadi")
+    access.active = False
+    db.add(AdminAudit(actor_id=user.id, action="admin_revoked", target_user_id=target_user_id))
+    db.commit()
+    return {"success": True, "message": "Admin vakolati bekor qilindi"}
 
 
 @app.get("/health")
