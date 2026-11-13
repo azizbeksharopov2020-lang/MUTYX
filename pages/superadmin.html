@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MUTX — Super Admin</title>
+<style>*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#f1f5f9;color:#172033}header{background:#101d36;color:white;padding:18px 6%;display:flex;justify-content:space-between}a{color:#55a6ff}main{max-width:1050px;margin:28px auto;padding:16px}.card{background:white;padding:22px;border-radius:12px;margin-bottom:18px;box-shadow:0 4px 15px #0001}button{padding:10px 15px;background:#1675d1;color:white;border:0;border-radius:7px;cursor:pointer;margin:5px 4px 5px 0}input{padding:10px;border:1px solid #ccd5e1;border-radius:7px;width:100%;margin:6px 0}label{display:block;margin-top:12px}.item{padding:14px 0;border-top:1px solid #ddd}.muted{color:#64748b}.error{color:#b42318;white-space:pre-wrap}.ok{color:#087443}.checks{display:flex;gap:12px;flex-wrap:wrap}.checks label{margin:5px}</style></head>
+<body><header><b>MUTX | SUPER ADMIN</b><a href="cabinet.html">Kabinetga qaytish</a></header><main>
+<section class="card"><h2>Super Admin boshqaruvi</h2><p id="status" class="muted">Vakolat tekshirilmoqda...</p><button id="reload">Yangilash</button><button id="logout">Chiqish</button></section>
+<section class="card"><h3>Admin tayinlash</h3><p class="muted">Avval foydalanuvchi ID sini ro‘yxatdan oling. Admin ruxsatlarini tanlang.</p><label>Foydalanuvchi ID</label><input id="uid" type="number" min="1" placeholder="Masalan: 3">
+<div class="checks">
+<label><input type="checkbox" value="users.read" checked> Foydalanuvchilarni ko‘rish</label>
+<label><input type="checkbox" value="users.manage"> Foydalanuvchilarni boshqarish</label>
+<label><input type="checkbox" value="loads.read"> Yuklarni ko‘rish</label>
+<label><input type="checkbox" value="loads.manage"> Yuklarni boshqarish</label>
+<label><input type="checkbox" value="complaints.manage"> Shikoyatlarni boshqarish</label>
+<label><input type="checkbox" value="finance.read"> Moliyani ko‘rish</label></div><button id="grant">Admin tayinlash / ruxsatni yangilash</button><p id="notice"></p></section>
+<section class="card"><h3>Foydalanuvchilar va adminlar</h3><div id="users">Yuklanmoqda...</div></section></main>
+<script>
+const API="https://mutyx-1.onrender.com",token=localStorage.getItem("mutx_token"),H={"Authorization":"Bearer "+token,"Content-Type":"application/json"},$=id=>document.getElementById(id);
+async function req(path,opt={}){const r=await fetch(API+path,{...opt,headers:{...H,...(opt.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.detail||"Server xatosi "+r.status);return d}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function init(){if(!token){location.href="login.html";return}try{const a=await req("/admin/me");if(a.role!=="superadmin")throw Error("Bu sahifa faqat Super Admin uchun.");$("status").textContent="Super Admin vakolati faol.";const users=await req("/admin/users");$("users").innerHTML=users.map(u=>'<div class="item"><b>'+esc(u.full_name)+'</b> · '+esc(u.phone)+'<br><span class="muted">ID: '+u.id+' | '+u.roles.join(", ")+' | '+(u.admin_role||"Oddiy foydalanuvchi")+'</span>'+(u.admin_role==="admin"?' <button data-revoke="'+u.id+'">Admin vakolatini bekor qilish</button>':"")+'</div>').join("")||"Foydalanuvchilar yo‘q";document.querySelectorAll("[data-revoke]").forEach(b=>b.onclick=async()=>{if(!confirm("Admin vakolatini bekor qilasizmi?"))return;try{await req("/admin/admins/"+b.dataset.revoke,{method:"DELETE"});await init()}catch(e){notice(e.message,true)}})}catch(e){$("status").className="error";$("status").textContent=e.message;$("users").textContent="Ma’lumotni yuklab bo‘lmadi.";}}
+function notice(s,bad=false){$("notice").className=bad?"error":"ok";$("notice").textContent=s}
+$("grant").onclick=async()=>{try{const id=Number($("uid").value);if(!id)throw Error("Foydalanuvchi ID sini kiriting.");const permissions=[...document.querySelectorAll('.checks input:checked')].map(x=>x.value);await req("/admin/admins",{method:"POST",body:JSON.stringify({user_id:id,permissions})});notice("Admin vakolati berildi.");await init()}catch(e){notice(e.message,true)}};
+$("reload").onclick=init;$("logout").onclick=()=>{localStorage.removeItem("mutx_token");location.href="login.html"};init();
+</script></body></html>
