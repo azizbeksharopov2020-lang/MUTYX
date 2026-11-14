@@ -204,6 +204,14 @@
 
 <script>
 const API = "https://mutyx-1.onrender.com";
+function normalizeUzPhone(value){
+  let digits=String(value||"").replace(/\\D/g,"");
+  if(digits.length===9) digits="998"+digits;
+  return digits.length===12&&digits.startsWith("998")?"+"+digits:null;
+}
+const phoneInput=document.getElementById("phone");
+phoneInput.addEventListener("blur",()=>{const normalized=normalizeUzPhone(phoneInput.value);if(normalized)phoneInput.value=normalized;});
+
 document.querySelectorAll(".toggle-password").forEach(button => {
   button.addEventListener("click", () => {
     const field = document.getElementById(button.dataset.target);
@@ -219,7 +227,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
   const message = document.getElementById("message"); message.style.display = "block";
   const btn = event.currentTarget.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Tekshirilmoqda...";
   try {
-    const response = await fetch(API + "/login", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:document.getElementById("phone").value.trim(),password:document.getElementById("password").value})});
+    const response = await fetch(API + "/login", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:normalizeUzPhone(phoneInput.value)||phoneInput.value.trim(),password:document.getElementById("password").value})});
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "Kirish amalga oshmadi.");
     localStorage.setItem("mutx_token", data.token);
