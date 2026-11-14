@@ -436,11 +436,16 @@ def setup_superadmin(
 
 @app.get("/admin/users")
 def admin_users(
+    q: Optional[str] = None,
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ):
     access = require_admin(user, db, "users.read")
-    users = db.scalars(select(User).order_by(User.id.desc()).limit(200))
+    stmt = select(User)
+    if q and q.strip():
+        term = "%" + q.strip().lower() + "%"
+        stmt = stmt.where(or_(func.lower(User.full_name).like(term), User.phone.like("%" + q.strip() + "%"), User.id == (int(q) if q.isdigit() else -1)))
+    users = db.scalars(stmt.order_by(User.id.desc()).limit(200))
     return [
         {
             "id": item.id,
@@ -526,12 +531,12 @@ def revoke_admin(
 
 class ComplaintIn(BaseModel):
     load_id: int
-    reason: str
+    reason: Annotated[str, StringConstraints(strip_whitespace=True, min_length=5, max_length=500)]
 
 
 class ComplaintDecisionIn(BaseModel):
-    decision: str
-    penalty_amount: int = 0
+    decision: Annotated[str, StringConstraints(strip_whitespace=True, min_length=5, max_length=500)]
+    penalty_amount: int = Field(default=0, ge=0, le=100_000_000)
     status: str = "resolved"
 
 
