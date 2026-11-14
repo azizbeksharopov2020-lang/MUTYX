@@ -14,7 +14,16 @@ header{position:sticky;top:0;z-index:50;background:#10233ff5;backdrop-filter:blu
 nav{display:flex;align-items:center;gap:8px}nav a{padding:10px 13px;border-radius:9px;color:#dbe8f8;font-size:14px;font-weight:650}nav a:hover{background:#ffffff15;color:white}
 .nav-actions{display:flex;gap:10px;align-items:center}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:11px;font-weight:800;font-size:14px;transition:.2s;border:1px solid transparent}
 .btn:hover{transform:translateY(-2px)}.btn-blue{background:var(--blue);color:white;box-shadow:0 8px 20px #2678df30}.btn-green{background:var(--green);color:white}.btn-light{background:white;color:#1758a0}
-.menu-toggle{display:none;background:#ffffff15;border:1px solid #ffffff30;color:#fff;border-radius:10px;padding:9px 12px;font-size:21px}
+.menu-wrap{position:relative}
+.menu-toggle{display:block;background:#ffffff15;border:1px solid #ffffff30;color:#fff;border-radius:12px;width:48px;height:46px;font-size:25px;cursor:pointer}
+.menu-panel{position:absolute;right:0;top:58px;width:min(300px,88vw);padding:9px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 48px #06182d35;z-index:80}
+.menu-panel[hidden]{display:none}
+.menu-panel a{display:flex;align-items:center;gap:13px;padding:13px 12px;border-radius:11px;color:var(--ink)}
+.menu-panel a:hover{background:#f0f6fd}
+.menu-panel a>span:first-child{font-size:22px;width:30px;text-align:center}
+.menu-panel b,.menu-panel small{display:block}
+.menu-panel b{font-size:14px}
+.menu-panel small{font-size:12px;color:var(--muted);margin-top:2px}
 .hero{position:relative;overflow:hidden;padding:76px 0 68px;background:radial-gradient(ellipse at 85% 20%,#2e82db55,transparent 35%),linear-gradient(120deg,#10233f,#163e6d 65%,#1e64a6);color:#fff}
 .hero:before,.hero:after{content:"";position:absolute;border:1px solid #ffffff12;border-radius:50%;pointer-events:none}.hero:before{width:520px;height:520px;right:-170px;top:-280px}.hero:after{width:380px;height:380px;right:-100px;top:-210px}
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:48px}
@@ -41,7 +50,7 @@ section{padding:66px 0}.section-head{text-align:center;max-width:660px;margin:0 
 .cta{background:linear-gradient(115deg,#12325a,#2678d6);color:#fff;border-radius:22px;padding:36px;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{margin:0 0 7px;font-size:26px}.cta p{margin:0;color:#d8e8fa;font-size:14px}
 footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}.footer-brand p{font-size:13px;color:#a9bdd4;margin-top:7px}.footer-links{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#d6e4f5}.copyright{border-top:1px solid #ffffff20;margin-top:24px;padding-top:18px;color:#8fa8c4;font-size:12px}
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr .8fr;gap:25px}.vehicle-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.wrap{width:91%}.navbar{min-height:66px;flex-wrap:wrap}.menu-toggle{display:block}nav{display:none;order:3;width:100%;flex-direction:column;align-items:stretch;background:#193557;padding:8px;border-radius:12px;margin-bottom:10px}nav.open{display:flex}nav a{text-align:center}.nav-actions{margin-left:auto}.nav-actions .btn{padding:10px 12px;font-size:12px}.hero{padding:48px 0 42px}.hero-grid{grid-template-columns:1fr;gap:30px}h1{font-size:39px;letter-spacing:-1.2px}.hero-copy{font-size:15px}.route-card{max-width:440px;width:100%;margin:auto;transform:none}.stats-grid{padding:18px 0}.stat b{font-size:19px}.stat span{font-size:11px}.stat{padding:0 5px}section{padding:48px 0}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:20px}.vehicle-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.security{grid-template-columns:1fr;padding:22px;gap:16px}.security h2{font-size:24px}.cta{padding:25px;display:block}.cta .btn{margin-top:17px}.footer-row{display:block}.footer-links{margin-top:18px}}
+@media(max-width:700px){.wrap{width:91%}.navbar{min-height:66px}.menu-toggle{display:block}.hero{padding:48px 0 42px}.hero-grid{grid-template-columns:1fr;gap:30px}h1{font-size:39px;letter-spacing:-1.2px}.hero-copy{font-size:15px}.route-card{max-width:440px;width:100%;margin:auto;transform:none}.stats-grid{padding:18px 0}.stat b{font-size:19px}.stat span{font-size:11px}.stat{padding:0 5px}section{padding:48px 0}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:20px}.vehicle-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.security{grid-template-columns:1fr;padding:22px;gap:16px}.security h2{font-size:24px}.cta{padding:25px;display:block}.cta .btn{margin-top:17px}.footer-row{display:block}.footer-links{margin-top:18px}}
 @media(max-width:390px){h1{font-size:34px}.nav-actions .btn{padding:9px 10px}.hero-actions .btn{width:100%}.vehicle{padding:15px 8px}}
 </style>
 </head>
@@ -49,8 +58,14 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <header><div class="wrap navbar">
 <a class="logo" href="#top">MU<span>TX</span></a>
 <button class="menu-toggle" id="menuToggle" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
-<nav id="mainNav"><a href="#services">Xizmatlar</a><a href="#how">Qanday ishlaydi</a><a href="#vehicles">Transportlar</a><a href="#prices">Tariflar</a></nav>
-<div class="nav-actions"><a class="btn btn-blue" href="pages/login.html">Kirish</a><a class="btn btn-green" href="pages/register.html">Ro‘yxatdan o‘tish</a></div>
+<div class="menu-wrap">
+<button class="menu-toggle" id="menuToggle" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
+<div class="menu-panel" id="menuPanel" hidden>
+<a href="pages/login.html"><span>🔐</span><span><b>Kirish</b><small>Akkauntingizga kiring</small></span></a>
+<a href="pages/cabinet.html#ownerSection"><span>📦</span><span><b>Yuk joylash</b><small>Yuk egasi bo‘limi</small></span></a>
+<a href="pages/cabinet.html#driverSection"><span>🚚</span><span><b>Yuklarni tanlash</b><small>Haydovchi bo‘limi</small></span></a>
+<a href="pages/register.html"><span>✚</span><span><b>Ro‘yxatdan o‘tish</b><small>Yangi hisob yaratish</small></span></a>
+</div></div>
 </div></header>
 <main id="top">
 <div class="hero"><div class="wrap hero-grid">
@@ -65,14 +80,7 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <div class="route-footer"><span>🚛 Fura / Tirkama</span><b>MUTX platformasi</b></div></div>
 </div></div>
 <div class="stats"><div class="wrap stats-grid"><div class="stat"><b>2 tomon</b><span>Yuk egasi va haydovchi</span></div><div class="stat"><b>5 tur</b><span>Transport tanlovi</span></div><div class="stat"><b>24/7</b><span>Platformadan foydalanish</span></div></div></div>
-<section id="quick-actions" style="padding:58px 0 24px">
-<div class="wrap">
-<div class="section-head"><span class="kicker">Platformaga kirish</span><h2>Qanday xizmat kerak?</h2><p>Kerakli bo‘limni tanlang va MUTX'dan foydalanishni boshlang.</p></div>
-<div class="feature-grid">
-<a class="feature action-card" href="pages/login.html"><div class="feature-icon">🔐</div><h3>Kirish</h3><p>Akkauntingizga kiring va shaxsiy kabinetingizni oching.</p><span class="action-link">Tizimga kirish →</span></a>
-<a class="feature action-card" href="pages/cabinet.html#ownerSection"><div class="feature-icon">📦</div><h3>Yuk joylash</h3><p>Yuk nomi, og‘irligi, yo‘nalishi va transport turini kiriting.</p><span class="action-link">Yuk joylashtirish →</span></a>
-<a class="feature action-card" href="pages/cabinet.html#driverSection"><div class="feature-icon">🚚</div><h3>Yuklarni tanlash</h3><p>Mavjud yuklarni ko‘ring, mos buyurtmani tanlang va qabul qiling.</p><span class="action-link">Yuklarni ko‘rish →</span></a>
-</div></div></section>
+
 <section id="services"><div class="wrap"><div class="section-head"><span class="kicker">MUTX imkoniyatlari</span><h2>Yuk tashish uchun kerakli hamma narsa</h2><p>Buyurtmalar, haydovchilar va yuklar bitta qulay platformada.</p></div>
 <div class="feature-grid"><article class="feature"><div class="feature-icon">📦</div><h3>Yuk joylashtirish</h3><p>Yuk ma’lumotlarini kiriting, yo‘nalishni belgilang va buyurtmangizni haydovchilarga ko‘rsating.</p></article><article class="feature"><div class="feature-icon">🚚</div><h3>Yuk topish</h3><p>Yo‘nalish, transport turi va yuk og‘irligi bo‘yicha mavjud buyurtmalarni qidiring.</p></article><article class="feature"><div class="feature-icon">📍</div><h3>Xarita orqali manzil</h3><p>Yuk olinadigan va yetkaziladigan joylarni xaritada belgilash imkoniyati.</p></article></div></div></section>
 <section class="steps" id="how"><div class="wrap"><div class="section-head"><span class="kicker">Oddiy jarayon</span><h2>Qanday ishlaydi?</h2><p>Platformadan foydalanishni boshlash uchun uchta oddiy qadam.</p></div>
@@ -87,8 +95,9 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 </main>
 <footer><div class="wrap"><div class="footer-row"><div class="footer-brand"><a class="logo" href="#top">MU<span>TX</span></a><p>Yuk va transport bir platformada.</p></div><div class="footer-links"><a href="#services">Xizmatlar</a><a href="#vehicles">Transportlar</a><a href="#prices">Tariflar</a><a href="pages/login.html">Kirish</a></div></div><div class="copyright">© 2026 MUTX. Barcha huquqlar himoyalangan.</div></div></footer>
 <script>
-const toggle=document.getElementById("menuToggle"),nav=document.getElementById("mainNav");
-toggle.addEventListener("click",()=>{const open=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(open));toggle.textContent=open?"✕":"☰";});
-nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));
+const toggle=document.getElementById("menuToggle"),panel=document.getElementById("menuPanel");
+toggle.addEventListener("click",()=>{const open=panel.hidden;panel.hidden=!open;toggle.setAttribute("aria-expanded",String(open));toggle.textContent=open?"✕":"☰";});
+document.addEventListener("click",e=>{if(!e.target.closest(".menu-wrap")){panel.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}});
+panel.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{panel.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));
 </script>
 </body></html>
