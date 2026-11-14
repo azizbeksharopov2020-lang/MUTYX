@@ -32,7 +32,15 @@ nav{display:flex;align-items:center;gap:8px}nav a{padding:10px 13px;border-radiu
 h1{font-size:clamp(36px,5vw,59px);line-height:1.08;letter-spacing:-1.8px;margin:20px 0 18px;max-width:690px}
 .hero-copy{font-size:17px;color:#d8e7f8;max-width:570px;line-height:1.8;margin:0 0 28px}
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero-note{font-size:12px;color:#b7cbe2;margin-top:18px}
-.route-card{background:#fff;color:var(--ink);border:1px solid #ffffff50;border-radius:22px;padding:22px;box-shadow:0 28px 65px #06182d55;transform:rotate(1deg)}
+.route-card{background:#fff;color:var(--ink);border:1px solid #ffffff50;border-radius:22px;padding:22px;box-shadow:0 28px 65px #06182d55;transform:rotate(1deg)}.truck-scene{position:relative;min-height:355px;display:flex;flex-direction:column;justify-content:space-between;padding:22px 10px 16px;overflow:hidden;border-radius:24px;background:linear-gradient(145deg,#ffffff20,#ffffff08);border:1px solid #ffffff25;box-shadow:0 28px 65px #06182d40}
+.truck-glow{position:absolute;width:310px;height:310px;right:5%;top:10px;border-radius:50%;background:#70baff25;filter:blur(25px)}
+.truck-caption{position:relative;z-index:1;padding:0 14px;color:#fff}
+.truck-caption strong{display:block;font-size:22px;margin-top:13px}
+.truck-caption small{display:block;color:#d7e9fc;margin-top:4px;font-size:13px}
+.hero-truck{position:relative;z-index:1;width:100%;height:auto;max-height:250px;overflow:visible;filter:drop-shadow(0 18px 18px #071a3340)}
+.truck-route{position:relative;z-index:1;display:flex;align-items:center;gap:10px;justify-content:center;color:#eaf5ff;font-size:12px;font-weight:750;padding:0 10px}
+.route-dots{height:2px;flex:1;max-width:80px;background:repeating-linear-gradient(90deg,#9ed0ff 0 7px,transparent 7px 13px)}
+@media(max-width:700px){.truck-scene{min-height:285px;padding:18px 7px 14px}.hero-truck{max-height:205px}.truck-caption strong{font-size:20px}}
 .route-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.route-head strong{font-size:16px}.live{font-size:11px;color:#07875d;background:#e5f8f1;border-radius:30px;padding:6px 9px;font-weight:800}
 .route-line{display:grid;grid-template-columns:22px 1fr;gap:12px}.route-pins{display:flex;flex-direction:column;align-items:center;padding-top:5px}.pin{width:12px;height:12px;border:3px solid #2c83e6;border-radius:50%;background:#fff}.pin.end{border-color:#12a879}.dash{height:55px;border-left:2px dashed #c6d5e6;margin:4px 0}
 .route-point small{display:block;color:#8290a3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}.route-point b{display:block;font-size:15px;margin:2px 0 15px}
@@ -74,9 +82,29 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <div class="hero-actions"><a class="btn btn-green" href="pages/register.html">Boshlash <span>→</span></a><a class="btn btn-light" href="#how">Qanday ishlaydi?</a></div>
 <div class="hero-note">Ro‘yxatdan o‘ting va platforma imkoniyatlaridan foydalaning.</div>
 </div>
-<div class="route-card"><div class="route-head"><strong>Yuk yo‘nalishi namunasi</strong><span class="live">● NAMUNA</span></div>
-<div class="route-line"><div class="route-pins"><span class="pin"></span><span class="dash"></span><span class="pin end"></span></div><div class="route-point"><small>Yuk olinadi</small><b>Toshkent shahri</b><small>Yetkaziladi</small><b>Buxoro shahri</b></div></div>
-<div class="route-footer"><span>🚛 Fura / Tirkama</span><b>MUTX platformasi</b></div></div>
+<div class="truck-scene" role="img" aria-label="MUTX yuk tashish fura mashinasi tasviri">
+<div class="truck-glow"></div>
+<div class="truck-caption"><span class="live">● MUTX TRANSPORT</span><strong>Yukingiz manzil sari!</strong><small>Ishonchli yuk tashish platformasi</small></div>
+<svg class="hero-truck" viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<defs><linearGradient id="trailer" x1="0" x2="1"><stop stop-color="#f8fbff"/><stop offset="1" stop-color="#c9def4"/></linearGradient><linearGradient id="cab" x1="0" x2="1"><stop stop-color="#39a0ff"/><stop offset="1" stop-color="#1767c4"/></linearGradient><linearGradient id="glass" x1="0" x2="1"><stop stop-color="#bde7ff"/><stop offset="1" stop-color="#4f91c9"/></linearGradient></defs>
+<ellipse cx="326" cy="306" rx="270" ry="25" fill="#061a33" opacity=".28"/>
+<path d="M80 82 Q80 66 98 66 H425 Q444 66 444 84 V257 H80Z" fill="url(#trailer)" stroke="#e7f2ff" stroke-width="5"/>
+<path d="M101 93 H421 M101 112 H421" stroke="#d8e7f6" stroke-width="4" opacity=".8"/>
+<path d="M444 177 H520 Q537 177 550 197 L584 244 V274 H444Z" fill="url(#cab)"/>
+<path d="M466 190 H514 Q523 190 531 202 L552 231 H466Z" fill="url(#glass)" stroke="#d9f0ff" stroke-width="5"/>
+<path d="M558 241 H584 V274 H558Z" fill="#e9f4ff"/>
+<path d="M80 257 H584 V281 H80Z" fill="#17385f"/>
+<path d="M91 276 H580" stroke="#72baff" stroke-width="5" stroke-linecap="round"/>
+<rect x="111" y="143" width="286" height="76" rx="12" fill="#17385f"/>
+<text x="254" y="194" fill="#fff" font-size="47" font-weight="900" text-anchor="middle" letter-spacing="5">MUTX</text>
+<path d="M444 246 H570" stroke="#9bd1ff" stroke-width="5"/>
+<circle cx="185" cy="282" r="37" fill="#0c1b2c"/><circle cx="185" cy="282" r="20" fill="#dce9f6"/><circle cx="185" cy="282" r="9" fill="#6b829b"/>
+<circle cx="490" cy="282" r="37" fill="#0c1b2c"/><circle cx="490" cy="282" r="20" fill="#dce9f6"/><circle cx="490" cy="282" r="9" fill="#6b829b"/>
+<path d="M34 310 H608" stroke="#b5d9fb" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+<circle cx="112" cy="50" r="7" fill="#7dc0ff"/><circle cx="568" cy="90" r="11" fill="#7dc0ff" opacity=".7"/><path d="M47 124 l12 -12 m-12 0 l12 12" stroke="#fff" stroke-width="4" opacity=".65"/>
+</svg>
+<div class="truck-route"><span>📍 Toshkent</span><span class="route-dots"></span><span>📍 Buxoro</span></div>
+</div>
 </div></div>
 <div class="stats"><div class="wrap stats-grid"><div class="stat"><b>2 tomon</b><span>Yuk egasi va haydovchi</span></div><div class="stat"><b>5 tur</b><span>Transport tanlovi</span></div><div class="stat"><b>24/7</b><span>Platformadan foydalanish</span></div></div></div>
 
