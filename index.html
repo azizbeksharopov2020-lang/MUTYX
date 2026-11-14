@@ -37,8 +37,10 @@
     .notice{background:linear-gradient(110deg,#eaf3ff,#f4f8ff);border:1px solid #d8e8fb;padding:21px;border-radius:15px;line-height:1.8;color:#30445f}
     footer{background:var(--navy);color:#d9e7f8;text-align:center;padding:30px 20px;margin-top:65px}
     footer p+p{margin-top:5px;color:#91a9c6;font-size:14px}
-    @media(max-width:850px){header{justify-content:center;padding:14px 5%}nav{justify-content:center}section,.hero{width:90%}}
-    @media(max-width:600px){header{position:relative;gap:12px}.logo{font-size:27px}nav{width:100%;gap:4px}nav a{padding:8px 9px;font-size:13px}.account{justify-content:center}.hero{margin:22px auto;padding:52px 20px;border-radius:20px}.hero p{font-size:16px}section{margin:36px auto}.card{padding:22px}}
+    @media(max-width:850px){header{justify-content:space-between;padding:14px 5%}section,.hero{width:90%}}
+    .menu-toggle{display:none;background:#ffffff18;color:white;border:1px solid #ffffff35;padding:9px 12px;border-radius:9px;font-size:20px}
+    @media(max-width:600px){header{position:relative;gap:10px}.menu-toggle{display:block}nav{display:none;order:3;width:100%;flex-direction:column;align-items:stretch;background:#172b4c;padding:8px;border-radius:12px}nav.open{display:flex}nav a{text-align:center}.account{width:100%;justify-content:center;order:4}.hero{margin:22px auto;padding:48px 20px;border-radius:20px}.hero h1{font-size:28px}.hero p{font-size:16px}section{margin:32px auto}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:17px;border-radius:14px}.card h3{font-size:16px}.card p{font-size:14px}}
+    @media(max-width:420px){.cards{grid-template-columns:1fr 1fr}.card{padding:14px}.card h3{font-size:15px}.card p{font-size:13px}}
   </style>
 </head>
 <body>
@@ -46,7 +48,8 @@
 <header>
   <div class="logo">MU<span>TX</span></div>
 
-  <nav>
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
+  <nav id="mainNav">
     <a href="#home">Bosh sahifa</a>
     <a href="#services">Xizmatlar</a>
     <a href="#tariffs">Tariflar</a>
@@ -115,9 +118,7 @@
       </div>
 
       <div class="card">
-        <h3>Jami</h3>
-        <p><strong>20 000 so‘m / tonna</strong></p>
-        <p>Har ikki tomon to‘laydigan jami xizmat haqi.</p>
+        <h3>Jami xizmat haqi</h3><p><strong>20 000 so‘m / tonna</strong></p><p>Yuk egasi 10 000 so‘m, haydovchi 10 000 so‘m to‘laydi. Masalan, 5 tonna yuk uchun har biri 50 000 so‘mdan.</p>
       </div>
     </div>
   </section>
@@ -148,7 +149,5 @@
 <footer>
   <p>© 2026 MUTX. Barcha huquqlar himoyalangan.</p>
   <p>Yuk tashishning yangi imkoniyati.</p>
-</footer>
-
-</body>
+</footer><script>const mt=document.getElementById("menuToggle"),mn=document.getElementById("mainNav");mt.addEventListener("click",()=>{const opened=mn.classList.toggle("open");mt.setAttribute("aria-expanded",String(opened));mt.textContent=opened?"✕":"☰"});mn.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{mn.classList.remove("open");mt.setAttribute("aria-expanded","false");mt.textContent="☰"}));</script></body>
 </html>
