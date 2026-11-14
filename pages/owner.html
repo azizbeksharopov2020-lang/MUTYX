@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MUTX — Shaxsiy kabinet</title>
+<title>MUTX — Yuk joylash kabineti</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -26,9 +26,32 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 .location-result{font-size:13px;color:#475569;margin:7px 0}#profile{line-height:1.8}
 @media(max-width:760px){main{margin:18px auto;padding:0 12px}.grid{grid-template-columns:1fr}.welcome,.card{padding:19px;border-radius:15px}header{padding:13px 5%}}
 @media(max-width:420px){button{padding:10px 12px;font-size:13px}.map-actions button{flex:1}}
+/* MUTX cabinet responsive visual system */
+:root{--shadow:0 12px 34px #102b4d0c}
+header{padding:12px max(4%,calc((100% - 1120px)/2));min-height:68px;gap:12px;flex-wrap:wrap}
+header .logo{font-size:27px;color:#59a9ff;font-weight:950;letter-spacing:1.5px}
+header>a:last-child{background:#ffffff12;border:1px solid #ffffff24;border-radius:11px;padding:9px 13px}
+main{max-width:1120px;margin:24px auto 48px;padding:0 16px}
+.welcome{border-radius:22px;padding:24px 26px;background:radial-gradient(circle at 90% 0%,#ffffff35,transparent 36%),linear-gradient(120deg,#102d50,#2166a6);color:#fff;box-shadow:var(--shadow);margin-bottom:18px}
+.welcome h1{font-size:clamp(25px,4vw,34px);margin:0 0 5px}.welcome p{color:#dbeaff;margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.card{background:#fff;border:1px solid #e3ebf4;border-radius:19px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.card h2{font-size:19px;margin:0 0 14px;color:#172b45}
+.card label{margin:12px 0 6px}
+.card input,.card select,.card textarea{width:100%;min-height:45px;border:1px solid #dce5f0;border-radius:11px;padding:10px 12px;background:#fbfdff}
+.card button{border:0;border-radius:11px;background:#2678df;color:#fff;padding:11px 15px;font-weight:800;margin:7px 6px 4px 0;cursor:pointer}
+.card button:hover{filter:brightness(.96)}
+.card button:disabled{opacity:.6;cursor:wait}
+#loadMap{height:270px;border-radius:15px;overflow:hidden;border:1px solid #dce5f0;margin:12px 0}
+.map-actions{display:flex;gap:8px;flex-wrap:wrap}.map-actions button.active{background:#12a879}
+.item{padding:14px;margin:11px 0;border:1px solid #e4ebf4;border-radius:14px;background:#fbfdff;overflow-wrap:anywhere}
+.notice,.location-result{padding:10px 12px;border-radius:10px;background:#edf4ff;color:#24558b}
+.muted{color:#718096}
+[hidden]{display:none!important}
+@media(max-width:760px){main{margin:16px auto 30px;padding:0 12px}.welcome{padding:20px;border-radius:18px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:16px}.card h2{font-size:18px}#loadMap{height:235px}}
 </style></head>
 <body>
-<header><div class="logo">MUTX</div><a href="../index.html">Bosh sahifa</a></header>
+<header><a class="logo" href="../index.html">MU<span>TX</span></a><nav style="display:flex;gap:7px;flex-wrap:wrap"><a href="../index.html">Bosh sahifa</a><a href="owner.html">Yuk joylash</a><a href="driver.html">Yuklarni tanlash</a></nav></header>
 <main>
 <section class="welcome"><h1>Shaxsiy kabinet</h1><p id="welcomeText">Ma’lumot yuklanmoqda...</p></section>
 <div class="grid">
