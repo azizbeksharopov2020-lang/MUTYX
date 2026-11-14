@@ -9,8 +9,8 @@
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
 a{color:inherit;text-decoration:none}.wrap{width:min(1160px,90%);margin:auto}
 header{position:sticky;top:0;z-index:50;background:#10233ff5;backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid #ffffff16}
-.navbar{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.logo{font-size:30px;font-weight:950;letter-spacing:1.5px;color:#fff}.logo span{color:#56a7ff}
+.navbar{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:6px;padding-bottom:6px}
+.logo{font-size:27px;font-weight:950;letter-spacing:1.5px;color:#fff}.logo span{color:#56a7ff}
 nav{display:flex;align-items:center;gap:8px}nav a{padding:10px 13px;border-radius:9px;color:#dbe8f8;font-size:14px;font-weight:650}nav a:hover{background:#ffffff15;color:white}
 .nav-actions{display:flex;gap:10px;align-items:center}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:11px;font-weight:800;font-size:14px;transition:.2s;border:1px solid transparent}
 .btn:hover{transform:translateY(-2px)}.btn-blue{background:var(--blue);color:white;box-shadow:0 8px 20px #2678df30}.btn-green{background:var(--green);color:white}.btn-light{background:white;color:#1758a0}
@@ -50,14 +50,13 @@ section{padding:66px 0}.section-head{text-align:center;max-width:660px;margin:0 
 .cta{background:linear-gradient(115deg,#12325a,#2678d6);color:#fff;border-radius:22px;padding:36px;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{margin:0 0 7px;font-size:26px}.cta p{margin:0;color:#d8e8fa;font-size:14px}
 footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}.footer-brand p{font-size:13px;color:#a9bdd4;margin-top:7px}.footer-links{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#d6e4f5}.copyright{border-top:1px solid #ffffff20;margin-top:24px;padding-top:18px;color:#8fa8c4;font-size:12px}
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr .8fr;gap:25px}.vehicle-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.wrap{width:91%}.navbar{min-height:66px}.menu-toggle{display:block}.hero{padding:48px 0 42px}.hero-grid{grid-template-columns:1fr;gap:30px}h1{font-size:39px;letter-spacing:-1.2px}.hero-copy{font-size:15px}.route-card{max-width:440px;width:100%;margin:auto;transform:none}.stats-grid{padding:18px 0}.stat b{font-size:19px}.stat span{font-size:11px}.stat{padding:0 5px}section{padding:48px 0}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:20px}.vehicle-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.security{grid-template-columns:1fr;padding:22px;gap:16px}.security h2{font-size:24px}.cta{padding:25px;display:block}.cta .btn{margin-top:17px}.footer-row{display:block}.footer-links{margin-top:18px}}
+@media(max-width:700px){.wrap{width:91%}.navbar{min-height:58px;padding-top:5px;padding-bottom:5px}.logo{font-size:25px}.menu-toggle{width:42px;height:40px;font-size:22px}.hero{padding:48px 0 42px}.hero-grid{grid-template-columns:1fr;gap:30px}h1{font-size:39px;letter-spacing:-1.2px}.hero-copy{font-size:15px}.route-card{max-width:440px;width:100%;margin:auto;transform:none}.stats-grid{padding:18px 0}.stat b{font-size:19px}.stat span{font-size:11px}.stat{padding:0 5px}section{padding:48px 0}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:20px}.vehicle-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.security{grid-template-columns:1fr;padding:22px;gap:16px}.security h2{font-size:24px}.cta{padding:25px;display:block}.cta .btn{margin-top:17px}.footer-row{display:block}.footer-links{margin-top:18px}}
 @media(max-width:390px){h1{font-size:34px}.nav-actions .btn{padding:9px 10px}.hero-actions .btn{width:100%}.vehicle{padding:15px 8px}}
 </style>
 </head>
 <body>
 <header><div class="wrap navbar">
 <a class="logo" href="#top">MU<span>TX</span></a>
-<button class="menu-toggle" id="menuToggle" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
 <div class="menu-wrap">
 <button class="menu-toggle" id="menuToggle" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
 <div class="menu-panel" id="menuPanel" hidden>
