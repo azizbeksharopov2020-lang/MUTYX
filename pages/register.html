@@ -373,6 +373,14 @@
 const API = "https://mutyx-1.onrender.com";
 const form = document.getElementById("registerForm");
 const notice = document.getElementById("notice");
+function normalizeUzPhone(value){
+  let digits=String(value||"").replace(/\\D/g,"");
+  if(digits.length===9) digits="998"+digits;
+  return digits.length===12&&digits.startsWith("998")?"+"+digits:null;
+}
+const phoneInput=document.getElementById("phone");
+phoneInput.addEventListener("blur",()=>{const normalized=normalizeUzPhone(phoneInput.value);if(normalized)phoneInput.value=normalized;});
+
 document.querySelectorAll(".toggle-password").forEach(button => {
   button.addEventListener("click", () => {
     const field = document.getElementById(button.dataset.target);
@@ -393,7 +401,10 @@ form.addEventListener("submit", async (event) => {
   }
   const roles = Array.from(document.querySelectorAll('input[name="role"]:checked')).map(x => x.value);
   if (!roles.length) { notice.classList.add("error"); notice.textContent = "Kamida bitta rolni tanlang."; return; }
-  const payload = {full_name:document.getElementById("fullname").value.trim(), phone:document.getElementById("phone").value.trim(), password, roles};
+  const normalizedPhone=normalizeUzPhone(phoneInput.value);
+  if(!normalizedPhone){notice.classList.add("error");notice.textContent="Telefon raqamni +998901234567 yoki 901234567 ko‘rinishida kiriting.";return;}
+  phoneInput.value=normalizedPhone;
+  const payload = {full_name:document.getElementById("fullname").value.trim(), phone:normalizedPhone, password, roles};
   const btn = form.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Yuborilmoqda...";
   try {
     const response = await fetch(API + "/register", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
