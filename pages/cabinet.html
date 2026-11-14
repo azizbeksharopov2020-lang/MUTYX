@@ -71,7 +71,46 @@ function show(id,msg){el(id).className="notice";el(id).textContent=msg;}
 async function request(path,options={}){const r=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.detail||"Server xatosi: "+r.status);return d;}
 if(!token){location.href="login.html";}
 async function loadProfile(){try{const u=await request("/me");localStorage.setItem("mutx_roles_cache",JSON.stringify(u.roles||[]));el("welcomeText").textContent="Xush kelibsiz, "+u.full_name+"!";el("ownerSection").hidden=false;el("driverSection").hidden=false;el("ordersSection").hidden=false;el("profile").textContent="Ism: "+u.full_name+" | Telefon: "+u.phone+" | Rol: "+u.roles.join(", ")+" | Shaxs tasdig‘i: "+(u.verified?"Tasdiqlangan":"Hali tasdiqlanmagan");}catch(e){show("profile",e.message);if(e.message.includes("Sessiya")||e.message.includes("Avval")){localStorage.removeItem("mutx_token");location.href="login.html";}}}
-function drawLoads(id,items,available){el(id).innerHTML="";if(!items.length){el(id).textContent="Hozircha buyurtma yo‘q.";return;}items.forEach(x=>{const d=document.createElement("div");d.className="item";const p=document.createElement("p");p.textContent=x.cargo+" — "+x.tonna+" t | "+x.from_city+" → "+x.to_city+" | "+x.transport+" | Holat: "+x.status;d.appendChild(p);const fee=document.createElement("p");fee.className="muted";fee.textContent="Xizmat haqi: har bir tomon uchun "+Number(x.fee_each).toLocaleString("uz-UZ")+" so‘m";d.appendChild(fee);if(available){if(!JSON.parse(localStorage.getItem("mutx_roles_cache")||"[]").includes("driver")){const hint=document.createElement("p");hint.className="muted";hint.textContent="Yukni qabul qilish uchun profilingizda haydovchi roli bo‘lishi kerak.";d.appendChild(hint);}else{const b=document.createElement("button");b.textContent="Yukni qabul qilish";b.onclick=async()=>{if(!confirm("Ushbu yukni qabul qilasizmi?"))return;try{const acceptedLoad=await request("/loads/"+x.id+"/accept",{method:"POST"});const contact=await request("/loads/"+x.id+"/contact");const info=document.createElement("div");info.className="notice";info.textContent="Yuk qabul qilindi.\\nYuk egasi: "+contact.owner_name+"\\nTelefon: "+contact.owner_phone; if(acceptedLoad.pickup_lat!=null&&acceptedLoad.pickup_lng!=null){const a=document.createElement("a");a.href="https://www.openstreetmap.org/?mlat="+acceptedLoad.pickup_lat+"&mlon="+acceptedLoad.pickup_lng+"#map=16/"+acceptedLoad.pickup_lat+"/"+acceptedLoad.pickup_lng;a.target="_blank";a.rel="noopener";a.textContent="Yuk olinadigan joyni xaritada ochish";info.appendChild(document.createElement("br"));info.appendChild(a);}if(acceptedLoad.dropoff_lat!=null&&acceptedLoad.dropoff_lng!=null){const a=document.createElement("a");a.href="https://www.openstreetmap.org/?mlat="+acceptedLoad.dropoff_lat+"&mlon="+acceptedLoad.dropoff_lng+"#map=16/"+acceptedLoad.dropoff_lat+"/"+acceptedLoad.dropoff_lng;a.target="_blank";a.rel="noopener";a.textContent="Yuk yetkaziladigan joyni xaritada ochish";info.appendChild(document.createElement("br"));info.appendChild(a);}d.appendChild(info);alert("Yuk qabul qilindi. Telefon va lokatsiyalar ochildi.");await refreshAvailable();await refreshMine();}catch(e){alert(e.message)}};d.appendChild(b);}}el(id).appendChild(d);});}
+function safeText(value){return String(value??"");}
+function addActionButton(parent,label,handler){const button=document.createElement("button");button.type="button";button.textContent=label;button.addEventListener("click",handler);parent.appendChild(button);return button;}
+async function showRatingForm(parent,load){
+ const state=await request("/loads/"+load.id+"/my-rating");
+ if(state.has_rated){const done=document.createElement("p");done.className="muted";done.textContent="Siz bu buyurtmaga "+state.score+"/5 baho bergansiz.";parent.appendChild(done);return;}
+ const title=document.createElement("p");title.textContent="Buyurtmani baholang:";parent.appendChild(title);
+ const select=document.createElement("select");select.setAttribute("aria-label","Baho");[1,2,3,4,5].forEach(n=>{const o=document.createElement("option");o.value=String(n);o.textContent=n+" / 5";select.appendChild(o);});parent.appendChild(select);
+ const comment=document.createElement("textarea");comment.maxLength=300;comment.placeholder="Izoh (ixtiyoriy)";parent.appendChild(comment);
+ addActionButton(parent,"Bahoni yuborish",async()=>{try{await request("/loads/"+load.id+"/rate",{method:"POST",body:JSON.stringify({score:Number(select.value),comment:comment.value})});await refreshMine();}catch(e){alert(e.message)}});
+}
+function drawLoads(id,items,available){
+ const root=el(id);root.innerHTML="";
+ if(!items.length){root.textContent="Hozircha buyurtma yo‘q.";return;}
+ items.forEach(x=>{
+  const card=document.createElement("div");card.className="item";
+  const title=document.createElement("p");title.textContent=safeText(x.cargo)+" — "+safeText(x.tonna)+" t | "+safeText(x.from_city)+" → "+safeText(x.to_city)+" | "+safeText(x.transport)+" | Holat: "+safeText(x.status);card.appendChild(title);
+  const fee=document.createElement("p");fee.className="muted";fee.textContent="Xizmat haqi: har bir tomon uchun "+Number(x.fee_each||0).toLocaleString("uz-UZ")+" so‘m";card.appendChild(fee);
+  if(x.note){const note=document.createElement("p");note.textContent="Izoh: "+x.note;card.appendChild(note);}
+  if(x.created_at){const date=document.createElement("p");date.className="muted";const parsed=new Date(x.created_at);date.textContent="Joylashtirilgan: "+(Number.isNaN(parsed.getTime())?x.created_at:parsed.toLocaleString("uz-UZ"));card.appendChild(date);}
+  if(available){
+   const roles=JSON.parse(localStorage.getItem("mutx_roles_cache")||"[]");
+   if(roles.includes("driver")){
+    addActionButton(card,"Yukni qabul qilish",async event=>{});
+    const button=card.lastElementChild;
+    button.onclick=async()=>{if(!confirm("Ushbu yukni qabul qilasizmi?"))return;button.disabled=true;try{const accepted=await request("/loads/"+x.id+"/accept",{method:"POST"});const contact=await request("/loads/"+x.id+"/contact");const info=document.createElement("div");info.className="notice";const details=document.createElement("p");details.textContent="Yuk qabul qilindi. Yuk egasi: "+contact.owner_name+" · Telefon: "+contact.owner_phone;info.appendChild(details);[[accepted.pickup_lat,accepted.pickup_lng,"Yuk olinadigan joyni xaritada ochish"],[accepted.dropoff_lat,accepted.dropoff_lng,"Yuk yetkaziladigan joyni xaritada ochish"]].forEach(([lat,lng,label])=>{if(lat==null||lng==null)return;const a=document.createElement("a");a.href="https://www.openstreetmap.org/?mlat="+encodeURIComponent(lat)+"&mlon="+encodeURIComponent(lng)+"#map=16/"+lat+"/"+lng;a.target="_blank";a.rel="noopener noreferrer";a.textContent=label;info.appendChild(a);info.appendChild(document.createElement("br"));});card.appendChild(info);await refreshAvailable();await refreshMine();}catch(e){alert(e.message);button.disabled=false;}};
+   }else{const hint=document.createElement("p");hint.className="muted";hint.textContent="Yukni qabul qilish uchun profilingizda haydovchi roli bo‘lishi kerak.";card.appendChild(hint);}
+  }else{
+   if(x.my_role==="owner"&&x.status==="new"){
+    addActionButton(card,"Buyurtmani bekor qilish",async()=>{if(!confirm("Buyurtmani bekor qilasizmi?"))return;try{await request("/loads/"+x.id+"/cancel",{method:"POST"});await refreshMine();}catch(e){alert(e.message)}});
+   }
+   if(x.my_role==="driver"&&x.status==="accepted"){
+    addActionButton(card,"Yuk yetkazildi — yakunlash",async()=>{if(!confirm("Yuk yetkazilganini tasdiqlaysizmi?"))return;try{await request("/loads/"+x.id+"/complete",{method:"POST"});await refreshMine();}catch(e){alert(e.message)}});
+   }
+   if(x.status==="done"&&(x.my_role==="owner"||x.my_role==="driver")){
+    const rating=document.createElement("div");rating.className="notice";card.appendChild(rating);showRatingForm(rating,x).catch(e=>{rating.textContent=e.message;});
+   }
+  }
+  root.appendChild(card);
+ });
+}
 async function refreshAvailable(){try{const p=new URLSearchParams({scope:"available"});const q=el("searchCity").value.trim();const transport=el("searchTransport").value;const maxTonna=el("searchTonna").value;if(q)p.set("q",q);if(transport)p.set("transport",transport);if(maxTonna)p.set("max_tonna",maxTonna);drawLoads("available",await request("/loads?"+p.toString()),true)}catch(e){show("available",e.message)}}
 async function refreshMine(){try{drawLoads("mine",await request("/loads?scope=mine"),false)}catch(e){show("mine",e.message)}}
 el("tonna").addEventListener("input",()=>{const n=Number(el("tonna").value)||0;el("fee").textContent=n>0?"Sizning xizmat haqingiz: "+(n*10000).toLocaleString("uz-UZ")+" so‘m. Haydovchi haqi ham "+(n*10000).toLocaleString("uz-UZ")+" so‘m.":"Har bir tomon uchun 10 000 so‘m / tonna.";});
