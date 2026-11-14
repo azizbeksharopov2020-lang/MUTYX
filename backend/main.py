@@ -864,7 +864,7 @@ def list_loads(
     stmt = select(Load)
 
     if scope == "available":
-        require_role(user, "driver")
+        # Barcha ro‘yxatdan o‘tgan foydalanuvchilar ochiq yuklarni ko‘ra oladi.
         stmt = stmt.where(Load.status == "new", Load.owner_id != user.id)
         if transport:
             stmt = stmt.where(Load.transport == transport)
