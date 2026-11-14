@@ -143,6 +143,54 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 .register-inner .btn{margin-top:16px;width:100%}
 }
 @media(max-width:370px){.hero-copy-wide h1{font-size:34px}.hero-road-art{height:220px}.service-grid a b{font-size:9px}}
+
+/* MUTX approved premium truck homepage */
+.mutx-hero{position:relative;overflow:hidden;color:#fff;padding:38px 0 24px;background:radial-gradient(ellipse at 82% 40%,#f18b3c 0,transparent 25%),radial-gradient(ellipse at 78% 58%,#15599b 0,transparent 42%),linear-gradient(125deg,#031b37 0%,#06305e 52%,#0b2547 100%)}
+.mutx-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,#031b37 100%);pointer-events:none}
+.hero-topline,.hero-copy-wide,.hero-road-art{position:relative;z-index:1}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #24a9ef;border-radius:40px;padding:9px 15px;background:#06294caa;color:#e8f6ff;font-weight:800;font-size:14px}
+.hero-copy-wide{max-width:610px;padding-top:25px}
+.hero-copy-wide h1{font-size:clamp(36px,5.3vw,62px);line-height:1.05;letter-spacing:-1.8px;margin:0 0 16px}
+.hero-copy-wide h1 span{color:#29b5f5}
+.hero-copy-wide p{max-width:570px;font-size:17px;line-height:1.65;color:#e0edfa;margin:0}
+.hero-actions{display:flex;gap:13px;margin-top:24px}
+.hero-actions .btn{min-width:170px;min-height:52px;border-radius:13px;font-size:17px}
+.hero-actions .btn-green{background:linear-gradient(110deg,#00a96b,#00bf80);box-shadow:0 9px 25px #00a96b35}
+.hero-road-art{height:330px;margin-top:-40px;pointer-events:none}
+.sunset{position:absolute;width:370px;height:230px;right:5%;top:4px;border-radius:50%;background:radial-gradient(circle,#ffcf79 0,#f58a3e55 36%,transparent 72%);filter:blur(14px)}
+.mountain{position:absolute;bottom:35px;left:-5%;width:110%;height:125px;background:#092b51;clip-path:polygon(0 75%,12% 43%,23% 70%,38% 20%,50% 63%,66% 31%,82% 72%,92% 38%,100% 70%,100% 100%,0 100%)}
+.mountain-front{height:92px;bottom:20px;background:#0b2441;opacity:.8;clip-path:polygon(0 63%,18% 30%,31% 75%,48% 38%,65% 67%,81% 28%,100% 70%,100% 100%,0 100%)}
+.hero-truck-real{position:absolute;right:0;bottom:0;width:min(780px,100%);height:100%;z-index:2;filter:drop-shadow(0 18px 22px #0008)}
+.road-label{position:absolute;z-index:3;bottom:5px;left:12%;right:12%;display:flex;align-items:center;justify-content:center;gap:14px;color:#dcefff;font-weight:800;font-size:13px}
+.road-label i{height:3px;width:90px;background:repeating-linear-gradient(90deg,#9fd5ff 0 9px,transparent 9px 17px)}
+.service-band{padding:22px 0;background:#f6f9fd}
+.service-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid #e5edf6;border-radius:22px;box-shadow:0 14px 35px #102b4d12;padding:20px 8px}
+.service-grid a{display:flex;min-height:95px;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;border-right:1px solid #dce7f2;padding:8px;color:#132d4d}
+.service-grid a:last-child{border:0}.service-grid a span{font-size:34px;line-height:1;color:#1682ec;font-weight:900}.service-grid a b{font-size:14px}
+.mutx-stats{padding:28px 0 40px;background:linear-gradient(130deg,#031b37,#073967);color:#fff}
+.mutx-stats .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0}
+.mutx-stats .stats-grid>div{display:flex;flex-direction:column;align-items:center;text-align:center;border-right:1px solid #ffffff28;padding:4px 12px}
+.mutx-stats .stats-grid>div:last-child{border:0}.mutx-stats .stats-grid span{font-size:30px;color:#9bdcff}.mutx-stats .stats-grid b{font-size:21px;margin:4px 0}.mutx-stats .stats-grid small{font-size:13px;color:#c6d9ed}
+.register-bottom{padding:35px 0;background:#f3f7fc}
+.register-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#e8f2fc;border-radius:20px;padding:24px 28px}
+.register-inner h2{font-size:25px;margin:5px 0;color:#132d4d}.register-inner p{margin:0;color:#65758b}
+@media(max-width:700px){
+.mutx-hero{padding:25px 0 16px;min-height:0;background:radial-gradient(ellipse at 80% 48%,#e97e37 0,transparent 30%),linear-gradient(145deg,#031a34,#06315e 65%,#082747)}
+.hero-pill{font-size:12px;padding:8px 12px}.hero-copy-wide{padding-top:22px}
+.hero-copy-wide h1{font-size:39px;max-width:500px;letter-spacing:-1.2px;margin-bottom:13px}
+.hero-copy-wide p{font-size:15px;line-height:1.55;max-width:470px}
+.hero-actions{gap:10px;margin-top:20px}.hero-actions .btn{flex:1;min-width:0;min-height:50px;font-size:15px;padding:11px 12px}
+.hero-road-art{height:250px;margin-top:-4px}.sunset{width:260px;height:170px;right:-3%;top:16px}
+.hero-truck-real{width:116%;right:-9%;height:100%}
+.road-label{bottom:0;font-size:11px;gap:9px}.road-label i{width:62px}
+.service-band{padding:17px 0}.service-grid{grid-template-columns:repeat(4,1fr);border-radius:17px;padding:12px 2px}
+.service-grid a{min-height:80px;padding:6px 3px;gap:7px}.service-grid a span{font-size:26px}.service-grid a b{font-size:10px;line-height:1.3}
+.mutx-stats{padding:23px 0 28px}.mutx-stats .stats-grid>div{padding:2px 5px}
+.mutx-stats .stats-grid span{font-size:24px}.mutx-stats .stats-grid b{font-size:14px;line-height:1.3}
+.mutx-stats .stats-grid small{font-size:10px;line-height:1.4}
+.register-inner{display:block;padding:20px}.register-inner h2{font-size:22px}.register-inner .btn{margin-top:16px;width:100%}
+}
+@media(max-width:370px){.hero-copy-wide h1{font-size:34px}.hero-road-art{height:220px}.service-grid a b{font-size:9px}}
 </style>
 </head>
 <body>
@@ -164,10 +212,7 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <div class="hero-copy-wide">
 <h1>Yukingizga mos transportni <span>oson toping.</span></h1>
 <p>MUTX yuk egalarini va haydovchilarni bir joyda uchrashtiradi. Yukni joylashtiring va mos transportni toping.</p>
-<div class="hero-actions">
-<a class="btn btn-green" href="pages/register.html">Boshlash <b>→</b></a>
-<a class="btn btn-light" href="pages/login.html">Kirish</a>
-</div>
+<div class="hero-actions"><a class="btn btn-green" href="pages/register.html">Boshlash <b>→</b></a><a class="btn btn-light" href="pages/login.html">Kirish</a></div>
 </div>
 <div class="hero-road-art" role="img" aria-label="MUTX yozuvli ko‘k yuk mashinasi quyosh botishida yo‘lda">
 <div class="sunset"></div><div class="mountain mountain-back"></div><div class="mountain mountain-front"></div>
@@ -183,7 +228,6 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <path d="M0 324 Q190 297 390 321 T780 310 V390 H0Z" fill="url(#mutxRoad)"/>
 <path d="M0 355 Q220 329 390 350 T780 337" fill="none" stroke="#7bbcff" stroke-width="4" opacity=".35"/>
 <path d="M25 373 L205 354 M575 355 L758 335" stroke="#ffc66f" stroke-width="5" stroke-linecap="round" opacity=".8"/>
-<!-- trailer -->
 <path d="M100 75 Q100 58 119 58 H492 Q511 58 511 78 V278 H100Z" fill="url(#mutxTrailer)" stroke="#6db9ff" stroke-width="4"/>
 <path d="M120 82 H490 M120 96 H490" stroke="#8bc8ff" stroke-width="3" opacity=".32"/>
 <path d="M138 120 H474" stroke="#fff" stroke-width="2" opacity=".1"/>
@@ -191,36 +235,25 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <path d="M511 181 H580 Q602 181 619 204 L671 270 V303 H511Z" fill="url(#mutxCab)" stroke="#4d9ff1" stroke-width="4"/>
 <path d="M538 194 H582 Q596 194 607 209 L631 239 H538Z" fill="url(#mutxGlass)" stroke="#c4eaff" stroke-width="4"/>
 <path d="M641 252 L666 277 V291 H641Z" fill="#c8edff"/>
-<path d="M510 278 H674 V308 H510Z" fill="#0b2e59"/>
-<path d="M95 278 H675" stroke="#6bbaff" stroke-width="6" opacity=".9"/>
-<path d="M100 300 H674" stroke="#0a2342" stroke-width="10"/>
-<path d="M662 280 H681" stroke="#ffe6a2" stroke-width="9" stroke-linecap="round"/>
-<path d="M516 304 H671" stroke="#a8d9ff" stroke-width="4"/>
+<path d="M510 278 H674 V308 H510Z" fill="#0b2e59"/><path d="M95 278 H675" stroke="#6bbaff" stroke-width="6" opacity=".9"/><path d="M100 300 H674" stroke="#0a2342" stroke-width="10"/>
+<path d="M662 280 H681" stroke="#ffe6a2" stroke-width="9" stroke-linecap="round"/><path d="M516 304 H671" stroke="#a8d9ff" stroke-width="4"/>
 <g><circle cx="210" cy="302" r="42" fill="#061426"/><circle cx="210" cy="302" r="24" fill="#d9e9f7"/><circle cx="210" cy="302" r="11" fill="#6e8ba9"/><circle cx="558" cy="302" r="42" fill="#061426"/><circle cx="558" cy="302" r="24" fill="#d9e9f7"/><circle cx="558" cy="302" r="11" fill="#6e8ba9"/></g>
 <path d="M40 345 H740" stroke="#a5d5ff" stroke-width="2" opacity=".25"/>
 </svg>
 <div class="road-label"><span>📍 Toshkent</span><i></i><span>📍 Buxoro</span></div>
-</div>
-</div>
-</section>
-<section class="service-band">
-<div class="wrap service-grid">
+</div></div></section>
+<section class="service-band"><div class="wrap service-grid">
 <a href="pages/owner.html"><span>▣</span><b>Yuk joylash</b></a>
 <a href="pages/driver.html"><span>🚚</span><b>Yuklarni tanlash</b></a>
 <a href="pages/owner.html"><span>⌖</span><b>Xarita orqali manzil</b></a>
 <a href="pages/login.html"><span>♙</span><b>Shaxsiy kabinet</b></a>
-</div>
-</section>
-<section class="mutx-stats">
-<div class="wrap stats-grid">
+</div></section>
+<section class="mutx-stats"><div class="wrap stats-grid">
 <div><span>🚚</span><b>Transport</b><small>Yuk uchun mos transport</small></div>
 <div><span>♧</span><b>Yuk egasi va haydovchi</b><small>Bitta platformada</small></div>
 <div><span>◈</span><b>24/7</b><small>Platformadan foydalanish</small></div>
-</div>
-</section>
-<section class="register-bottom">
-<div class="wrap register-inner"><div><span class="kicker">MUTX PLATFORMASI</span><h2>Yuk tashishni bugun boshlang</h2><p>Hisob yarating va o‘zingizga kerakli xizmatni tanlang.</p></div><a class="btn btn-green" href="pages/register.html">Ro‘yxatdan o‘tish →</a></div>
-</section>
+</div></section>
+<section class="register-bottom"><div class="wrap register-inner"><div><span class="kicker">MUTX PLATFORMASI</span><h2>Yuk tashishni bugun boshlang</h2><p>Hisob yarating va o‘zingizga kerakli xizmatni tanlang.</p></div><a class="btn btn-green" href="pages/register.html">Ro‘yxatdan o‘tish →</a></div></section>
 </main>
 <footer><div class="wrap"><div class="footer-row"><div class="footer-brand"><a class="logo" href="#top">MU<span>TX</span></a><p>Yuk va transport bir platformada.</p></div><div class="footer-links"><a href="#services">Xizmatlar</a><a href="#vehicles">Transportlar</a><a href="#prices">Tariflar</a><a href="pages/login.html">Kirish</a></div></div><div class="copyright">© 2026 MUTX. Barcha huquqlar himoyalangan.</div></div></footer>
 <script>
