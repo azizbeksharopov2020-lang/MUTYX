@@ -769,6 +769,39 @@ def login(data: LoginIn, db: Session = Depends(get_db)):
     return {"token": make_token(user.id), "user": user_public(user)}
 
 
+class ProfileUpdateIn(BaseModel):
+    full_name: str
+
+
+class PasswordChangeIn(BaseModel):
+    current_password: str
+    new_password: str
+
+
+@app.put("/me")
+def update_me(data: ProfileUpdateIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    full_name = data.full_name.strip()
+    if not 2 <= len(full_name) <= 80:
+        raise HTTPException(status_code=400, detail="Ism va familiya 2 dan 80 gacha belgi bo'lsin")
+    user.full_name = full_name
+    db.commit()
+    db.refresh(user)
+    return user_public(user)
+
+
+@app.post("/me/password")
+def change_password(data: PasswordChangeIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    if not verify_password(data.current_password, user.password_hash):
+        raise HTTPException(status_code=400, detail="Amaldagi parol noto'g'ri")
+    if not 8 <= len(data.new_password) <= 128:
+        raise HTTPException(status_code=400, detail="Yangi parol 8 dan 128 belgigacha bo'lsin")
+    if data.current_password == data.new_password:
+        raise HTTPException(status_code=400, detail="Yangi parol avvalgisidan farq qilishi kerak")
+    user.password_hash = hash_password(data.new_password)
+    db.commit()
+    return {"success": True, "message": "Parol muvaffaqiyatli almashtirildi. Xavfsizlik uchun qayta kiring."}
+
+
 @app.get("/me")
 def me(user: User = Depends(current_user)):
     return user_public(user)
