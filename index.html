@@ -60,6 +60,30 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr .8fr;gap:25px}.vehicle-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.wrap{width:91%}.navbar{min-height:58px;padding-top:5px;padding-bottom:5px}.logo{font-size:25px}.menu-toggle{width:42px;height:40px;font-size:22px}.hero{padding:48px 0 42px}.hero-grid{grid-template-columns:1fr;gap:30px}h1{font-size:39px;letter-spacing:-1.2px}.hero-copy{font-size:15px}.route-card{max-width:440px;width:100%;margin:auto;transform:none}.stats-grid{padding:18px 0}.stat b{font-size:19px}.stat span{font-size:11px}.stat{padding:0 5px}section{padding:48px 0}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:20px}.vehicle-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.security{grid-template-columns:1fr;padding:22px;gap:16px}.security h2{font-size:24px}.cta{padding:25px;display:block}.cta .btn{margin-top:17px}.footer-row{display:block}.footer-links{margin-top:18px}}
 @media(max-width:390px){h1{font-size:34px}.nav-actions .btn{padding:9px 10px}.hero-actions .btn{width:100%}.vehicle{padding:15px 8px}}
+/* Compact, focused MUTX landing page */
+.home-hero{background:radial-gradient(circle at 88% 22%,#2466a5 0,transparent 36%),linear-gradient(125deg,#10233f,#174a7e);color:#fff;padding:48px 0 52px;overflow:hidden}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:34px}
+.home-copy h1{font-size:clamp(34px,4.2vw,54px);line-height:1.12;letter-spacing:-1.4px;margin:17px 0}
+.home-copy h1 span{color:#79baff}.home-copy>p{font-size:17px;color:#d6e5f6;max-width:520px;line-height:1.75;margin:0}
+.home-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.home-trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;color:#c5dcf4;font-size:12px;font-weight:700}
+.home-hero .truck-scene{min-height:300px;background:linear-gradient(145deg,#ffffff22,#ffffff0a);border:1px solid #ffffff35}
+.home-hero .hero-truck{max-height:220px}
+.choose-section{padding:46px 0 52px;background:#f5f8fc}
+.choose-heading{text-align:center;margin:0 auto 25px;max-width:600px}
+.choose-heading h2{font-size:clamp(25px,3vw,34px);margin:8px 0;color:#172b45}
+.choose-heading p{color:#718096;margin:0}
+.choose-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.choose-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:23px;background:#fff;border:1px solid #e3ebf4;border-radius:18px;box-shadow:0 8px 24px #183b6010;transition:transform .2s,box-shadow .2s}
+.choose-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px #183b601b}
+.choose-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#edf4ff;font-size:24px}
+.choose-title{font-size:19px;font-weight:850;color:#172b45;margin-top:5px}
+.choose-desc{font-size:13px;color:#718096;line-height:1.5}
+.choose-arrow{font-size:13px;font-weight:850;color:#2678df;margin-top:6px}
+.register-strip{margin-top:18px;padding:17px 20px;border-radius:16px;background:#eaf2fc;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.register-strip b,.register-strip span{display:block}.register-strip b{font-size:15px;color:#172b45}.register-strip div span{font-size:12px;color:#718096;margin-top:2px}
+.register-strip>a{font-size:13px;font-weight:850;color:#1673ce;white-space:nowrap}
+@media(max-width:760px){.home-hero{padding:30px 0 34px}.home-grid{grid-template-columns:1fr;gap:24px}.home-copy h1{font-size:35px;max-width:500px}.home-copy>p{font-size:15px}.home-actions .btn{flex:1;justify-content:center}.home-trust{gap:10px}.home-hero .truck-scene{min-height:250px}.home-hero .hero-truck{max-height:175px}.choose-section{padding:32px 0 38px}.choose-heading{margin-bottom:18px}.choose-grid{grid-template-columns:1fr;gap:11px}.choose-card{display:grid;grid-template-columns:48px 1fr auto;align-items:center;column-gap:12px;padding:14px 15px}.choose-icon{grid-row:span 2}.choose-title{font-size:16px;margin:0}.choose-desc{font-size:12px}.choose-arrow{grid-column:3;grid-row:1/3;align-self:center;margin:0}.register-strip{padding:14px;align-items:flex-start;flex-direction:column;gap:8px}}
+@media(min-width:761px){.home-hero .truck-scene{max-width:560px;margin-left:auto}}
 </style>
 </head>
 <body>
@@ -75,14 +99,19 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 </div></div>
 </div></header>
 <main id="top">
-<div class="hero"><div class="wrap hero-grid">
-<div><span class="eyebrow"><i></i> Yuk va transport — bir platformada</span>
-<h1>Yukingizga mos transportni <span style="color:#73b8ff">oson toping.</span></h1>
-<p class="hero-copy">MUTX yuk egalarini va haydovchilarni bir joyda uchrashtiradi. Yukni joylashtiring, mos buyurtmani toping va jarayonni shaxsiy kabinetingizdan boshqaring.</p>
-<div class="hero-actions"><a class="btn btn-green" href="pages/register.html">Boshlash <span>→</span></a><a class="btn btn-light" href="#how">Qanday ishlaydi?</a></div>
-<div class="hero-note">Ro‘yxatdan o‘ting va platforma imkoniyatlaridan foydalaning.</div>
+<section class="home-hero">
+<div class="wrap home-grid">
+<div class="home-copy">
+<span class="eyebrow"><i></i> Yuk va transport — bir platformada</span>
+<h1>Yukingizga mos transportni <span>oson toping.</span></h1>
+<p>MUTX yuk egalarini va haydovchilarni bir joyda uchrashtiradi. Yukni joylashtiring yoki o‘zingizga mos yukni tanlang.</p>
+<div class="home-actions">
+<a class="btn btn-green" href="pages/register.html">Boshlash <b>→</b></a>
+<a class="btn btn-light" href="pages/login.html">Kirish</a>
 </div>
-<div class="truck-scene" role="img" aria-label="MUTX yuk tashish fura mashinasi tasviri">
+<div class="home-trust"><span>✓ Alohida kabinetlar</span><span>✓ Qulay buyurtmalar</span></div>
+</div>
+<div class="truck-scene" role="img" aria-label="MUTX yuk tashish mashinasi">
 <div class="truck-glow"></div>
 <div class="truck-caption"><span class="live">● MUTX TRANSPORT</span><strong>Yukingiz manzil sari!</strong><small>Ishonchli yuk tashish platformasi</small></div>
 <svg class="hero-truck" viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -92,8 +121,7 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <path d="M101 93 H421 M101 112 H421" stroke="#d8e7f6" stroke-width="4" opacity=".8"/>
 <path d="M444 177 H520 Q537 177 550 197 L584 244 V274 H444Z" fill="url(#cab)"/>
 <path d="M466 190 H514 Q523 190 531 202 L552 231 H466Z" fill="url(#glass)" stroke="#d9f0ff" stroke-width="5"/>
-<path d="M558 241 H584 V274 H558Z" fill="#e9f4ff"/>
-<path d="M80 257 H584 V281 H80Z" fill="#17385f"/>
+<path d="M558 241 H584 V274 H558Z" fill="#e9f4ff"/><path d="M80 257 H584 V281 H80Z" fill="#17385f"/>
 <path d="M91 276 H580" stroke="#72baff" stroke-width="5" stroke-linecap="round"/>
 <rect x="111" y="143" width="286" height="76" rx="12" fill="#17385f"/>
 <text x="254" y="194" fill="#fff" font-size="47" font-weight="900" text-anchor="middle" letter-spacing="5">MUTX</text>
@@ -101,24 +129,23 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <circle cx="185" cy="282" r="37" fill="#0c1b2c"/><circle cx="185" cy="282" r="20" fill="#dce9f6"/><circle cx="185" cy="282" r="9" fill="#6b829b"/>
 <circle cx="490" cy="282" r="37" fill="#0c1b2c"/><circle cx="490" cy="282" r="20" fill="#dce9f6"/><circle cx="490" cy="282" r="9" fill="#6b829b"/>
 <path d="M34 310 H608" stroke="#b5d9fb" stroke-width="3" stroke-linecap="round" opacity=".55"/>
-<circle cx="112" cy="50" r="7" fill="#7dc0ff"/><circle cx="568" cy="90" r="11" fill="#7dc0ff" opacity=".7"/><path d="M47 124 l12 -12 m-12 0 l12 12" stroke="#fff" stroke-width="4" opacity=".65"/>
+<circle cx="112" cy="50" r="7" fill="#7dc0ff"/><circle cx="568" cy="90" r="11" fill="#7dc0ff" opacity=".7"/>
 </svg>
 <div class="truck-route"><span>📍 Toshkent</span><span class="route-dots"></span><span>📍 Buxoro</span></div>
 </div>
-</div></div>
-<div class="stats"><div class="wrap stats-grid"><div class="stat"><b>2 tomon</b><span>Yuk egasi va haydovchi</span></div><div class="stat"><b>5 tur</b><span>Transport tanlovi</span></div><div class="stat"><b>24/7</b><span>Platformadan foydalanish</span></div></div></div>
-
-<section id="services"><div class="wrap"><div class="section-head"><span class="kicker">MUTX imkoniyatlari</span><h2>Yuk tashish uchun kerakli hamma narsa</h2><p>Buyurtmalar, haydovchilar va yuklar bitta qulay platformada.</p></div>
-<div class="feature-grid"><article class="feature"><div class="feature-icon">📦</div><h3>Yuk joylashtirish</h3><p>Yuk ma’lumotlarini kiriting, yo‘nalishni belgilang va buyurtmangizni haydovchilarga ko‘rsating.</p></article><article class="feature"><div class="feature-icon">🚚</div><h3>Yuk topish</h3><p>Yo‘nalish, transport turi va yuk og‘irligi bo‘yicha mavjud buyurtmalarni qidiring.</p></article><article class="feature"><div class="feature-icon">📍</div><h3>Xarita orqali manzil</h3><p>Yuk olinadigan va yetkaziladigan joylarni xaritada belgilash imkoniyati.</p></article></div></div></section>
-<section class="steps" id="how"><div class="wrap"><div class="section-head"><span class="kicker">Oddiy jarayon</span><h2>Qanday ishlaydi?</h2><p>Platformadan foydalanishni boshlash uchun uchta oddiy qadam.</p></div>
-<div class="steps-grid"><article class="step"><span class="step-num">01 — HISOB</span><h3>Ro‘yxatdan o‘ting</h3><p>Telefon raqamingiz bilan hisob yarating va kerakli rolingizni tanlang.</p></article><article class="step"><span class="step-num">02 — BUYURTMA</span><h3>Yuk joylang yoki qidiring</h3><p>Yuk ma’lumotlarini kiriting yoki mavjud yuklar orasidan mosini tanlang.</p></article><article class="step"><span class="step-num">03 — BOSHQARUV</span><h3>Kabinetdan kuzating</h3><p>Buyurtmalaringiz holati, aloqa va baholashni shaxsiy kabinetda boshqaring.</p></article></div></div></section>
-<section id="vehicles"><div class="wrap"><div class="section-head"><span class="kicker">Transport tanlovi</span><h2>Har xil yuklar uchun transport</h2><p>Buyurtma joylashtirishda kerakli transport turini tanlang.</p></div>
-<div class="vehicle-grid"><div class="vehicle"><span class="emoji">🚚</span><b>Yuk mashinasi</b></div><div class="vehicle"><span class="emoji">🚐</span><b>Gazel</b></div><div class="vehicle"><span class="emoji">🚛</span><b>Fura / Tirkama</b></div><div class="vehicle"><span class="emoji">❄️</span><b>Refrijerator</b></div><div class="vehicle"><span class="emoji">🚜</span><b>Boshqa</b></div></div></div></section>
-<section id="prices" style="background:#edf4fc"><div class="wrap"><div class="section-head"><span class="kicker">Ochiq tariflar</span><h2>Xizmat haqi qanday hisoblanadi?</h2><p>Har bir tomon uchun xizmat haqi tonna bo‘yicha hisoblanadi.</p></div>
-<div class="price-grid"><article class="price"><h3>Yuk egasi</h3><strong>10 000 so‘m</strong><p>Har bir tonna uchun.</p></article><article class="price"><h3>Haydovchi</h3><strong>10 000 so‘m</strong><p>Har bir tonna uchun.</p></article><article class="price highlight"><h3>Jami xizmat haqi</h3><strong>20 000 so‘m</strong><p>Har bir tonna uchun, ikki tomon jami.</p></article></div>
-<div class="price-note">Misol: 5 tonna yukda yuk egasi 50 000 so‘m, haydovchi 50 000 so‘m xizmat haqi to‘laydi. To‘lov integratsiyasi alohida ulanadi.</div></div></section>
-<section id="about"><div class="wrap"><div class="security"><div><span class="kicker">Ishonch va nazorat</span><h2>Buyurtmalarni tartibli boshqaring</h2><p>Foydalanuvchi profili, reyting, shikoyatlar va buyurtma holatlari platformada boshqariladi. Shaxsni tasdiqlash imkoniyatlari bosqichma-bosqich joriy etiladi.</p></div><div class="security-list"><div>✓ Shaxsiy kabinet va profil</div><div>✓ Buyurtma holatini kuzatish</div><div>✓ Xarita orqali manzillar</div><div>✓ Reyting va shikoyat yuborish</div></div></div></div></section>
-<section><div class="wrap"><div class="cta"><div><h2>MUTX bilan ishni boshlang</h2><p>Hisob yarating va yuk tashish imkoniyatlaridan foydalaning.</p></div><a class="btn btn-light" href="pages/register.html">Ro‘yxatdan o‘tish →</a></div></div></section>
+</div>
+</section>
+<section class="choose-section">
+<div class="wrap">
+<div class="choose-heading"><span class="kicker">MUTX xizmatlari</span><h2>Kerakli bo‘limni tanlang</h2><p>Har bir xizmat o‘zining alohida sahifasida ochiladi.</p></div>
+<div class="choose-grid">
+<a class="choose-card" href="pages/login.html"><span class="choose-icon">🔐</span><span class="choose-title">Kirish</span><span class="choose-desc">Shaxsiy hisobingizga kiring</span><span class="choose-arrow">Ochish →</span></a>
+<a class="choose-card" href="pages/owner.html"><span class="choose-icon">📦</span><span class="choose-title">Yuk joylash</span><span class="choose-desc">Yangi yuk buyurtmasini yarating</span><span class="choose-arrow">Ochish →</span></a>
+<a class="choose-card" href="pages/driver.html"><span class="choose-icon">🚚</span><span class="choose-title">Yuklarni tanlash</span><span class="choose-desc">Mavjud yuklarni ko‘rib chiqing</span><span class="choose-arrow">Ochish →</span></a>
+</div>
+<div class="register-strip"><div><b>Yangi foydalanuvchimisiz?</b><span>Bir necha qadamda MUTX hisobini yarating.</span></div><a href="pages/register.html">Ro‘yxatdan o‘tish <span>→</span></a></div>
+</div>
+</section>
 </main>
 <footer><div class="wrap"><div class="footer-row"><div class="footer-brand"><a class="logo" href="#top">MU<span>TX</span></a><p>Yuk va transport bir platformada.</p></div><div class="footer-links"><a href="#services">Xizmatlar</a><a href="#vehicles">Transportlar</a><a href="#prices">Tariflar</a><a href="pages/login.html">Kirish</a></div></div><div class="copyright">© 2026 MUTX. Barcha huquqlar himoyalangan.</div></div></footer>
 <script>
