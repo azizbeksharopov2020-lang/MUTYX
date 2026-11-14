@@ -197,6 +197,44 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 .hero-road-art{isolation:isolate}
 .sunset{background:radial-gradient(circle,#ffd18a 0,#f58a3e66 34%,#f58a3e00 72%);opacity:.95}
 @media(max-width:700px){.hero-truck-real{width:119%;right:-10%;height:100%;transform:translateY(0)}.hero-road-art{height:258px}}
+
+/* One-screen MUTX 3D landing portal */
+.mutx-hero{padding-bottom:34px;background:radial-gradient(ellipse at 82% 38%,#ff8a36 0,transparent 27%),linear-gradient(145deg,#03152f 0%,#052e59 55%,#03172f 100%)}
+.hero-road-art{height:340px;margin-top:2px;overflow:visible}
+.hero-truck-real{width:min(820px,100%);right:0;bottom:0}
+.hero-portal{position:relative;z-index:5;max-width:850px;margin:4px auto 0;padding:17px;display:grid;grid-template-columns:1fr 1fr;gap:13px;border:1px solid #36bfff;border-radius:28px;background:linear-gradient(145deg,#092d55ed,#061a36f5);box-shadow:0 0 0 3px #087de733,0 20px 50px #0008,inset 0 1px 0 #ffffff35}
+.portal-card{position:relative;min-height:132px;padding:19px 48px 17px 22px;border-radius:22px;display:flex;flex-direction:column;justify-content:center;text-decoration:none;color:#fff;border:2px solid #5bc7ff;box-shadow:inset 0 1px 0 #ffffff55,0 7px 18px #0004;transition:transform .2s,filter .2s}
+.portal-card:active{transform:scale(.98)}
+.portal-login{background:linear-gradient(135deg,#087ce1,#063e91);border-color:#35caff}
+.portal-owner{background:linear-gradient(135deg,#00b979,#00643f);border-color:#30f0b2}
+.portal-driver{background:linear-gradient(135deg,#6537ee,#30218d);border-color:#a68aff}
+.portal-register{background:linear-gradient(135deg,#ff9c13,#b94b00);border-color:#ffc044}
+.portal-icon{font-size:37px;line-height:1.1;margin-bottom:8px;filter:drop-shadow(0 4px 3px #0005)}
+.portal-title{font-size:21px;line-height:1.2;font-weight:900;letter-spacing:-.3px}
+.portal-sub{font-size:14px;color:#eef7ff;margin-top:6px}
+.portal-arrow{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:38px;font-weight:300;color:#dff6ff}
+.portal-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 25%,#104f8c,#03172e 70%);border:3px solid #08c5ff;box-shadow:0 0 0 5px #061d3d,0 0 28px #00aaffaa;color:#fff;font-size:27px;font-weight:1000;letter-spacing:-1px;pointer-events:none}
+.portal-logo span{color:#23baff}
+.mutx-stats{padding-top:35px}
+@media(max-width:700px){
+.mutx-hero{padding:23px 0 25px}
+.hero-copy-wide{max-width:none}
+.hero-copy-wide h1{font-size:37px;max-width:440px}
+.hero-copy-wide p{max-width:440px}
+.hero-actions{display:none}
+.hero-road-art{height:250px;margin-top:0}
+.hero-truck-real{width:122%;right:-11%;height:100%}
+.hero-portal{margin:5px 0 0;padding:12px;gap:10px;border-radius:22px}
+.portal-card{min-height:119px;padding:14px 28px 13px 15px;border-radius:17px}
+.portal-icon{font-size:31px;margin-bottom:6px}
+.portal-title{font-size:17px}
+.portal-sub{font-size:11px;line-height:1.25}
+.portal-arrow{right:9px;font-size:29px}
+.portal-logo{width:70px;height:70px;font-size:19px;border-width:2px;box-shadow:0 0 0 3px #061d3d,0 0 20px #00aaffaa}
+.road-label{bottom:0}
+.mutx-stats{padding-top:26px}
+}
+@media(max-width:370px){.hero-copy-wide h1{font-size:33px}.portal-card{min-height:110px}.portal-title{font-size:15px}.portal-sub{font-size:10px}}
 </style>
 </head>
 <body>
@@ -287,13 +325,16 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <path d="M40 345 H740" stroke="#a5d5ff" stroke-width="2" opacity=".25"/>
 </svg>
 <div class="road-label"><span>📍 Toshkent</span><i></i><span>📍 Buxoro</span></div>
-</div></div></section>
-<section class="service-band"><div class="wrap service-grid">
-<a href="pages/owner.html"><span>▣</span><b>Yuk joylash</b></a>
-<a href="pages/driver.html"><span>🚚</span><b>Yuklarni tanlash</b></a>
-<a href="pages/owner.html"><span>⌖</span><b>Xarita orqali manzil</b></a>
-<a href="pages/login.html"><span>♙</span><b>Shaxsiy kabinet</b></a>
+</div>
+<nav class="hero-portal" aria-label="MUTX asosiy bo‘limlari">
+<a class="portal-card portal-login" href="pages/login.html"><span class="portal-icon">🔐</span><span class="portal-title">Kirish</span><span class="portal-sub">Akkauntingizga kiring</span><span class="portal-arrow">›</span></a>
+<a class="portal-card portal-owner" href="pages/owner.html"><span class="portal-icon">📦</span><span class="portal-title">Yuk joylash</span><span class="portal-sub">Yuk egasi bo‘limi</span><span class="portal-arrow">›</span></a>
+<a class="portal-card portal-driver" href="pages/driver.html"><span class="portal-icon">🚚</span><span class="portal-title">Yuklarni tanlash</span><span class="portal-sub">Haydovchi bo‘limi</span><span class="portal-arrow">›</span></a>
+<a class="portal-card portal-register" href="pages/register.html"><span class="portal-icon">👤</span><span class="portal-title">Ro‘yxatdan o‘tish</span><span class="portal-sub">Yangi hisob yaratish</span><span class="portal-arrow">›</span></a>
+<div class="portal-logo">MUT<span>X</span></div>
+</nav>
 </div></section>
+
 <section class="mutx-stats"><div class="wrap stats-grid">
 <div><span>🚚</span><b>Transport</b><small>Yuk uchun mos transport</small></div>
 <div><span>♧</span><b>Yuk egasi va haydovchi</b><small>Bitta platformada</small></div>
