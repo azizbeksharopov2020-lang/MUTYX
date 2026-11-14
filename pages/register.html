@@ -303,7 +303,7 @@
             <div class="form-group">
                 <label for="password">Parol</label>
                 <div class="password-wrap">
-                    <input type="password" id="password" placeholder="Kamida 12 ta belgi" minlength="12" required>
+                    <input type="password" id="password" placeholder="Kamida 8 ta belgi" minlength="8" required>
                     <button type="button" class="toggle-password" data-target="password" aria-label="Parolni ko‘rsatish" aria-pressed="false">👁</button>
                 </div>
             </div>
@@ -311,7 +311,7 @@
             <div class="form-group">
                 <label for="confirmPassword">Parolni tasdiqlang</label>
                 <div class="password-wrap">
-                    <input type="password" id="confirmPassword" placeholder="Parolni qayta kiriting" minlength="12" required>
+                    <input type="password" id="confirmPassword" placeholder="Parolni qayta kiriting" minlength="8" required>
                     <button type="button" class="toggle-password" data-target="confirmPassword" aria-label="Parolni ko‘rsatish" aria-pressed="false">👁</button>
                 </div>
             </div>
@@ -387,7 +387,7 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   notice.style.display = "block"; notice.className = "notice";
   const password = document.getElementById("password").value;
-  if (password.length < 12) { notice.classList.add("error"); notice.textContent = "Parol kamida 12 ta belgidan iborat bo‘lsin."; return; }
+  if (password.length < 8) { notice.classList.add("error"); notice.textContent = "Parol kamida 8 ta belgidan iborat bo‘lsin."; return; }
   if (password !== document.getElementById("confirmPassword").value) {
     notice.classList.add("error"); notice.textContent = "Parollar bir xil emas."; return;
   }
