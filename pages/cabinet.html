@@ -32,14 +32,14 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 <main>
 <section class="welcome"><h1>Shaxsiy kabinet</h1><p id="welcomeText">Ma’lumot yuklanmoqda...</p></section>
 <div class="grid">
-<section class="card"><h2>👤 Profilim</h2><div id="profile" class="muted">Yuklanmoqda...</div>
+<section class="card" id="profileSection"><h2>👤 Profilim</h2><div id="profile" class="muted">Yuklanmoqda...</div>
 <label for="profileName">Ism va familiya</label><input id="profileName" maxlength="80" minlength="2">
 <button type="button" id="saveProfile">Profilni saqlash</button>
 <label for="currentPassword">Amaldagi parol</label><input id="currentPassword" type="password" autocomplete="current-password">
 <label for="newPassword">Yangi parol (kamida 8 belgi)</label><input id="newPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password">
 <button type="button" id="changePassword">Parolni almashtirish</button><p id="profileNotice" class="muted"></p>
 <button id="logout">Chiqish</button></section>
-<section class="card"><h2>🤖 MUTX AI yordamchisi</h2><p class="muted">Savollaringizga avtomatik javob oling: yuk joylash, buyurtma, tarif va texnik yordam.</p><button type="button" onclick="location.href='support/ai-chat.html'">AI bilan suhbat</button></section>
+<section class="card" id="aiSection"><h2>🤖 MUTX AI yordamchisi</h2><p class="muted">Savollaringizga avtomatik javob oling: yuk joylash, buyurtma, tarif va texnik yordam.</p><button type="button" onclick="location.href='support/ai-chat.html'">AI bilan suhbat</button></section>
 <section class="card" id="ownerSection" hidden><h2>📦 Yuk joylashtirish</h2>
 <form id="cargoForm">
 <label>Yuk nomi</label><input id="cargo" required maxlength="60" placeholder="Masalan: G‘alla">
@@ -135,5 +135,11 @@ el("changePassword").onclick=async()=>{const button=el("changePassword");button.
 el("clearMap").onclick=()=>{pickupPoint=null;dropoffPoint=null;if(pickupMarker){loadMap.removeLayer(pickupMarker);pickupMarker=null;}if(dropoffMarker){loadMap.removeLayer(dropoffMarker);dropoffMarker=null;}el("pickupLabel").textContent="Olish joyi: belgilanmagan";el("dropoffLabel").textContent="Yetkazish joyi: belgilanmagan";};
 el("refreshAvailable").onclick=refreshAvailable;el("searchLoads").onclick=refreshAvailable;el("clearSearch").onclick=()=>{el("searchCity").value="";el("searchTransport").value="";el("searchTonna").value="";refreshAvailable();};el("refreshMine").onclick=refreshMine;
 el("logout").onclick=()=>{localStorage.removeItem("mutx_token");location.href="login.html";};
-loadProfile().then(()=>{if(!el("driverSection").hidden)refreshAvailable();if(!el("ordersSection").hidden)refreshMine();if(!el("ownerSection").hidden)initLoadMap();});
+loadProfile().then(()=>{
+ const view=new URLSearchParams(location.search).get("view");
+ const owner=el("ownerSection"),driver=el("driverSection"),profile=el("profileSection"),ai=el("aiSection"),orders=el("ordersSection");
+ if(view==="owner"){driver.hidden=true;ai.hidden=true;owner.hidden=false;profile.hidden=false;orders.hidden=false;document.querySelector(".welcome h1").textContent="Yuk joylash kabineti";document.querySelector(".welcome p").textContent="Yuk ma’lumotlarini kiriting va buyurtmangizni boshqaring.";initLoadMap();refreshMine();}
+ else if(view==="driver"){owner.hidden=true;ai.hidden=true;driver.hidden=false;profile.hidden=false;orders.hidden=false;document.querySelector(".welcome h1").textContent="Yuklarni tanlash kabineti";document.querySelector(".welcome p").textContent="Mavjud yuklarni qidiring va mos buyurtmani tanlang.";refreshAvailable();refreshMine();}
+ else{if(!driver.hidden)refreshAvailable();if(!orders.hidden)refreshMine();if(!owner.hidden)initLoadMap();}
+});
 </script></body></html>
