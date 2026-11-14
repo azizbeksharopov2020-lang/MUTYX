@@ -823,11 +823,10 @@ def create_load(data: LoadIn, user: User = Depends(current_user), db: Session = 
     if data.price < 0:
         raise HTTPException(status_code=400, detail="Narx manfiy bo'lmasin")
     coords = (data.pickup_lat, data.pickup_lng, data.dropoff_lat, data.dropoff_lng)
-    if any(v is not None for v in coords):
-        if any(v is None for v in coords):
-            raise HTTPException(status_code=400, detail="Olish va yetkazish lokatsiyalarining ikkalasini ham belgilang")
-        if not (-90 <= data.pickup_lat <= 90 and -180 <= data.pickup_lng <= 180 and -90 <= data.dropoff_lat <= 90 and -180 <= data.dropoff_lng <= 180):
-            raise HTTPException(status_code=400, detail="Xarita koordinatalari noto‘g‘ri")
+    if any(v is None for v in coords):
+        raise HTTPException(status_code=400, detail="Yuk olish va yetkazish joylarini xaritada belgilang")
+    if not (-90 <= data.pickup_lat <= 90 and -180 <= data.pickup_lng <= 180 and -90 <= data.dropoff_lat <= 90 and -180 <= data.dropoff_lng <= 180):
+        raise HTTPException(status_code=400, detail="Xarita koordinatalari noto‘g‘ri")
     if note and len(note) > 300:
         raise HTTPException(status_code=400, detail="Izoh 300 belgidan oshmasin")
 
