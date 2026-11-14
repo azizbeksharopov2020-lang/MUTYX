@@ -856,7 +856,7 @@ def list_loads(
     scope: str = Query("available", pattern="^(available|mine)$"),
     q: Optional[str] = None,
     transport: Optional[str] = None,
-    max_tonna: Optional[float] = None,
+    max_tonna: Optional[float] = Query(None, gt=0, le=100),
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ):
@@ -867,7 +867,7 @@ def list_loads(
         stmt = stmt.where(Load.status == "new", Load.owner_id != user.id)
         if transport:
             stmt = stmt.where(Load.transport == transport)
-        if max_tonna:
+        if max_tonna is not None:
             stmt = stmt.where(Load.tonna <= max_tonna)
         if q:
             like = "%" + q.strip().lower() + "%"
@@ -985,6 +985,15 @@ def rate_load(
         db.rollback()
         raise HTTPException(status_code=409, detail="Siz bu buyurtmani allaqachon baholagansiz")
     return {"success": True, "message": "Rahmat! Bahoyingiz qabul qilindi"}
+
+
+@app.get("/loads/{load_id}/my-rating")
+def my_load_rating(load_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    load = db.get(Load, load_id)
+    if load is None or user.id not in (load.owner_id, load.driver_id):
+        raise HTTPException(status_code=404, detail="Buyurtma topilmadi")
+    rating = db.scalar(select(Rating).where(Rating.load_id == load_id, Rating.rater_id == user.id))
+    return {"has_rated": rating is not None, "score": rating.score if rating else None, "comment": rating.comment if rating else None}
 
 
 @app.get("/me/rating")
