@@ -713,8 +713,8 @@ def register(data: RegisterIn, db: Session = Depends(get_db)):
             status_code=400,
             detail="Telefon raqam +998 formatida bo'lishi kerak (masalan +998901234567)",
         )
-    if not 12 <= len(data.password) <= 128:
-        raise HTTPException(status_code=400, detail="Parol kamida 12 ta belgidan iborat bo'lsin")
+    if not 8 <= len(data.password) <= 128:
+        raise HTTPException(status_code=400, detail="Parol kamida 8 ta belgidan iborat bo'lsin")
 
     roles = []
     for r in data.roles:
