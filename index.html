@@ -1,153 +1,83 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MUTX — Yuk tashish platformasi</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10233f">
+<title>MUTX — Yuk va transport bir platformada</title>
 <style>
-    :root{--navy:#101d35;--blue:#176fd0;--blue2:#2d8cf0;--green:#13a878;--ink:#17243b;--muted:#64748b;--line:#e5edf6;--surface:#fff;--bg:#f4f7fc}
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
-    header{position:sticky;top:0;z-index:20;background:rgba(16,29,53,.96);backdrop-filter:blur(12px);color:#fff;padding:15px 7%;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;box-shadow:0 8px 28px #0b1c3520}
-    .logo{font-size:29px;font-weight:900;letter-spacing:1.5px;color:#fff}
-    .logo span{color:#55aaff}
-    nav,.account{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    nav a,.account a{color:#eaf3ff;text-decoration:none;padding:9px 13px;border-radius:10px;font-size:14px;font-weight:600;transition:.2s}
-    nav a:hover{background:#ffffff18;color:#fff}
-    .account a{background:#2679df}
-    .account a.register{background:var(--green)}
-    .account a:hover,.hero a:hover,.actions a:hover{transform:translateY(-2px);filter:brightness(1.06)}
-    .hero{position:relative;overflow:hidden;margin:34px auto;width:86%;padding:76px 30px;border-radius:26px;background:radial-gradient(circle at 85% 20%,#65b5ff66,transparent 30%),linear-gradient(125deg,#102b55 0%,#176fc4 58%,#3298f4 100%);color:#fff;text-align:center;box-shadow:0 22px 55px #176fc433}
-    .hero:after{content:"";position:absolute;width:260px;height:260px;border:1px solid #ffffff24;border-radius:50%;right:-75px;bottom:-150px;box-shadow:0 0 0 28px #ffffff0c,0 0 0 58px #ffffff08}
-    .hero h1{position:relative;z-index:1;font-size:clamp(30px,4.5vw,48px);line-height:1.15;margin-bottom:18px;letter-spacing:-1px}
-    .hero p{position:relative;z-index:1;max-width:700px;margin:0 auto 28px;font-size:18px;line-height:1.75;color:#e8f3ff}
-    .hero a,button{display:inline-block;border:0;background:#fff;color:#1456a1;padding:13px 23px;border-radius:11px;text-decoration:none;font-weight:800;cursor:pointer;transition:.2s}
-    .hero a{position:relative;z-index:1;box-shadow:0 8px 20px #09274c40}
-    section{width:86%;margin:48px auto}
-    h2{margin-bottom:22px;font-size:clamp(23px,3vw,30px);letter-spacing:-.5px}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-    .card{background:var(--surface);padding:27px;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 26px #152b4809;transition:transform .22s,box-shadow .22s}
-    .card:hover{transform:translateY(-4px);box-shadow:0 16px 34px #152b4815}
-    .card h3{margin-bottom:12px;color:#1769c2;font-size:19px}
-    .card p{line-height:1.7;color:#536176}
-    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
-    .actions a{background:#176fd0;color:#fff;text-decoration:none;padding:12px 19px;border-radius:10px;font-weight:700;transition:.2s}
-    .actions a.green{background:#119b70}
-    .notice{background:linear-gradient(110deg,#eaf3ff,#f4f8ff);border:1px solid #d8e8fb;padding:21px;border-radius:15px;line-height:1.8;color:#30445f}
-    footer{background:var(--navy);color:#d9e7f8;text-align:center;padding:30px 20px;margin-top:65px}
-    footer p+p{margin-top:5px;color:#91a9c6;font-size:14px}
-    @media(max-width:850px){header{justify-content:space-between;padding:14px 5%}section,.hero{width:90%}}
-    .menu-toggle{display:none;background:#ffffff18;color:white;border:1px solid #ffffff35;padding:9px 12px;border-radius:9px;font-size:20px}
-    @media(max-width:600px){header{position:relative;gap:10px}.menu-toggle{display:block}nav{display:none;order:3;width:100%;flex-direction:column;align-items:stretch;background:#172b4c;padding:8px;border-radius:12px}nav.open{display:flex}nav a{text-align:center}.account{width:100%;justify-content:center;order:4}.hero{margin:22px auto;padding:48px 20px;border-radius:20px}.hero h1{font-size:28px}.hero p{font-size:16px}section{margin:32px auto}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:17px;border-radius:14px}.card h3{font-size:16px}.card p{font-size:14px}}
-    @media(max-width:420px){.cards{grid-template-columns:1fr 1fr}.card{padding:14px}.card h3{font-size:15px}.card p{font-size:13px}}
-  </style>
+:root{--navy:#10233f;--navy2:#17385f;--blue:#2678df;--blue2:#4d9cff;--green:#12a879;--ink:#172b45;--muted:#65758b;--bg:#f5f8fc;--line:#e5ecf4;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+a{color:inherit;text-decoration:none}.wrap{width:min(1160px,90%);margin:auto}
+header{position:sticky;top:0;z-index:50;background:#10233ff5;backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid #ffffff16}
+.navbar{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{font-size:30px;font-weight:950;letter-spacing:1.5px;color:#fff}.logo span{color:#56a7ff}
+nav{display:flex;align-items:center;gap:8px}nav a{padding:10px 13px;border-radius:9px;color:#dbe8f8;font-size:14px;font-weight:650}nav a:hover{background:#ffffff15;color:white}
+.nav-actions{display:flex;gap:10px;align-items:center}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:11px;font-weight:800;font-size:14px;transition:.2s;border:1px solid transparent}
+.btn:hover{transform:translateY(-2px)}.btn-blue{background:var(--blue);color:white;box-shadow:0 8px 20px #2678df30}.btn-green{background:var(--green);color:white}.btn-light{background:white;color:#1758a0}
+.menu-toggle{display:none;background:#ffffff15;border:1px solid #ffffff30;color:#fff;border-radius:10px;padding:9px 12px;font-size:21px}
+.hero{position:relative;overflow:hidden;padding:76px 0 68px;background:radial-gradient(ellipse at 85% 20%,#2e82db55,transparent 35%),linear-gradient(120deg,#10233f,#163e6d 65%,#1e64a6);color:#fff}
+.hero:before,.hero:after{content:"";position:absolute;border:1px solid #ffffff12;border-radius:50%;pointer-events:none}.hero:before{width:520px;height:520px;right:-170px;top:-280px}.hero:after{width:380px;height:380px;right:-100px;top:-210px}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:48px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:99px;background:#ffffff16;border:1px solid #ffffff24;color:#d9eaff;font-size:13px;font-weight:700}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:#4de0ac;box-shadow:0 0 0 5px #4de0ac20}
+h1{font-size:clamp(36px,5vw,59px);line-height:1.08;letter-spacing:-1.8px;margin:20px 0 18px;max-width:690px}
+.hero-copy{font-size:17px;color:#d8e7f8;max-width:570px;line-height:1.8;margin:0 0 28px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero-note{font-size:12px;color:#b7cbe2;margin-top:18px}
+.route-card{background:#fff;color:var(--ink);border:1px solid #ffffff50;border-radius:22px;padding:22px;box-shadow:0 28px 65px #06182d55;transform:rotate(1deg)}
+.route-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.route-head strong{font-size:16px}.live{font-size:11px;color:#07875d;background:#e5f8f1;border-radius:30px;padding:6px 9px;font-weight:800}
+.route-line{display:grid;grid-template-columns:22px 1fr;gap:12px}.route-pins{display:flex;flex-direction:column;align-items:center;padding-top:5px}.pin{width:12px;height:12px;border:3px solid #2c83e6;border-radius:50%;background:#fff}.pin.end{border-color:#12a879}.dash{height:55px;border-left:2px dashed #c6d5e6;margin:4px 0}
+.route-point small{display:block;color:#8290a3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}.route-point b{display:block;font-size:15px;margin:2px 0 15px}
+.route-footer{border-top:1px solid var(--line);padding-top:15px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}.route-footer b{font-size:13px;color:#1b6dbe}
+.stats{position:relative;z-index:2;margin-top:-1px;background:white;border-bottom:1px solid var(--line)}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);padding:24px 0}.stat{text-align:center;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat b{display:block;font-size:23px;color:#1c68b7}.stat span{font-size:13px;color:var(--muted)}
+section{padding:66px 0}.section-head{text-align:center;max-width:660px;margin:0 auto 32px}.kicker{color:#2477cf;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}.section-head h2{font-size:clamp(27px,3.5vw,37px);letter-spacing:-.8px;margin:8px 0 10px}.section-head p{color:var(--muted);margin:0}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.feature{background:white;border:1px solid var(--line);border-radius:17px;padding:25px;box-shadow:0 9px 25px #102b4d08}.feature-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#eaf3ff;font-size:24px;margin-bottom:17px}.feature h3{font-size:18px;margin:0 0 8px}.feature p{font-size:14px;color:var(--muted);line-height:1.75;margin:0}
+.steps{background:#edf4fc}.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.step{background:#fff;border:1px solid #e0eaf5;border-radius:16px;padding:22px}.step-num{font-size:12px;font-weight:900;color:#2678df;background:#eaf3ff;border-radius:8px;padding:6px 9px;display:inline-block;margin-bottom:13px}.step h3{margin:0 0 7px;font-size:17px}.step p{margin:0;color:var(--muted);font-size:14px}
+.vehicle-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.vehicle{background:white;border:1px solid var(--line);border-radius:14px;padding:18px 12px;text-align:center}.vehicle .emoji{font-size:28px;display:block;margin-bottom:8px}.vehicle b{font-size:13px}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.price{background:white;border:1px solid var(--line);border-radius:17px;padding:23px}.price.highlight{border:2px solid #2b80df;box-shadow:0 14px 30px #2678df17}.price h3{font-size:16px;margin:0 0 10px}.price strong{font-size:25px;color:#1769bd;display:block}.price p{font-size:13px;color:var(--muted);margin:7px 0 0}.price-note{background:#eaf3ff;border-radius:12px;padding:14px 17px;color:#315274;font-size:13px;margin-top:17px}
+.security{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px}.security h2{font-size:27px;margin:8px 0 12px}.security p{color:var(--muted);font-size:14px}.security-list{display:grid;gap:10px}.security-list div{padding:12px 14px;background:#f5f8fc;border-radius:11px;font-size:14px;font-weight:700}
+.cta{background:linear-gradient(115deg,#12325a,#2678d6);color:#fff;border-radius:22px;padding:36px;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{margin:0 0 7px;font-size:26px}.cta p{margin:0;color:#d8e8fa;font-size:14px}
+footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}.footer-brand p{font-size:13px;color:#a9bdd4;margin-top:7px}.footer-links{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#d6e4f5}.copyright{border-top:1px solid #ffffff20;margin-top:24px;padding-top:18px;color:#8fa8c4;font-size:12px}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr .8fr;gap:25px}.vehicle-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.wrap{width:91%}.navbar{min-height:66px;flex-wrap:wrap}.menu-toggle{display:block}nav{display:none;order:3;width:100%;flex-direction:column;align-items:stretch;background:#193557;padding:8px;border-radius:12px;margin-bottom:10px}nav.open{display:flex}nav a{text-align:center}.nav-actions{margin-left:auto}.nav-actions .btn{padding:10px 12px;font-size:12px}.hero{padding:48px 0 42px}.hero-grid{grid-template-columns:1fr;gap:30px}h1{font-size:39px;letter-spacing:-1.2px}.hero-copy{font-size:15px}.route-card{max-width:440px;width:100%;margin:auto;transform:none}.stats-grid{padding:18px 0}.stat b{font-size:19px}.stat span{font-size:11px}.stat{padding:0 5px}section{padding:48px 0}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:20px}.vehicle-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.security{grid-template-columns:1fr;padding:22px;gap:16px}.security h2{font-size:24px}.cta{padding:25px;display:block}.cta .btn{margin-top:17px}.footer-row{display:block}.footer-links{margin-top:18px}}
+@media(max-width:390px){h1{font-size:34px}.nav-actions .btn{padding:9px 10px}.hero-actions .btn{width:100%}.vehicle{padding:15px 8px}}
+</style>
 </head>
 <body>
-
-<header>
-  <div class="logo">MU<span>TX</span></div>
-
-  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
-  <nav id="mainNav">
-    <a href="#home">Bosh sahifa</a>
-    <a href="#services">Xizmatlar</a>
-    <a href="#tariffs">Tariflar</a>
-    <a href="#about">Biz haqimizda</a>
-  </nav>
-
-  <div class="account">
-    <a href="pages/login.html">Kirish</a>
-    <a class="register" href="pages/register.html">Ro‘yxatdan o‘tish</a>
-  </div>
-</header>
-
-<main>
-  <div class="hero" id="home">
-    <h1>MUTX — Yuk tashish platformasi</h1>
-    <p>
-      Yuk egasi va haydovchilarni bir joyda birlashtiramiz.
-      Yukingizni joylang, mos haydovchini toping yoki yangi yuk toping.
-    </p>
-    <a href="pages/register.html">Platformaga qo‘shilish</a>
-  </div>
-<section id="services">
-    <h2>Bizning xizmatlar</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>🚛 Haydovchilar</h3>
-        <p>O‘zingizga mos yuklarni toping va buyurtmalarni qabul qiling.</p>
-      </div>
-
-      <div class="card">
-        <h3>📦 Yuk egalari</h3>
-        <p>Yukingizni joylashtiring va kerakli transportni toping.</p>
-      </div>
-
-      <div class="card">
-        <h3>🛡️ Xavfsizlik</h3>
-        <p>Shaxsni tasdiqlash va nizolarni admin orqali ko‘rib chiqish tizimi.</p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Transport turlari</h2>
-    <div class="cards">
-      <div class="card"><h3>🚚 Yuk mashinasi</h3><p>Turli hajmdagi yuklar uchun.</p></div>
-      <div class="card"><h3>🚐 Gazel</h3><p>Kichik va o‘rta yuklar uchun.</p></div>
-      <div class="card"><h3>🚛 Fura / Tirkama</h3><p>Katta hajmdagi yuklar uchun.</p></div>
-      <div class="card"><h3>❄️ Refrijerator</h3><p>Sovuq holda tashilishi kerak bo‘lgan yuklar uchun.</p></div>
-      <div class="card"><h3>🚜 Boshqa</h3><p>Boshqa maxsus transport turlari.</p></div>
-    </div>
-  </section>
-
-  <section id="tariffs">
-    <h2>MUTX tariflari</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Yuk egasi</h3>
-        <p><strong>10 000 so‘m / tonna</strong></p>
-        <p>Yuk joylashtirish uchun xizmat haqi.</p>
-      </div>
-
-      <div class="card">
-        <h3>Haydovchi</h3>
-        <p><strong>10 000 so‘m / tonna</strong></p>
-        <p>Buyurtma bo‘yicha xizmat haqi.</p>
-      </div>
-
-      <div class="card">
-        <h3>Jami xizmat haqi</h3><p><strong>20 000 so‘m / tonna</strong></p><p>Yuk egasi 10 000 so‘m, haydovchi 10 000 so‘m to‘laydi. Masalan, 5 tonna yuk uchun har biri 50 000 so‘mdan.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="about">
-    <h2>Shaxsni tasdiqlash va xavfsizlik</h2>
-    <div class="notice">
-      MUTX platformasida foydalanuvchilar pasport yoki ID karta
-      va Face ID orqali shaxsini tasdiqlashi rejalashtirilgan.
-      Bekor qilingan buyurtmalar va nizolar admin tomonidan
-      dalillar asosida ko‘rib chiqiladi. Jarima shartlari
-      alohida tasdiqlanadi.
-    </div>
-  </section>
-
-  <section>
-    <h2>Shaxsiy kabinet</h2>
-    <div class="card">
-      <p>Buyurtmalar va profilingizni boshqarish uchun kabinetga kiring.</p>
-      <div class="actions">
-        <a href="pages/cabinet.html">Kabinetni ochish</a>
-        <a class="green" href="pages/register.html">Ro‘yxatdan o‘tish</a>
-      </div>
-    </div>
-  </section>
+<header><div class="wrap navbar">
+<a class="logo" href="#top">MU<span>TX</span></a>
+<button class="menu-toggle" id="menuToggle" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
+<nav id="mainNav"><a href="#services">Xizmatlar</a><a href="#how">Qanday ishlaydi</a><a href="#vehicles">Transportlar</a><a href="#prices">Tariflar</a></nav>
+<div class="nav-actions"><a class="btn btn-blue" href="pages/login.html">Kirish</a><a class="btn btn-green" href="pages/register.html">Ro‘yxatdan o‘tish</a></div>
+</div></header>
+<main id="top">
+<div class="hero"><div class="wrap hero-grid">
+<div><span class="eyebrow"><i></i> Yuk va transport — bir platformada</span>
+<h1>Yukingizga mos transportni <span style="color:#73b8ff">oson toping.</span></h1>
+<p class="hero-copy">MUTX yuk egalarini va haydovchilarni bir joyda uchrashtiradi. Yukni joylashtiring, mos buyurtmani toping va jarayonni shaxsiy kabinetingizdan boshqaring.</p>
+<div class="hero-actions"><a class="btn btn-green" href="pages/register.html">Boshlash <span>→</span></a><a class="btn btn-light" href="#how">Qanday ishlaydi?</a></div>
+<div class="hero-note">Ro‘yxatdan o‘ting va platforma imkoniyatlaridan foydalaning.</div>
+</div>
+<div class="route-card"><div class="route-head"><strong>Yuk yo‘nalishi namunasi</strong><span class="live">● NAMUNA</span></div>
+<div class="route-line"><div class="route-pins"><span class="pin"></span><span class="dash"></span><span class="pin end"></span></div><div class="route-point"><small>Yuk olinadi</small><b>Toshkent shahri</b><small>Yetkaziladi</small><b>Buxoro shahri</b></div></div>
+<div class="route-footer"><span>🚛 Fura / Tirkama</span><b>MUTX platformasi</b></div></div>
+</div></div>
+<div class="stats"><div class="wrap stats-grid"><div class="stat"><b>2 tomon</b><span>Yuk egasi va haydovchi</span></div><div class="stat"><b>5 tur</b><span>Transport tanlovi</span></div><div class="stat"><b>24/7</b><span>Platformadan foydalanish</span></div></div></div>
+<section id="services"><div class="wrap"><div class="section-head"><span class="kicker">MUTX imkoniyatlari</span><h2>Yuk tashish uchun kerakli hamma narsa</h2><p>Buyurtmalar, haydovchilar va yuklar bitta qulay platformada.</p></div>
+<div class="feature-grid"><article class="feature"><div class="feature-icon">📦</div><h3>Yuk joylashtirish</h3><p>Yuk ma’lumotlarini kiriting, yo‘nalishni belgilang va buyurtmangizni haydovchilarga ko‘rsating.</p></article><article class="feature"><div class="feature-icon">🚚</div><h3>Yuk topish</h3><p>Yo‘nalish, transport turi va yuk og‘irligi bo‘yicha mavjud buyurtmalarni qidiring.</p></article><article class="feature"><div class="feature-icon">📍</div><h3>Xarita orqali manzil</h3><p>Yuk olinadigan va yetkaziladigan joylarni xaritada belgilash imkoniyati.</p></article></div></div></section>
+<section class="steps" id="how"><div class="wrap"><div class="section-head"><span class="kicker">Oddiy jarayon</span><h2>Qanday ishlaydi?</h2><p>Platformadan foydalanishni boshlash uchun uchta oddiy qadam.</p></div>
+<div class="steps-grid"><article class="step"><span class="step-num">01 — HISOB</span><h3>Ro‘yxatdan o‘ting</h3><p>Telefon raqamingiz bilan hisob yarating va kerakli rolingizni tanlang.</p></article><article class="step"><span class="step-num">02 — BUYURTMA</span><h3>Yuk joylang yoki qidiring</h3><p>Yuk ma’lumotlarini kiriting yoki mavjud yuklar orasidan mosini tanlang.</p></article><article class="step"><span class="step-num">03 — BOSHQARUV</span><h3>Kabinetdan kuzating</h3><p>Buyurtmalaringiz holati, aloqa va baholashni shaxsiy kabinetda boshqaring.</p></article></div></div></section>
+<section id="vehicles"><div class="wrap"><div class="section-head"><span class="kicker">Transport tanlovi</span><h2>Har xil yuklar uchun transport</h2><p>Buyurtma joylashtirishda kerakli transport turini tanlang.</p></div>
+<div class="vehicle-grid"><div class="vehicle"><span class="emoji">🚚</span><b>Yuk mashinasi</b></div><div class="vehicle"><span class="emoji">🚐</span><b>Gazel</b></div><div class="vehicle"><span class="emoji">🚛</span><b>Fura / Tirkama</b></div><div class="vehicle"><span class="emoji">❄️</span><b>Refrijerator</b></div><div class="vehicle"><span class="emoji">🚜</span><b>Boshqa</b></div></div></div></section>
+<section id="prices" style="background:#edf4fc"><div class="wrap"><div class="section-head"><span class="kicker">Ochiq tariflar</span><h2>Xizmat haqi qanday hisoblanadi?</h2><p>Har bir tomon uchun xizmat haqi tonna bo‘yicha hisoblanadi.</p></div>
+<div class="price-grid"><article class="price"><h3>Yuk egasi</h3><strong>10 000 so‘m</strong><p>Har bir tonna uchun.</p></article><article class="price"><h3>Haydovchi</h3><strong>10 000 so‘m</strong><p>Har bir tonna uchun.</p></article><article class="price highlight"><h3>Jami xizmat haqi</h3><strong>20 000 so‘m</strong><p>Har bir tonna uchun, ikki tomon jami.</p></article></div>
+<div class="price-note">Misol: 5 tonna yukda yuk egasi 50 000 so‘m, haydovchi 50 000 so‘m xizmat haqi to‘laydi. To‘lov integratsiyasi alohida ulanadi.</div></div></section>
+<section id="about"><div class="wrap"><div class="security"><div><span class="kicker">Ishonch va nazorat</span><h2>Buyurtmalarni tartibli boshqaring</h2><p>Foydalanuvchi profili, reyting, shikoyatlar va buyurtma holatlari platformada boshqariladi. Shaxsni tasdiqlash imkoniyatlari bosqichma-bosqich joriy etiladi.</p></div><div class="security-list"><div>✓ Shaxsiy kabinet va profil</div><div>✓ Buyurtma holatini kuzatish</div><div>✓ Xarita orqali manzillar</div><div>✓ Reyting va shikoyat yuborish</div></div></div></div></section>
+<section><div class="wrap"><div class="cta"><div><h2>MUTX bilan ishni boshlang</h2><p>Hisob yarating va yuk tashish imkoniyatlaridan foydalaning.</p></div><a class="btn btn-light" href="pages/register.html">Ro‘yxatdan o‘tish →</a></div></div></section>
 </main>
-
-<footer>
-  <p>© 2026 MUTX. Barcha huquqlar himoyalangan.</p>
-  <p>Yuk tashishning yangi imkoniyati.</p>
-</footer><script>const mt=document.getElementById("menuToggle"),mn=document.getElementById("mainNav");mt.addEventListener("click",()=>{const opened=mn.classList.toggle("open");mt.setAttribute("aria-expanded",String(opened));mt.textContent=opened?"✕":"☰"});mn.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{mn.classList.remove("open");mt.setAttribute("aria-expanded","false");mt.textContent="☰"}));</script></body>
-</html>
+<footer><div class="wrap"><div class="footer-row"><div class="footer-brand"><a class="logo" href="#top">MU<span>TX</span></a><p>Yuk va transport bir platformada.</p></div><div class="footer-links"><a href="#services">Xizmatlar</a><a href="#vehicles">Transportlar</a><a href="#prices">Tariflar</a><a href="pages/login.html">Kirish</a></div></div><div class="copyright">© 2026 MUTX. Barcha huquqlar himoyalangan.</div></div></footer>
+<script>
+const toggle=document.getElementById("menuToggle"),nav=document.getElementById("mainNav");
+toggle.addEventListener("click",()=>{const open=nav.classList.toggle("open");toggle.setAttribute("aria-expanded",String(open));toggle.textContent=open?"✕":"☰";});
+nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));
+</script>
+</body></html>
