@@ -191,6 +191,12 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 .register-inner{display:block;padding:20px}.register-inner h2{font-size:22px}.register-inner .btn{margin-top:16px;width:100%}
 }
 @media(max-width:370px){.hero-copy-wide h1{font-size:34px}.hero-road-art{height:220px}.service-grid a b{font-size:9px}}
+
+/* refined truck illustration: dimensional bodywork and cleaner mobile scale */
+.hero-truck-real{filter:drop-shadow(0 20px 25px #0009);transform:translateY(2px)}
+.hero-road-art{isolation:isolate}
+.sunset{background:radial-gradient(circle,#ffd18a 0,#f58a3e66 34%,#f58a3e00 72%);opacity:.95}
+@media(max-width:700px){.hero-truck-real{width:119%;right:-10%;height:100%;transform:translateY(0)}.hero-road-art{height:258px}}
 </style>
 </head>
 <body>
@@ -218,26 +224,66 @@ footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:
 <div class="sunset"></div><div class="mountain mountain-back"></div><div class="mountain mountain-front"></div>
 <svg class="hero-truck-real" viewBox="0 0 780 390" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 <defs>
-<linearGradient id="mutxTrailer" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1d6fd0"/><stop offset=".55" stop-color="#0d3e83"/><stop offset="1" stop-color="#082951"/></linearGradient>
-<linearGradient id="mutxCab" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#48a9ff"/><stop offset=".55" stop-color="#1265c2"/><stop offset="1" stop-color="#07346c"/></linearGradient>
-<linearGradient id="mutxGlass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bdeaff"/><stop offset="1" stop-color="#367db9"/></linearGradient>
+<linearGradient id="mutxTrailer" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#287fdc"/><stop offset=".35" stop-color="#1558a5"/><stop offset="1" stop-color="#08264e"/></linearGradient>
+<linearGradient id="mutxCab" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#75c5ff"/><stop offset=".28" stop-color="#2585e4"/><stop offset=".7" stop-color="#0753a6"/><stop offset="1" stop-color="#05264f"/></linearGradient>
+<linearGradient id="mutxGlass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e0f7ff"/><stop offset=".4" stop-color="#8ac9ef"/><stop offset="1" stop-color="#275b8d"/></linearGradient>
+<linearGradient id="mutxMetal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d8e8f7"/><stop offset=".5" stop-color="#718ca8"/><stop offset="1" stop-color="#243f5d"/></linearGradient>
 <linearGradient id="mutxRoad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#203d5b"/><stop offset="1" stop-color="#071b32"/></linearGradient>
-<filter id="truckShadow"><feGaussianBlur stdDeviation="9"/></filter>
+<filter id="truckShadow"><feGaussianBlur stdDeviation="10"/></filter>
+<filter id="softGlow"><feGaussianBlur stdDeviation="7"/></filter>
 </defs>
-<ellipse cx="404" cy="330" rx="315" ry="29" fill="#06152a" opacity=".55" filter="url(#truckShadow)"/>
+<!-- Road and warm reflections -->
+<ellipse cx="405" cy="333" rx="322" ry="30" fill="#020d1c" opacity=".65" filter="url(#truckShadow)"/>
 <path d="M0 324 Q190 297 390 321 T780 310 V390 H0Z" fill="url(#mutxRoad)"/>
 <path d="M0 355 Q220 329 390 350 T780 337" fill="none" stroke="#7bbcff" stroke-width="4" opacity=".35"/>
 <path d="M25 373 L205 354 M575 355 L758 335" stroke="#ffc66f" stroke-width="5" stroke-linecap="round" opacity=".8"/>
-<path d="M100 75 Q100 58 119 58 H492 Q511 58 511 78 V278 H100Z" fill="url(#mutxTrailer)" stroke="#6db9ff" stroke-width="4"/>
-<path d="M120 82 H490 M120 96 H490" stroke="#8bc8ff" stroke-width="3" opacity=".32"/>
-<path d="M138 120 H474" stroke="#fff" stroke-width="2" opacity=".1"/>
-<text x="306" y="205" fill="#fff" font-size="68" font-weight="900" text-anchor="middle" letter-spacing="7">MUT</text><text x="430" y="205" fill="#3eb8ff" font-size="68" font-weight="900">X</text>
-<path d="M511 181 H580 Q602 181 619 204 L671 270 V303 H511Z" fill="url(#mutxCab)" stroke="#4d9ff1" stroke-width="4"/>
-<path d="M538 194 H582 Q596 194 607 209 L631 239 H538Z" fill="url(#mutxGlass)" stroke="#c4eaff" stroke-width="4"/>
-<path d="M641 252 L666 277 V291 H641Z" fill="#c8edff"/>
-<path d="M510 278 H674 V308 H510Z" fill="#0b2e59"/><path d="M95 278 H675" stroke="#6bbaff" stroke-width="6" opacity=".9"/><path d="M100 300 H674" stroke="#0a2342" stroke-width="10"/>
-<path d="M662 280 H681" stroke="#ffe6a2" stroke-width="9" stroke-linecap="round"/><path d="M516 304 H671" stroke="#a8d9ff" stroke-width="4"/>
-<g><circle cx="210" cy="302" r="42" fill="#061426"/><circle cx="210" cy="302" r="24" fill="#d9e9f7"/><circle cx="210" cy="302" r="11" fill="#6e8ba9"/><circle cx="558" cy="302" r="42" fill="#061426"/><circle cx="558" cy="302" r="24" fill="#d9e9f7"/><circle cx="558" cy="302" r="11" fill="#6e8ba9"/></g>
+<!-- Trailer frame -->
+<path d="M92 76 Q92 54 116 54 H493 Q516 54 516 78 V282 H92Z" fill="#061b36" opacity=".55"/>
+<path d="M100 70 Q100 56 117 56 H492 Q508 56 508 73 V276 H100Z" fill="url(#mutxTrailer)" stroke="#78bfff" stroke-width="4"/>
+<path d="M112 82 H496" stroke="#b4ddff" stroke-width="5" opacity=".48"/>
+<path d="M112 93 H496" stroke="#051f42" stroke-width="4" opacity=".5"/>
+<path d="M119 107 V260 M490 107 V260" stroke="#80bfff" stroke-width="3" opacity=".2"/>
+<path d="M126 116 H482 M126 251 H482" stroke="#d5edff" stroke-width="2" opacity=".13"/>
+<path d="M140 131 H467" stroke="#fff" stroke-width="2" opacity=".08"/>
+<!-- MUTX mark -->
+<rect x="176" y="142" width="257" height="77" rx="10" fill="#06264d" opacity=".35"/>
+<text x="301" y="202" fill="#fff" font-size="66" font-family="Arial,sans-serif" font-weight="900" text-anchor="middle" letter-spacing="4">MUT</text><text x="418" y="202" fill="#53c2ff" font-size="66" font-family="Arial,sans-serif" font-weight="900">X</text>
+<!-- Chassis and fuel tank -->
+<path d="M86 274 H686 V297 H86Z" fill="#0a2342"/>
+<path d="M104 278 H678" stroke="#8bcaff" stroke-width="5" opacity=".8"/>
+<rect x="480" y="281" width="48" height="22" rx="5" fill="url(#mutxMetal)"/>
+<rect x="535" y="282" width="38" height="18" rx="4" fill="#183b5e"/>
+<!-- Cabin -->
+<path d="M508 177 H579 Q603 177 621 201 L674 266 Q682 276 682 290 V302 H508Z" fill="#05264d" opacity=".8"/>
+<path d="M510 174 H578 Q603 174 620 199 L672 264 Q678 273 678 286 V295 H510Z" fill="url(#mutxCab)" stroke="#6dbbff" stroke-width="4"/>
+<path d="M535 188 H580 Q595 188 608 207 L634 239 H535Z" fill="url(#mutxGlass)" stroke="#d6f1ff" stroke-width="5"/>
+<path d="M542 195 H578 Q590 195 600 210 L618 232 H542Z" fill="#b9e7ff" opacity=".26"/>
+<path d="M625 245 L664 275 V285 H625Z" fill="#0b376a" stroke="#5ca9ed" stroke-width="3"/>
+<path d="M640 252 L671 280 V290 H640Z" fill="#f5fbff" opacity=".9"/>
+<path d="M510 244 V294" stroke="#9bd5ff" stroke-width="4" opacity=".8"/>
+<path d="M519 252 H527 V289 H519Z" fill="#123e70"/>
+<path d="M559 245 V288" stroke="#a9d9ff" stroke-width="2" opacity=".5"/>
+<!-- Side door and handle -->
+<path d="M543 246 V286 H608" fill="none" stroke="#8bcaff" stroke-width="2" opacity=".5"/>
+<rect x="577" y="250" width="15" height="4" rx="2" fill="#d9f2ff"/>
+<!-- Front bumper, grille, lights -->
+<path d="M649 288 H684 V303 H648Z" fill="url(#mutxMetal)" stroke="#d5e7f7" stroke-width="2"/>
+<path d="M654 292 H674 M654 296 H674 M654 300 H674" stroke="#294b6d" stroke-width="2"/>
+<rect x="666" y="270" width="16" height="9" rx="3" fill="#fff1bd"/>
+<rect x="668" y="281" width="13" height="5" rx="2" fill="#ff6e5d"/>
+<!-- Mirrors -->
+<path d="M515 185 L499 169 L489 169" stroke="#a8d9ff" stroke-width="5" stroke-linecap="round" fill="none"/>
+<rect x="480" y="163" width="16" height="11" rx="4" fill="#1a5d9d" stroke="#9bd8ff" stroke-width="2"/>
+<!-- Wheels -->
+<g>
+<circle cx="204" cy="300" r="45" fill="#030d1a"/><circle cx="204" cy="300" r="35" fill="#111e2c"/>
+<circle cx="204" cy="300" r="25" fill="url(#mutxMetal)" stroke="#d5e7f5" stroke-width="3"/>
+<circle cx="204" cy="300" r="11" fill="#526f8c"/><circle cx="204" cy="300" r="5" fill="#d8e8f5"/>
+<circle cx="563" cy="300" r="45" fill="#030d1a"/><circle cx="563" cy="300" r="35" fill="#111e2c"/>
+<circle cx="563" cy="300" r="25" fill="url(#mutxMetal)" stroke="#d5e7f5" stroke-width="3"/>
+<circle cx="563" cy="300" r="11" fill="#526f8c"/><circle cx="563" cy="300" r="5" fill="#d8e8f5"/>
+<g stroke="#71869b" stroke-width="3" opacity=".65"><path d="M204 278 V283 M204 317 V322 M182 300 H187 M221 300 H226 M188 284 L192 288 M216 312 L220 316 M220 284 L216 288 M192 312 L188 316"/><path d="M563 278 V283 M563 317 V322 M541 300 H546 M580 300 H585 M547 284 L551 288 M575 312 L579 316 M579 284 L575 288 M551 312 L547 316"/></g>
+</g>
 <path d="M40 345 H740" stroke="#a5d5ff" stroke-width="2" opacity=".25"/>
 </svg>
 <div class="road-label"><span>📍 Toshkent</span><i></i><span>📍 Buxoro</span></div>
