@@ -108,6 +108,14 @@
             border-color: #1675d1;
             box-shadow: 0 0 0 3px rgba(22,117,209,0.10);
         }
+        .password-wrap { position: relative; }
+        .password-wrap input { padding-right: 58px; }
+        .toggle-password {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            width: 42px; padding: 8px 4px; margin: 0; background: transparent;
+            color: #1769b0; border: 0; font-size: 20px; line-height: 1;
+        }
+        .toggle-password:hover { background: #eef6ff; }
 
         .roles {
             display: grid;
@@ -294,24 +302,18 @@
 
             <div class="form-group">
                 <label for="password">Parol</label>
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Kamida 12 ta belgi"
-                    minlength="12"
-                    required
-                >
+                <div class="password-wrap">
+                    <input type="password" id="password" placeholder="Kamida 12 ta belgi" minlength="12" required>
+                    <button type="button" class="toggle-password" data-target="password" aria-label="Parolni ko‘rsatish" aria-pressed="false">👁</button>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="confirmPassword">Parolni tasdiqlang</label>
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Parolni qayta kiriting"
-                    minlength="12"
-                    required
-                >
+                <div class="password-wrap">
+                    <input type="password" id="confirmPassword" placeholder="Parolni qayta kiriting" minlength="12" required>
+                    <button type="button" class="toggle-password" data-target="confirmPassword" aria-label="Parolni ko‘rsatish" aria-pressed="false">👁</button>
+                </div>
             </div>
 
             <div class="form-group">
@@ -371,6 +373,16 @@
 const API = "https://mutyx-1.onrender.com";
 const form = document.getElementById("registerForm");
 const notice = document.getElementById("notice");
+document.querySelectorAll(".toggle-password").forEach(button => {
+  button.addEventListener("click", () => {
+    const field = document.getElementById(button.dataset.target);
+    const visible = field.type === "password";
+    field.type = visible ? "text" : "password";
+    button.textContent = visible ? "🙈" : "👁";
+    button.setAttribute("aria-label", visible ? "Parolni yashirish" : "Parolni ko‘rsatish");
+    button.setAttribute("aria-pressed", String(visible));
+  });
+});
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   notice.style.display = "block"; notice.className = "notice";
