@@ -350,6 +350,11 @@ def load_public(load: Load, viewer_id: int) -> dict:
         "note": load.note,
         "status": load.status,
         "created_at": load.created_at.isoformat() if load.created_at else None,
+        "accepted_at": load.accepted_at.isoformat() if load.accepted_at else None,
+        "confirmation_deadline": (
+            (load.accepted_at + timedelta(minutes=60)).isoformat()
+            if load.accepted_at and load.status == "pending" else None
+        ),
         "fee_each": fee_each,
         "fee_total": fee_each * 2,
         "my_role": my_role,
@@ -689,7 +694,13 @@ async def ai_chat(data: AIChatIn, user: User = Depends(current_user)):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "database": "sqlite" if IS_SQLITE else "postgresql"}
+    try:
+        with engine.connect() as connection:
+            connection.execute(select(1))
+        return {"status": "ok", "database": "sqlite" if IS_SQLITE else "postgresql"}
+    except Exception:
+        logger.exception("MUTX database health check failed")
+        raise HTTPException(status_code=503, detail="Ma'lumotlar bazasiga ulanishda xatolik")
 
 
 # ---------------------------- Ro'yxatdan o'tish / kirish --------------------
@@ -889,6 +900,21 @@ def create_load(data: LoadIn, user: User = Depends(current_user), db: Session = 
     return load_public(load, user.id)
 
 
+def expire_pending_loads(db: Session) -> None:
+    """60 daqiqada egasi tasdiqlamagan haydovchi so'rovlarini qayta ochadi."""
+    cutoff = utcnow() - timedelta(minutes=60)
+    db.execute(
+        update(Load)
+        .where(
+            Load.status == "pending",
+            Load.accepted_at.is_not(None),
+            Load.accepted_at <= cutoff,
+        )
+        .values(status="new", driver_id=None, accepted_at=None)
+    )
+    db.commit()
+
+
 @app.get("/loads")
 def list_loads(
     scope: str = Query("available", pattern="^(available|mine)$"),
@@ -898,6 +924,7 @@ def list_loads(
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ):
+    expire_pending_loads(db)
     stmt = select(Load)
 
     if scope == "available":
@@ -925,11 +952,53 @@ def accept_load(load_id: int, user: User = Depends(current_user), db: Session = 
     result = db.execute(
         update(Load)
         .where(Load.id == load_id, Load.status == "new", Load.owner_id != user.id)
-        .values(status="accepted", driver_id=user.id, accepted_at=utcnow())
+        .values(status="pending", driver_id=user.id, accepted_at=utcnow())
     )
     db.commit()
     if result.rowcount == 0:
         raise HTTPException(status_code=409, detail="Bu yuk allaqachon qabul qilingan yoki mavjud emas")
+    return load_public(db.get(Load, load_id), user.id)
+
+
+@app.post("/loads/{load_id}/confirm")
+def confirm_load(load_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Yuk egasi haydovchi so'rovini 60 daqiqa ichida tasdiqlaydi."""
+    expire_pending_loads(db)
+    result = db.execute(
+        update(Load)
+        .where(
+            Load.id == load_id,
+            Load.owner_id == user.id,
+            Load.status == "pending",
+            Load.accepted_at.is_not(None),
+            Load.accepted_at > utcnow() - timedelta(minutes=60),
+        )
+        .values(status="accepted")
+    )
+    db.commit()
+    if result.rowcount == 0:
+        raise HTTPException(
+            status_code=409,
+            detail="Tasdiqlash so'rovi topilmadi yoki 60 daqiqalik muddat tugagan",
+        )
+    return load_public(db.get(Load, load_id), user.id)
+
+
+@app.post("/loads/{load_id}/reject")
+def reject_load(load_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Yuk egasi haydovchi so'rovini rad etib, yukni qayta ochadi."""
+    result = db.execute(
+        update(Load)
+        .where(
+            Load.id == load_id,
+            Load.owner_id == user.id,
+            Load.status == "pending",
+        )
+        .values(status="new", driver_id=None, accepted_at=None)
+    )
+    db.commit()
+    if result.rowcount == 0:
+        raise HTTPException(status_code=409, detail="Rad etiladigan haydovchi so'rovi topilmadi")
     return load_public(db.get(Load, load_id), user.id)
 
 
