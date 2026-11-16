@@ -339,6 +339,10 @@ def load_public(load: Load, viewer_id: int) -> dict:
         my_role = "driver"
     else:
         my_role = None
+    can_view_location = (
+        load.owner_id == viewer_id
+        or (load.driver_id == viewer_id and load.status in ("accepted", "done"))
+    )
     return {
         "id": load.id,
         "cargo": load.cargo,
@@ -358,10 +362,10 @@ def load_public(load: Load, viewer_id: int) -> dict:
         "fee_each": fee_each,
         "fee_total": fee_each * 2,
         "my_role": my_role,
-        "pickup_lat": load.pickup_lat if my_role in ("owner", "driver") else None,
-        "pickup_lng": load.pickup_lng if my_role in ("owner", "driver") else None,
-        "dropoff_lat": load.dropoff_lat if my_role in ("owner", "driver") else None,
-        "dropoff_lng": load.dropoff_lng if my_role in ("owner", "driver") else None,
+        "pickup_lat": load.pickup_lat if can_view_location else None,
+        "pickup_lng": load.pickup_lng if can_view_location else None,
+        "dropoff_lat": load.dropoff_lat if can_view_location else None,
+        "dropoff_lng": load.dropoff_lng if can_view_location else None,
     }
 
 
