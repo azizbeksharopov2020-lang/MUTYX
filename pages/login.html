@@ -77,8 +77,9 @@ footer{padding:22px 15px;color:#718096;text-align:center}
     © 2026 MUTX — Yuk va transport platformasi
 </footer>
 
+  <script src="config.js"></script>
 <script>
-const API = "https://mutyx-1.onrender.com";
+const API = "window.MUTX_API_URL";
 function normalizeUzPhone(value){
   let digits=String(value||"").replace(/\\D/g,"");
   if(digits.length===9) digits="998"+digits;
