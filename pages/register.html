@@ -137,7 +137,7 @@ const API = window.MUTX_API_URL;
 const form = document.getElementById("registerForm");
 const notice = document.getElementById("notice");
 function normalizeUzPhone(value){
-  let digits=String(value||"").replace(/\\D/g,"");
+  let digits=String(value||"").replace(/\D/g,"");
   if(digits.length===9) digits="998"+digits;
   return digits.length===12&&digits.startsWith("998")?"+"+digits:null;
 }
