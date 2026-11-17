@@ -20,8 +20,9 @@ button{border:0;border-radius:10px;background:#176fc1;color:white;padding:0 20px
 <form id="chat"><textarea id="message" maxlength="2000" placeholder="Savolingizni yozing..." required></textarea><button id="send">Yuborish</button></form>
 <div class="note">AI xato qilishi mumkin. To‘lov, jarima va shaxsni tasdiqlash bo‘yicha yakuniy qarorni admin beradi. Parol yoki karta ma’lumotlarini yozmang.</div>
 </section></main>
+  <script src="../config.js"></script>
 <script>
-const API="https://mutyx-1.onrender.com",token=localStorage.getItem("mutx_token");
+const API="window.MUTX_API_URL",token=localStorage.getItem("mutx_token");
 const box=document.getElementById("messages"),form=document.getElementById("chat"),input=document.getElementById("message"),send=document.getElementById("send");
 function add(text,kind){const el=document.createElement("div");el.className="msg "+kind;el.textContent=text;box.appendChild(el);box.scrollTop=box.scrollHeight;return el}
 form.addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message)return;if(!token){location.href="../login.html";return}
