@@ -68,11 +68,19 @@ JWT_AUDIENCE = "mutx-users"
 
 FEE_PER_TONNA = 10000  # har bir tomon uchun so'm / tonna
 
-ALLOWED_ORIGINS = [
+# Frontend domenlari: Render Environment'da MUTX_FRONTEND_ORIGINS orqali
+# vergul bilan ajratib qo'shish mumkin (masalan https://mutx.uz,https://www.mutx.uz).
+_default_origins = [
     "https://azizbeksharopov2020-lang.github.io",
     "http://127.0.0.1:5500",
     "http://localhost:5500",
 ]
+_custom_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("MUTX_FRONTEND_ORIGINS", "").split(",")
+    if origin.strip()
+]
+ALLOWED_ORIGINS = list(dict.fromkeys(_default_origins + _custom_origins))
 
 PHONE_RE = re.compile(r"^\+998[0-9]{9}$")
 
