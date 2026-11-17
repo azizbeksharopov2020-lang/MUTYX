@@ -131,8 +131,9 @@ footer{padding:22px 15px;color:#718096;text-align:center}
     © 2026 MUTX — Yuk va transport platformasi
 </footer>
 
+  <script src="config.js"></script>
 <script>
-const API = "https://mutyx-1.onrender.com";
+const API = "window.MUTX_API_URL";
 const form = document.getElementById("registerForm");
 const notice = document.getElementById("notice");
 function normalizeUzPhone(value){
