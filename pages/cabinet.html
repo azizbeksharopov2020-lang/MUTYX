@@ -58,8 +58,9 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 <div id="available"></div></section>
 <section class="card" id="ordersSection" hidden><h2>📋 Mening buyurtmalarim</h2><button id="refreshMine">Yangilash</button><div id="mine"></div></section>
 </div></main>
+  <script src="config.js"></script>
 <script>
-const API="https://mutyx-1.onrender.com";
+const API="window.MUTX_API_URL";
 const token=localStorage.getItem("mutx_token");
 const headers={"Content-Type":"application/json","Authorization":"Bearer "+token};
 const el=id=>document.getElementById(id);
