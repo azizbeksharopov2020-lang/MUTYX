@@ -33,6 +33,12 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 <section class="welcome"><h1>Shaxsiy kabinet</h1><p id="welcomeText">Ma’lumot yuklanmoqda...</p></section>
 <div class="grid">
 <section class="card" id="profileSection"><h2>👤 Profilim</h2><div id="profile" class="muted">Yuklanmoqda...</div>
+<section class="card" id="identitySection"><h2>🪪 Shaxsni tasdiqlash</h2>
+<p class="muted">ID-karta yoki pasport rasmini yuboring. Fayl faqat tekshiruv uchun ishlatiladi, shifrlangan holda saqlanadi. JPG, PNG yoki PDF, 5 MB gacha.</p>
+<label for="identityType">Hujjat turi</label><select id="identityType"><option value="id_card">ID-karta</option><option value="passport">Pasport</option></select>
+<label for="identityFile">Hujjat fayli</label><input id="identityFile" type="file" accept="image/jpeg,image/png,application/pdf" required>
+<label style="display:flex;gap:9px;align-items:flex-start;font-weight:500"><input id="identityConsent" type="checkbox" style="width:auto;margin-top:4px"> Shaxsga doir ma’lumotlarimni MUTX’da shaxsni tasdiqlash maqsadida qayta ishlashga roziman.</label>
+<button type="button" id="submitIdentity">Hujjatni yuborish</button><p id="identityStatus" class="muted">Holat yuklanmoqda...</p></section>
 <label for="profileName">Ism va familiya</label><input id="profileName" maxlength="80" minlength="2">
 <button type="button" id="saveProfile">Profilni saqlash</button>
 <label for="currentPassword">Amaldagi parol</label><input id="currentPassword" type="password" autocomplete="current-password">
@@ -85,7 +91,29 @@ function initLoadMap(){
 function show(id,msg){el(id).className="notice";el(id).textContent=msg;}
 async function request(path,options={}){const r=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.detail||"Server xatosi: "+r.status);return d;}
 if(!token){location.href="login.html";}
-async function loadProfile(){try{const u=await request("/me");localStorage.setItem("mutx_roles_cache",JSON.stringify(u.roles||[]));el("welcomeText").textContent="Xush kelibsiz, "+u.full_name+"!";el("ownerSection").hidden=false;el("driverSection").hidden=false;el("ordersSection").hidden=false;el("profile").textContent="Ism: "+u.full_name+" | Telefon: "+u.phone+" | Rol: "+u.roles.join(", ")+" | Shaxs tasdig‘i: "+(u.verified?"Tasdiqlangan":"Hali tasdiqlanmagan");el("profileName").value=u.full_name;const rating=await request("/me/rating");const rd=document.createElement("p");rd.className="muted";rd.textContent="Reyting — haydovchi: "+(rating.as_driver.avg??"—")+" ("+rating.as_driver.count+") | yuk egasi: "+(rating.as_owner.avg??"—")+" ("+rating.as_owner.count+")";el("profile").appendChild(rd);}catch(e){show("profile",e.message);if(e.message.includes("Sessiya")||e.message.includes("Avval")){localStorage.removeItem("mutx_token");location.href="login.html";}}}
+async function refreshIdentityStatus(){
+ try{
+  const s=await request("/identity/status");
+  const labels={not_submitted:"Hujjat yuborilmagan",pending:"Admin tekshiruvida",approved:"Shaxs tasdiqlangan",rejected:"Hujjat rad etilgan"};
+  el("identityStatus").textContent="Holat: "+(labels[s.status]||s.status)+(s.review_note?" | Izoh: "+s.review_note:"");
+ }catch(e){el("identityStatus").textContent=e.message;}
+}
+async function submitIdentity(){
+ const button=el("submitIdentity"),file=el("identityFile").files[0];
+ if(!file){el("identityStatus").textContent="Avval hujjat faylini tanlang.";return;}
+ if(!el("identityConsent").checked){el("identityStatus").textContent="Rozilik belgisini qo‘ying.";return;}
+ const form=new FormData();form.append("document_type",el("identityType").value);form.append("consent","true");form.append("file",file);
+ button.disabled=true;button.textContent="Yuborilmoqda...";
+ try{
+  const response=await fetch(API+"/identity/documents",{method:"POST",headers:{"Authorization":"Bearer "+token},body:form});
+  let data={};try{data=await response.json()}catch{}
+  if(!response.ok)throw new Error(data.detail||"Server xatosi: "+response.status);
+  el("identityStatus").textContent=data.message||"Hujjat yuborildi.";el("identityFile").value="";await refreshIdentityStatus();
+ }catch(e){el("identityStatus").textContent=e.message;}
+ finally{button.disabled=false;button.textContent="Hujjatni yuborish";}
+}
+el("submitIdentity").addEventListener("click",submitIdentity);
+async function loadProfile(){try{const u=await request("/me");localStorage.setItem("mutx_roles_cache",JSON.stringify(u.roles||[]));el("welcomeText").textContent="Xush kelibsiz, "+u.full_name+"!";el("ownerSection").hidden=false;el("driverSection").hidden=false;el("ordersSection").hidden=false;el("profile").textContent="Ism: "+u.full_name+" | Telefon: "+u.phone+" | Rol: "+u.roles.join(", ")+" | Shaxs tasdig‘i: "+(u.verified?"Tasdiqlangan":"Hali tasdiqlanmagan");el("profileName").value=u.full_name;await refreshIdentityStatus();const rating=await request("/me/rating");const rd=document.createElement("p");rd.className="muted";rd.textContent="Reyting — haydovchi: "+(rating.as_driver.avg??"—")+" ("+rating.as_driver.count+") | yuk egasi: "+(rating.as_owner.avg??"—")+" ("+rating.as_owner.count+")";el("profile").appendChild(rd);}catch(e){show("profile",e.message);if(e.message.includes("Sessiya")||e.message.includes("Avval")){localStorage.removeItem("mutx_token");location.href="login.html";}}}
 function safeText(value){return String(value??"");}
 function addActionButton(parent,label,handler){const button=document.createElement("button");button.type="button";button.textContent=label;button.addEventListener("click",handler);parent.appendChild(button);return button;}
 async function showRatingForm(parent,load){
