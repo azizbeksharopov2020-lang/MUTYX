@@ -19,10 +19,12 @@ from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.responses import Response
+from cryptography.fernet import Fernet, InvalidToken
 from pydantic import BaseModel, Field, StringConstraints
 from typing_extensions import Annotated
 from openai import AsyncOpenAI
@@ -34,6 +36,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    LargeBinary,
     String,
     UniqueConstraint,
     create_engine,
@@ -94,6 +97,10 @@ ROLE_ALIASES = {
 
 TRANSPORTS = {"Yuk mashinasi", "Gazel", "Fura / Tirkama", "Refrijerator", "Boshqa"}
 
+DOCUMENT_ENCRYPTION_KEY = os.getenv("DOCUMENT_ENCRYPTION_KEY", "").strip()
+document_cipher = Fernet(DOCUMENT_ENCRYPTION_KEY.encode()) if DOCUMENT_ENCRYPTION_KEY else None
+MAX_ID_DOCUMENT_BYTES = 5 * 1024 * 1024
+
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
@@ -146,6 +153,23 @@ class Load(Base):
     pickup_lng: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     dropoff_lat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     dropoff_lng: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+class IdentityDocument(Base):
+    __tablename__ = "mutx_identity_documents"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("mutx_users.id"), index=True)
+    document_type: Mapped[str] = mapped_column(String(20))
+    filename: Mapped[str] = mapped_column(String(120))
+    mime_type: Mapped[str] = mapped_column(String(40))
+    encrypted_content: Mapped[bytes] = mapped_column(LargeBinary)
+    status: Mapped[str] = mapped_column(String(20), default="pending", index=True)
+    consent_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    reviewed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    reviewed_by: Mapped[Optional[int]] = mapped_column(ForeignKey("mutx_users.id"), nullable=True)
+    review_note: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+
+
 class AdminAccess(Base):
     __tablename__ = "mutx_admin_access"
 
@@ -486,7 +510,7 @@ class AdminGrantIn(BaseModel):
 
 ALLOWED_ADMIN_PERMISSIONS = {
     "users.read", "users.manage", "loads.read", "loads.manage",
-    "complaints.manage", "finance.read",
+    "complaints.manage", "finance.read", "identity.review",
 }
 
 
@@ -634,6 +658,143 @@ def decide_complaint(
     db.commit()
     return {"success": True, "complaint_id": complaint.id, "status": complaint.status,
             "penalty_amount": complaint.penalty_amount}
+
+
+# ------------------------- ID / pasport tekshiruvi ---------------------------
+
+@app.post("/identity/documents")
+async def submit_identity_document(
+    document_type: str = Form(...),
+    consent: bool = Form(...),
+    file: UploadFile = File(...),
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+):
+    if document_type not in ("id_card", "passport"):
+        raise HTTPException(status_code=400, detail="Hujjat turi ID karta yoki pasport bo'lishi kerak")
+    if consent is not True:
+        raise HTTPException(status_code=400, detail="Hujjatlarni qayta ishlashga rozilik talab qilinadi")
+    if document_cipher is None:
+        raise HTTPException(status_code=503, detail="Hujjatlarni shifrlash kaliti serverda sozlanmagan")
+    existing = db.scalar(select(IdentityDocument).where(
+        IdentityDocument.user_id == user.id,
+        IdentityDocument.status.in_(("pending", "approved")),
+    ))
+    if existing:
+        raise HTTPException(status_code=409, detail="Sizda tekshiruvdagi yoki tasdiqlangan hujjat mavjud")
+    content = await file.read(MAX_ID_DOCUMENT_BYTES + 1)
+    if not content or len(content) > MAX_ID_DOCUMENT_BYTES:
+        raise HTTPException(status_code=400, detail="Fayl bo'sh yoki 5 MB dan katta")
+    detected = None
+    if content.startswith(bytes.fromhex("FFD8FF")):
+        detected = "image/jpeg"
+    elif content.startswith(bytes.fromhex("89504E470D0A1A0A")):
+        detected = "image/png"
+    elif content.startswith(b"%PDF-"):
+        detected = "application/pdf"
+    if detected is None:
+        raise HTTPException(status_code=400, detail="Faqat haqiqiy JPG, PNG yoki PDF fayl yuboring")
+    encrypted = document_cipher.encrypt(content)
+    safe_name = (file.filename or "document").replace("/", "_").replace(chr(92), "_")[:120]
+    item = IdentityDocument(
+        user_id=user.id, document_type=document_type, filename=safe_name,
+        mime_type=detected, encrypted_content=encrypted, status="pending",
+        consent_at=utcnow(),
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return {"success": True, "document_id": item.id, "status": item.status,
+            "message": "Hujjat qabul qilindi. Admin tekshiruvini kuting."}
+
+
+@app.get("/identity/status")
+def identity_status(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    item = db.scalar(select(IdentityDocument).where(
+        IdentityDocument.user_id == user.id
+    ).order_by(IdentityDocument.id.desc()).limit(1))
+    if item is None:
+        return {"status": "not_submitted", "verified": user.verified}
+    return {"status": item.status, "document_type": item.document_type,
+            "review_note": item.review_note, "created_at": item.created_at.isoformat(),
+            "verified": user.verified}
+
+
+@app.get("/admin/identity/documents")
+def admin_identity_documents(
+    user: User = Depends(current_user), db: Session = Depends(get_db)
+):
+    require_admin(user, db, "identity.review")
+    rows = db.scalars(select(IdentityDocument).where(
+        IdentityDocument.status == "pending"
+    ).order_by(IdentityDocument.created_at.asc()).limit(100))
+    result = []
+    for item in rows:
+        owner = db.get(User, item.user_id)
+        result.append({"id": item.id, "user_id": item.user_id,
+                       "full_name": owner.full_name if owner else "Noma'lum",
+                       "phone": owner.phone if owner else "",
+                       "document_type": item.document_type, "filename": item.filename,
+                       "mime_type": item.mime_type,
+                       "created_at": item.created_at.isoformat() if item.created_at else None})
+    return result
+
+
+@app.get("/admin/identity/documents/{document_id}/file")
+def admin_identity_document_file(
+    document_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)
+):
+    require_admin(user, db, "identity.review")
+    item = db.get(IdentityDocument, document_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Hujjat topilmadi")
+    if document_cipher is None:
+        raise HTTPException(status_code=503, detail="Hujjat shifrlash kaliti sozlanmagan")
+    try:
+        content = document_cipher.decrypt(item.encrypted_content)
+    except InvalidToken:
+        logger.exception("Identity document decryption failed: %s", document_id)
+        raise HTTPException(status_code=500, detail="Hujjatni ochib bo'lmadi")
+    return Response(content=content, media_type=item.mime_type,
+                    headers={"Content-Disposition": "inline; filename=identity-document",
+                             "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
+
+
+class IdentityDecisionIn(BaseModel):
+    status: str
+    review_note: Optional[str] = None
+
+
+@app.post("/admin/identity/documents/{document_id}/decision")
+def decide_identity_document(
+    document_id: int, data: IdentityDecisionIn,
+    user: User = Depends(current_user), db: Session = Depends(get_db),
+):
+    require_admin(user, db, "identity.review")
+    item = db.get(IdentityDocument, document_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Hujjat topilmadi")
+    if item.status != "pending":
+        raise HTTPException(status_code=409, detail="Bu hujjat avval ko'rib chiqilgan")
+    if data.status not in ("approved", "rejected"):
+        raise HTTPException(status_code=400, detail="Holat approved yoki rejected bo'lishi kerak")
+    note = (data.review_note or "").strip() or None
+    if note and len(note) > 500:
+        raise HTTPException(status_code=400, detail="Izoh 500 belgidan oshmasin")
+    if data.status == "rejected" and not note:
+        raise HTTPException(status_code=400, detail="Rad etish sababini yozing")
+    item.status = data.status
+    item.review_note = note
+    item.reviewed_by = user.id
+    item.reviewed_at = utcnow()
+    target = db.get(User, item.user_id)
+    if target:
+        target.verified = data.status == "approved"
+    db.add(AdminAudit(actor_id=user.id, action="identity_" + data.status,
+                      target_user_id=item.user_id, details="document_id=" + str(item.id)))
+    db.commit()
+    return {"success": True, "document_id": item.id, "status": item.status,
+            "user_verified": bool(target and target.verified)}
 
 
 @app.get("/admin/audit")
