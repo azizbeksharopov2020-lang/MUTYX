@@ -861,7 +861,8 @@ class LoadIn(BaseModel):
 
 @app.post("/loads")
 def create_load(data: LoadIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
-    # Har qanday ro‘yxatdan o‘tgan foydalanuvchi yuk joylashtira oladi.
+    # Yukni faqat yuk egasi roliga ega foydalanuvchi joylashtira oladi.
+    require_role(user, "owner")
 
     cargo = data.cargo.strip()
     from_city = data.from_city.strip()
