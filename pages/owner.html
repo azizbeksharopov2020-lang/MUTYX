@@ -49,7 +49,7 @@ main{max-width:1120px;margin:24px auto 48px;padding:0 16px}
 .muted{color:#718096}
 [hidden]{display:none!important}
 @media(max-width:760px){main{margin:16px auto 30px;padding:0 12px}.welcome{padding:20px;border-radius:18px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:16px}.card h2{font-size:18px}#loadMap{height:235px}}
-</style></head>
+.map-search{display:flex;gap:8px;align-items:center;margin:10px 0}.map-search input{flex:1;min-width:0}.map-search button{white-space:nowrap}.map-results{display:grid;gap:6px;margin:6px 0}.map-result{width:100%;text-align:left;background:#f3f7fc;color:#17395f;border:1px solid #dce5f0;padding:10px;border-radius:9px;font-weight:500;white-space:normal}@media(max-width:480px){.map-search{flex-direction:column;align-items:stretch}}</style></head>
 <body>
 <header><a class="logo" href="../index.html">MU<span>TX</span></a><nav style="display:flex;gap:7px;flex-wrap:wrap"><a href="../index.html">Bosh sahifa</a><a href="owner.html">Yuk joylash</a><a href="driver.html">Yuklarni tanlash</a></nav></header>
 <main>
@@ -70,7 +70,7 @@ main{max-width:1120px;margin:24px auto 48px;padding:0 16px}
 <label>Qayerdan</label><input id="from" required maxlength="60">
 <label>Qayerga</label><input id="to" required maxlength="60">
 <label>Transport turi</label><select id="transport" required><option value="">Tanlang</option><option>Yuk mashinasi</option><option>Gazel</option><option>Fura / Tirkama</option><option>Refrijerator</option><option>Boshqa</option></select>
-<label>Yuk olinadigan va yetkaziladigan joylar</label><p class="muted">Xaritani bosing: avval olish, keyin yetkazish joyini belgilang.</p><div class="map-actions"><button type="button" id="pickPickup" class="active">1. Olish joyi</button><button type="button" id="pickDropoff">2. Yetkazish joyi</button></div><button type="button" id="clearMap">Xaritadagi nuqtalarni tozalash</button><div id="loadMap"></div><p id="pickupLabel" class="location-result">Olish joyi: belgilanmagan</p><p id="dropoffLabel" class="location-result">Yetkazish joyi: belgilanmagan</p><label>Izoh (ixtiyoriy)</label><textarea id="note" maxlength="300"></textarea>
+<label>Yuk olinadigan va yetkaziladigan joylar</label><p class="muted">Xaritani bosing: avval olish, keyin yetkazish joyini belgilang.</p><div class="map-actions"><button type="button" id="pickPickup" class="active">1. Olish joyi</button><button type="button" id="pickDropoff">2. Yetkazish joyi</button></div><div class="map-search"><input id="mapSearch" type="search" maxlength="120" placeholder="Manzil yoki shaharni qidiring (masalan, Buxoro)"><button type="button" id="searchMap">Manzilni topish</button></div><div id="mapSearchResults" class="map-results" aria-live="polite"></div><button type="button" id="clearMap">Xaritadagi nuqtalarni tozalash</button><div id="loadMap"></div><p class="muted" id="routeInfo">Ikki nuqtani belgilang — yo‘nalish xaritada ko‘rsatiladi.</p><p id="pickupLabel" class="location-result">Olish joyi: belgilanmagan</p><p id="dropoffLabel" class="location-result">Yetkazish joyi: belgilanmagan</p><label>Izoh (ixtiyoriy)</label><textarea id="note" maxlength="300"></textarea>
 <p class="muted" id="fee"></p><button type="submit">Buyurtmani yuborish</button>
 </form><div id="cargoNotice"></div></section>
 <section class="card" id="driverSection" hidden><h2>🚚 Yuk qidirish</h2>
@@ -87,14 +87,48 @@ const API = window.MUTX_API_URL;
 const token=localStorage.getItem("mutx_token");
 const headers={"Content-Type":"application/json","Authorization":"Bearer "+token};
 const el=id=>document.getElementById(id);
-let pickupPoint=null,dropoffPoint=null,activePoint="pickup",loadMap=null,pickupMarker=null,dropoffMarker=null;
-function setMapPoint(kind,latlng){
- const point={lat:Number(latlng.lat.toFixed(6)),lng:Number(latlng.lng.toFixed(6))};
- if(kind==="pickup"){pickupPoint=point;el("pickupLabel").textContent="Olish joyi: "+point.lat+", "+point.lng;}
- else{dropoffPoint=point;el("dropoffLabel").textContent="Yetkazish joyi: "+point.lat+", "+point.lng;}
+let pickupPoint=null,dropoffPoint=null,activePoint="pickup",loadMap=null,pickupMarker=null,dropoffMarker=null,routeLayer=null;
+async function drawRoute(){
+ if(!pickupPoint||!dropoffPoint)return;
+ const info=el("routeInfo");info.textContent="Yo‘nalish hisoblanmoqda...";
+ try{
+  const url="https://router.project-osrm.org/route/v1/driving/"+pickupPoint.lng+","+pickupPoint.lat+";"+dropoffPoint.lng+","+dropoffPoint.lat+"?overview=full&geometries=geojson";
+  const response=await fetch(url);if(!response.ok)throw new Error("Yo‘nalish xizmati javob bermadi.");
+  const data=await response.json();if(data.code!=="Ok"||!data.routes||!data.routes.length)throw new Error("Bu nuqtalar orasida yo‘nalish topilmadi.");
+  if(routeLayer)loadMap.removeLayer(routeLayer);
+  routeLayer=L.geoJSON(data.routes[0].geometry,{style:{color:"#176fd0",weight:5,opacity:.85}}).addTo(loadMap);
+  const km=(data.routes[0].distance/1000).toFixed(1),mins=Math.round(data.routes[0].duration/60);
+  info.textContent="Yo‘l masofasi: "+km+" km · Taxminiy vaqt: "+(mins>=60?Math.floor(mins/60)+" soat "+(mins%60)+" daqiqa":mins+" daqiqa");
+  loadMap.fitBounds(routeLayer.getBounds(),{padding:[25,25]});
+ }catch(error){info.textContent=error.message+" Nuqtalar saqlandi.";}
+}
+function setMapPoint(kind,latlng,label){
+ const point={lat:Number(latlng.lat.toFixed(6)),lng:Number(latlng.lng.toFixed(6)),label:label||""};
+ const display=point.label||point.lat+", "+point.lng;
+ if(kind==="pickup"){pickupPoint=point;el("pickupLabel").textContent="Olish joyi: "+display;}
+ else{dropoffPoint=point;el("dropoffLabel").textContent="Yetkazish joyi: "+display;}
  const old=kind==="pickup"?pickupMarker:dropoffMarker;if(old)loadMap.removeLayer(old);
  const marker=L.marker([point.lat,point.lng]).addTo(loadMap).bindPopup(kind==="pickup"?"Yuk olinadigan joy":"Yuk yetkaziladigan joy");
  if(kind==="pickup")pickupMarker=marker;else dropoffMarker=marker;
+ if(pickupPoint&&dropoffPoint)drawRoute();
+}
+async function searchMapAddress(){
+ const query=el("mapSearch").value.trim(),results=el("mapSearchResults");
+ if(query.length<2){results.textContent="Kamida 2 ta belgi kiriting.";return;}
+ const button=el("searchMap");button.disabled=true;results.textContent="Manzil qidirilmoqda...";
+ try{
+  const url="https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=uz&limit=5&q="+encodeURIComponent(query);
+  const response=await fetch(url,{headers:{Accept:"application/json"}});
+  if(!response.ok)throw new Error("Qidiruv xizmati vaqtincha ishlamayapti.");
+  const places=await response.json();results.innerHTML="";
+  if(!places.length){results.textContent="Manzil topilmadi. Boshqa nom bilan urinib ko‘ring.";return;}
+  places.forEach(place=>{
+   const item=document.createElement("button");item.type="button";item.className="map-result";item.textContent=place.display_name;
+   item.addEventListener("click",()=>{const pt={lat:Number(place.lat),lng:Number(place.lon)};setMapPoint(activePoint,pt,place.display_name);loadMap.setView([pt.lat,pt.lng],15);results.innerHTML="";});
+   results.appendChild(item);
+  });
+ }catch(error){results.textContent=error.message;}
+ finally{button.disabled=false;}
 }
 function initLoadMap(){
  if(!window.L||loadMap)return;
@@ -103,6 +137,8 @@ function initLoadMap(){
  loadMap.on("click",e=>setMapPoint(activePoint,e.latlng));
  el("pickPickup").onclick=()=>{activePoint="pickup";el("pickPickup").classList.add("active");el("pickDropoff").classList.remove("active");};
  el("pickDropoff").onclick=()=>{activePoint="dropoff";el("pickDropoff").classList.add("active");el("pickPickup").classList.remove("active");};
+ el("searchMap").onclick=searchMapAddress;
+ el("mapSearch").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchMapAddress();}});
  setTimeout(()=>loadMap.invalidateSize(),300);
 }
 function show(id,msg){el(id).className="notice";el(id).textContent=msg;}
@@ -162,7 +198,7 @@ el("tonna").addEventListener("input",()=>{const n=Number(el("tonna").value)||0;e
 el("cargoForm").addEventListener("submit",async e=>{e.preventDefault();const submitButton=e.target.querySelector('button[type="submit"]');if(submitButton.disabled)return;submitButton.disabled=true;submitButton.textContent="Yuborilmoqda...";try{if(!pickupPoint||!dropoffPoint)throw new Error("Xaritada yuk olish va yetkazish joylarini belgilang.");const d=await request("/loads",{method:"POST",body:JSON.stringify({cargo:el("cargo").value,tonna:Number(el("tonna").value),from_city:el("from").value,to_city:el("to").value,transport:el("transport").value,price:0,note:el("note").value,pickup_lat:pickupPoint?pickupPoint.lat:null,pickup_lng:pickupPoint?pickupPoint.lng:null,dropoff_lat:dropoffPoint?dropoffPoint.lat:null,dropoff_lng:dropoffPoint?dropoffPoint.lng:null})});show("cargoNotice","Buyurtma joylashtirildi. ID: "+d.id);e.target.reset();pickupPoint=null;dropoffPoint=null;if(pickupMarker){loadMap.removeLayer(pickupMarker);pickupMarker=null;}if(dropoffMarker){loadMap.removeLayer(dropoffMarker);dropoffMarker=null;}el("pickupLabel").textContent="Olish joyi: belgilanmagan";el("dropoffLabel").textContent="Yetkazish joyi: belgilanmagan";el("fee").textContent="";await refreshMine();}catch(err){show("cargoNotice",err.message)}finally{submitButton.disabled=false;submitButton.textContent="Buyurtmani yuborish";}});
 el("saveProfile").onclick=async()=>{const button=el("saveProfile");button.disabled=true;try{const u=await request("/me",{method:"PUT",body:JSON.stringify({full_name:el("profileName").value})});el("welcomeText").textContent="Xush kelibsiz, "+u.full_name+"!";el("profile").textContent="Ism: "+u.full_name+" | Telefon: "+u.phone+" | Rol: "+u.roles.join(", ")+" | Shaxs tasdig‘i: "+(u.verified?"Tasdiqlangan":"Hali tasdiqlanmagan");el("profileNotice").textContent="Profil saqlandi.";}catch(e){el("profileNotice").textContent=e.message;}finally{button.disabled=false;}};
 el("changePassword").onclick=async()=>{const button=el("changePassword");button.disabled=true;try{const result=await request("/me/password",{method:"POST",body:JSON.stringify({current_password:el("currentPassword").value,new_password:el("newPassword").value})});alert(result.message);localStorage.removeItem("mutx_token");location.href="login.html";}catch(e){el("profileNotice").textContent=e.message;}finally{button.disabled=false;}};
-el("clearMap").onclick=()=>{pickupPoint=null;dropoffPoint=null;if(pickupMarker){loadMap.removeLayer(pickupMarker);pickupMarker=null;}if(dropoffMarker){loadMap.removeLayer(dropoffMarker);dropoffMarker=null;}el("pickupLabel").textContent="Olish joyi: belgilanmagan";el("dropoffLabel").textContent="Yetkazish joyi: belgilanmagan";};
+el("clearMap").onclick=()=>{pickupPoint=null;dropoffPoint=null;if(pickupMarker){loadMap.removeLayer(pickupMarker);pickupMarker=null;}if(dropoffMarker){loadMap.removeLayer(dropoffMarker);dropoffMarker=null;}if(routeLayer){loadMap.removeLayer(routeLayer);routeLayer=null;}el("pickupLabel").textContent="Olish joyi: belgilanmagan";el("dropoffLabel").textContent="Yetkazish joyi: belgilanmagan";el("routeInfo").textContent="Ikki nuqtani belgilang — yo‘nalish xaritada ko‘rsatiladi.";el("mapSearchResults").innerHTML="";};
 el("refreshAvailable").onclick=refreshAvailable;el("searchLoads").onclick=refreshAvailable;el("clearSearch").onclick=()=>{el("searchCity").value="";el("searchTransport").value="";el("searchTonna").value="";refreshAvailable();};el("refreshMine").onclick=refreshMine;
 el("logout").onclick=()=>{localStorage.removeItem("mutx_token");location.href="login.html";};
 loadProfile().then(()=>{
