@@ -162,6 +162,8 @@ class IdentityDocument(Base):
     filename: Mapped[str] = mapped_column(String(120))
     mime_type: Mapped[str] = mapped_column(String(40))
     encrypted_content: Mapped[bytes] = mapped_column(LargeBinary)
+    encrypted_jshshir: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    encrypted_document_number: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
     status: Mapped[str] = mapped_column(String(20), default="pending", index=True)
     consent_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
@@ -234,6 +236,18 @@ def migrate_load_location_columns():
                 connection.execute(text(f"ALTER TABLE mutx_loads ADD COLUMN {name} FLOAT"))
 
 migrate_load_location_columns()
+
+# Mavjud IdentityDocument jadvaliga shifrlangan identifikator ustunlarini qo'shish.
+def migrate_identity_number_columns():
+    from sqlalchemy import inspect, text
+    existing = {c["name"] for c in inspect(engine).get_columns("mutx_identity_documents")}
+    with engine.begin() as connection:
+        if "encrypted_jshshir" not in existing:
+            connection.execute(text("ALTER TABLE mutx_identity_documents ADD COLUMN encrypted_jshshir BLOB"))
+        if "encrypted_document_number" not in existing:
+            connection.execute(text("ALTER TABLE mutx_identity_documents ADD COLUMN encrypted_document_number BLOB"))
+
+migrate_identity_number_columns()
 
 
 def get_db():
@@ -666,6 +680,8 @@ def decide_complaint(
 async def submit_identity_document(
     document_type: str = Form(...),
     consent: bool = Form(...),
+    jshshir: str = Form(...),
+    document_number: str = Form(...),
     file: UploadFile = File(...),
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
@@ -674,6 +690,12 @@ async def submit_identity_document(
         raise HTTPException(status_code=400, detail="Hujjat turi ID karta yoki pasport bo'lishi kerak")
     if consent is not True:
         raise HTTPException(status_code=400, detail="Hujjatlarni qayta ishlashga rozilik talab qilinadi")
+    normalized_jshshir = re.sub(r"\\D", "", jshshir or "")
+    normalized_document_number = re.sub(r"\\s+", "", (document_number or "").upper())
+    if not re.fullmatch(r"\\d{14}", normalized_jshshir):
+        raise HTTPException(status_code=400, detail="JShShIR 14 ta raqamdan iborat bo'lishi kerak")
+    if not re.fullmatch(r"[A-Z]{2}\\d{7}", normalized_document_number):
+        raise HTTPException(status_code=400, detail="Hujjat seriyasi va raqami 2 ta lotin harfi va 7 ta raqam bo'lishi kerak")
     if document_cipher is None:
         raise HTTPException(status_code=503, detail="Hujjatlarni shifrlash kaliti serverda sozlanmagan")
     existing = db.scalar(select(IdentityDocument).where(
@@ -698,8 +720,10 @@ async def submit_identity_document(
     safe_name = (file.filename or "document").replace("/", "_").replace(chr(92), "_")[:120]
     item = IdentityDocument(
         user_id=user.id, document_type=document_type, filename=safe_name,
-        mime_type=detected, encrypted_content=encrypted, status="pending",
-        consent_at=utcnow(),
+        mime_type=detected, encrypted_content=encrypted,
+        encrypted_jshshir=document_cipher.encrypt(normalized_jshshir.encode("utf-8")),
+        encrypted_document_number=document_cipher.encrypt(normalized_document_number.encode("utf-8")),
+        status="pending", consent_at=utcnow(),
     )
     db.add(item)
     db.commit()
