@@ -4,12 +4,32 @@
 <body><header><b>MUTX | ADMIN</b><a href="cabinet.html">Kabinetga qaytish</a></header><main>
 <section class="card"><h2>Admin boshqaruv paneli</h2><p id="status" class="muted">Tekshirilmoqda...</p><button id="reload">Yangilash</button><button id="logout">Chiqish</button></section>
 <section class="card"><h3>Foydalanuvchilar</h3><input id="userSearch" placeholder="Ism, telefon yoki ID bo‘yicha qidirish"><button id="searchUsers">Qidirish</button><div id="users">Yuklanmoqda...</div></section>
+<section class="card"><h3>ID-karta / pasport tekshiruvi</h3><p class="muted">Bu bo‘lim identity.review ruxsatiga ega adminlarga ko‘rinadi. Hujjatlar maxfiy.</p><div id="identityQueue">Yuklanmoqda...</div></section>
 <section class="card"><h3>Shikoyatlar</h3><p class="muted">Faqat complaints.manage ruxsatiga ega adminlar ko‘ra oladi.</p><div id="complaints">Yuklanmoqda...</div></section>
 </main>  <script src="config.js"></script>
 <script>
 const API = window.MUTX_API_URL,token=localStorage.getItem("mutx_token"),H={"Authorization":"Bearer "+token,"Content-Type":"application/json"},$=id=>document.getElementById(id);
 async function req(path,opt={}){const r=await fetch(API+path,{...opt,headers:{...H,...(opt.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.detail||"Server xatosi "+r.status);return d}
-async function init(){if(!token){location.href="login.html";return}try{const a=await req("/admin/me");$("status").textContent="Rol: "+a.role+" | Ruxsatlar: "+(a.permissions.join(", ")||"—");const term=$("userSearch").value.trim();const users=await req("/admin/users"+(term?"?q="+encodeURIComponent(term):""));$("users").innerHTML=users.map(u=>'<div class="item"><b>'+esc(u.full_name)+'</b> · '+esc(u.phone)+'<br><span class="muted">ID: '+u.id+' | '+u.roles.join(", ")+' | '+(u.verified?"Tasdiqlangan":"Tasdiqlanmagan")+'</span></div>').join("")||"Foydalanuvchilar yo‘q";
+async function loadIdentityReview(){
+ const root=$("identityQueue");root.textContent="Tekshiruvdagilar yuklanmoqda...";
+ try{
+  const docs=await req("/admin/identity/documents");root.innerHTML="";
+  if(!docs.length){root.textContent="Tekshiruvda hujjatlar yo‘q.";return;}
+  for(const d of docs){
+   const card=document.createElement("div");card.className="item";
+   const title=document.createElement("b");title.textContent=d.full_name+" · "+d.phone+" · "+(d.document_type==="id_card"?"ID-karta":"Pasport");card.appendChild(title);
+   const meta=document.createElement("p");meta.className="muted";meta.textContent="Foydalanuvchi ID: "+d.user_id+" | Hujjat ID: "+d.id+" | "+(d.created_at||"");card.appendChild(meta);
+   const preview=document.createElement(d.mime_type==="application/pdf"?"iframe":"img");preview.style.width="100%";preview.style.maxWidth="520px";preview.style.height=d.mime_type==="application/pdf"?"480px":"auto";preview.style.maxHeight="480px";preview.style.objectFit="contain";preview.alt="Yuklangan hujjat";
+   const fileResponse=await fetch(API+"/admin/identity/documents/"+d.id+"/file",{headers:H});
+   if(!fileResponse.ok)throw Error("Hujjatni ochib bo‘lmadi: "+fileResponse.status);
+   const blob=await fileResponse.blob();preview.src=URL.createObjectURL(blob);card.appendChild(preview);
+   const approve=document.createElement("button");approve.textContent="Tasdiqlash";approve.onclick=async()=>{if(!confirm("Hujjatni tekshirdingizmi va tasdiqlaysizmi?"))return;try{await req("/admin/identity/documents/"+d.id+"/decision",{method:"POST",body:JSON.stringify({status:"approved"})});await loadIdentityReview();}catch(e){alert(e.message)}};
+   const reject=document.createElement("button");reject.textContent="Rad etish";reject.onclick=async()=>{const note=prompt("Rad etish sababini yozing:");if(!note)return;try{await req("/admin/identity/documents/"+d.id+"/decision",{method:"POST",body:JSON.stringify({status:"rejected",review_note:note})});await loadIdentityReview();}catch(e){alert(e.message)}};
+   card.append(approve,reject);root.appendChild(card);
+  }
+ }catch(e){root.textContent=e.message;}
+}
+async function init(){if(!token){location.href="login.html";return}try{const a=await req("/admin/me");$("status").textContent="Rol: "+a.role+" | Ruxsatlar: "+(a.permissions.join(", ")||"—");loadIdentityReview();const term=$("userSearch").value.trim();const users=await req("/admin/users"+(term?"?q="+encodeURIComponent(term):""));$("users").innerHTML=users.map(u=>'<div class="item"><b>'+esc(u.full_name)+'</b> · '+esc(u.phone)+'<br><span class="muted">ID: '+u.id+' | '+u.roles.join(", ")+' | '+(u.verified?"Tasdiqlangan":"Tasdiqlanmagan")+'</span></div>').join("")||"Foydalanuvchilar yo‘q";
 try{const cs=await req("/admin/complaints");$("complaints").innerHTML=cs.map(c=>'<div class="item"><b>Shikoyat #'+c.id+' · Yuk #'+c.load_id+'</b><br>'+esc(c.reason)+'<br><span class="muted">Holat: '+esc(c.status)+' | Murojaatchi ID: '+c.reporter_id+'</span>'+(c.status==="open"?' <button onclick="decide('+c.id+')">Ko‘rib chiqish</button>':'<br>Qaror: '+esc(c.decision||"—")+' | Jarima: '+c.penalty_amount+' so‘m')+'</div>').join("")||"Shikoyatlar yo‘q";}catch(e){$("complaints").textContent=e.message;}}catch(e){$("status").className="error";$("status").textContent=e.message;$("users").textContent="Ruxsat yoki ma’lumot mavjud emas.";}}
 async function decide(id){const decision=prompt("Admin qarorini yozing (kamida 5 belgi):");if(!decision)return;const penalty=Number(prompt("Jarima miqdori (so‘m), jarima bo‘lmasa 0:", "0"));if(!Number.isInteger(penalty)||penalty<0){alert("Jarima miqdori noto‘g‘ri");return}try{await req("/admin/complaints/"+id+"/decision",{method:"POST",body:JSON.stringify({decision,penalty_amount:penalty,status:"resolved"})});alert("Shikoyat ko‘rib chiqildi");init()}catch(e){alert(e.message)}}
 function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
