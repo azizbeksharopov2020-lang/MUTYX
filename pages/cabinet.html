@@ -36,6 +36,8 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 <section class="card" id="identitySection"><h2>🪪 Shaxsni tasdiqlash</h2>
 <p class="muted">ID-karta yoki pasport rasmini yuboring. Fayl faqat tekshiruv uchun ishlatiladi, shifrlangan holda saqlanadi. JPG, PNG yoki PDF, 5 MB gacha.</p>
 <label for="identityType">Hujjat turi</label><select id="identityType"><option value="id_card">ID-karta</option><option value="passport">Pasport</option></select>
+<label for="jshshir">JShShIR (14 raqam)</label><input id="jshshir" inputmode="numeric" maxlength="14" pattern="[0-9]{14}" autocomplete="off" placeholder="14 xonali JShShIR" required>
+<label for="documentNumber">Hujjat seriyasi va raqami</label><input id="documentNumber" maxlength="9" autocapitalize="characters" autocomplete="off" placeholder="AA1234567" pattern="[A-Za-z]{2}[0-9]{7}" required>
 <label for="identityFile">Hujjat fayli</label><input id="identityFile" type="file" accept="image/jpeg,image/png,application/pdf" required>
 <label style="display:flex;gap:9px;align-items:flex-start;font-weight:500"><input id="identityConsent" type="checkbox" style="width:auto;margin-top:4px"> Shaxsga doir ma’lumotlarimni MUTX’da shaxsni tasdiqlash maqsadida qayta ishlashga roziman.</label>
 <button type="button" id="submitIdentity">Hujjatni yuborish</button><p id="identityStatus" class="muted">Holat yuklanmoqda...</p></section>
@@ -102,7 +104,7 @@ async function submitIdentity(){
  const button=el("submitIdentity"),file=el("identityFile").files[0];
  if(!file){el("identityStatus").textContent="Avval hujjat faylini tanlang.";return;}
  if(!el("identityConsent").checked){el("identityStatus").textContent="Rozilik belgisini qo‘ying.";return;}
- const form=new FormData();form.append("document_type",el("identityType").value);form.append("consent","true");form.append("file",file);
+ const jshshir=el("jshshir").value.replace(/\\D/g,"");const documentNumber=el("documentNumber").value.trim().toUpperCase().replace(/\\s+/g,"");if(!/^\\d{14}$/.test(jshshir)){el("identityStatus").textContent="JShShIR 14 ta raqam bo‘lishi kerak.";return;}if(!/^[A-Z]{2}\\d{7}$/.test(documentNumber)){el("identityStatus").textContent="Hujjat raqami AA1234567 ko‘rinishida bo‘lishi kerak.";return;}const form=new FormData();form.append("document_type",el("identityType").value);form.append("jshshir",jshshir);form.append("document_number",documentNumber);form.append("consent","true");form.append("file",file);
  button.disabled=true;button.textContent="Yuborilmoqda...";
  try{
   const response=await fetch(API+"/identity/documents",{method:"POST",headers:{"Authorization":"Bearer "+token},body:form});
