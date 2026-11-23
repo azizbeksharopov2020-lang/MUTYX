@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MUTX — Shaxsiy kabinet</title>
+<title>YUKNOVA — Shaxsiy kabinet</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -28,7 +28,7 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 @media(max-width:420px){button{padding:10px 12px;font-size:13px}.map-actions button{flex:1}}
 </style></head>
 <body>
-<header><div class="logo">MUTX</div><a href="../index.html">Bosh sahifa</a></header>
+<header><div class="logo">YUKNOVA</div><a href="../index.html">Bosh sahifa</a></header>
 <main>
 <section class="welcome"><h1>Shaxsiy kabinet</h1><p id="welcomeText">Ma’lumot yuklanmoqda...</p></section>
 <div class="grid">
@@ -39,7 +39,7 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 <label for="jshshir">JShShIR (14 raqam)</label><input id="jshshir" inputmode="numeric" maxlength="14" pattern="[0-9]{14}" autocomplete="off" placeholder="14 xonali JShShIR" required>
 <label for="documentNumber">Hujjat seriyasi va raqami</label><input id="documentNumber" maxlength="9" autocapitalize="characters" autocomplete="off" placeholder="AA1234567" pattern="[A-Za-z]{2}[0-9]{7}" required>
 <label for="identityFile">Hujjat fayli</label><input id="identityFile" type="file" accept="image/jpeg,image/png,application/pdf" required>
-<label style="display:flex;gap:9px;align-items:flex-start;font-weight:500"><input id="identityConsent" type="checkbox" style="width:auto;margin-top:4px"> Shaxsga doir ma’lumotlarimni MUTX’da shaxsni tasdiqlash maqsadida qayta ishlashga roziman.</label>
+<label style="display:flex;gap:9px;align-items:flex-start;font-weight:500"><input id="identityConsent" type="checkbox" style="width:auto;margin-top:4px"> Shaxsga doir ma’lumotlarimni YUKNOVA’da shaxsni tasdiqlash maqsadida qayta ishlashga roziman.</label>
 <button type="button" id="submitIdentity">Hujjatni yuborish</button><p id="identityStatus" class="muted">Holat yuklanmoqda...</p></section>
 <label for="profileName">Ism va familiya</label><input id="profileName" maxlength="80" minlength="2">
 <button type="button" id="saveProfile">Profilni saqlash</button>
@@ -47,7 +47,7 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 <label for="newPassword">Yangi parol (kamida 8 belgi)</label><input id="newPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password">
 <button type="button" id="changePassword">Parolni almashtirish</button><p id="profileNotice" class="muted"></p>
 <button id="logout">Chiqish</button></section>
-<section class="card" id="aiSection"><h2>🤖 MUTX AI yordamchisi</h2><p class="muted">Savollaringizga avtomatik javob oling: yuk joylash, buyurtma, tarif va texnik yordam.</p><button type="button" onclick="location.href='support/ai-chat.html'">AI bilan suhbat</button></section>
+<section class="card" id="aiSection"><h2>🤖 YUKNOVA AI yordamchisi</h2><p class="muted">Savollaringizga avtomatik javob oling: yuk joylash, buyurtma, tarif va texnik yordam.</p><button type="button" onclick="location.href='support/ai-chat.html'">AI bilan suhbat</button></section>
 <section class="card" id="ownerSection" hidden><h2>📦 Yuk joylashtirish</h2>
 <form id="cargoForm">
 <label>Yuk nomi</label><input id="cargo" required maxlength="60" placeholder="Masalan: G‘alla">
@@ -68,7 +68,7 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 </div></main>
   <script src="config.js"></script>
 <script>
-const API = window.MUTX_API_URL;
+const API = window.YUKNOVA_API_URL;
 const token=localStorage.getItem("mutx_token");
 const headers={"Content-Type":"application/json","Authorization":"Bearer "+token};
 const el=id=>document.getElementById(id);
