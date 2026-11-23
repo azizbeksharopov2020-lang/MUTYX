@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MUTX — Yuk joylash kabineti</title>
+<title>YUKNOVA — Yuk joylash kabineti</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -26,7 +26,7 @@ button:hover{background:#155eae;transform:translateY(-1px)}button:disabled{opaci
 .location-result{font-size:13px;color:#475569;margin:7px 0}#profile{line-height:1.8}
 @media(max-width:760px){main{margin:18px auto;padding:0 12px}.grid{grid-template-columns:1fr}.welcome,.card{padding:19px;border-radius:15px}header{padding:13px 5%}}
 @media(max-width:420px){button{padding:10px 12px;font-size:13px}.map-actions button{flex:1}}
-/* MUTX cabinet responsive visual system */
+/* YUKNOVA cabinet responsive visual system */
 :root{--shadow:0 12px 34px #102b4d0c}
 header{padding:12px max(4%,calc((100% - 1120px)/2));min-height:68px;gap:12px;flex-wrap:wrap}
 header .logo{font-size:27px;color:#59a9ff;font-weight:950;letter-spacing:1.5px}
@@ -62,7 +62,7 @@ main{max-width:1120px;margin:24px auto 48px;padding:0 16px}
 <label for="newPassword">Yangi parol (kamida 8 belgi)</label><input id="newPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password">
 <button type="button" id="changePassword">Parolni almashtirish</button><p id="profileNotice" class="muted"></p>
 <button id="logout">Chiqish</button></section>
-<section class="card" id="aiSection"><h2>🤖 MUTX AI yordamchisi</h2><p class="muted">Savollaringizga avtomatik javob oling: yuk joylash, buyurtma, tarif va texnik yordam.</p><button type="button" onclick="location.href='support/ai-chat.html'">AI bilan suhbat</button></section>
+<section class="card" id="aiSection"><h2>🤖 YUKNOVA AI yordamchisi</h2><p class="muted">Savollaringizga avtomatik javob oling: yuk joylash, buyurtma, tarif va texnik yordam.</p><button type="button" onclick="location.href='support/ai-chat.html'">AI bilan suhbat</button></section>
 <section class="card" id="ownerSection" hidden><h2>📦 Yuk joylashtirish</h2>
 <form id="cargoForm">
 <label>Yuk nomi</label><input id="cargo" required maxlength="60" placeholder="Masalan: G‘alla">
@@ -83,7 +83,7 @@ main{max-width:1120px;margin:24px auto 48px;padding:0 16px}
 </div></main>
   <script src="config.js"></script>
 <script>
-const API = window.MUTX_API_URL;
+const API = window.YUKNOVA_API_URL;
 const token=localStorage.getItem("mutx_token");
 const headers={"Content-Type":"application/json","Authorization":"Bearer "+token};
 const el=id=>document.getElementById(id);
