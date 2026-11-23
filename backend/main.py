@@ -72,7 +72,7 @@ JWT_AUDIENCE = "mutx-users"
 FEE_PER_TONNA = 10000  # har bir tomon uchun so'm / tonna
 
 # Frontend domenlari: Render Environment'da YUKNOVA_FRONTEND_ORIGINS orqali
-# vergul bilan ajratib qo'shish mumkin (masalan https://mutx.uz,https://www.mutx.uz).
+# vergul bilan ajratib qo'shish mumkin (masalan https://yuknova.uz,https://www.yuknova.uz).
 _default_origins = [
     "https://azizbeksharopov2020-lang.github.io",
     "http://127.0.0.1:5500",
