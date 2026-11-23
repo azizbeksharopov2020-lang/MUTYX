@@ -80,7 +80,7 @@ _default_origins = [
 ]
 _custom_origins = [
     origin.strip().rstrip("/")
-    for origin in os.getenv("YUKNOVA_FRONTEND_ORIGINS", "").split(",")
+    for origin in os.getenv("YUKNOVA_FRONTEND_ORIGINS", os.getenv("MUTX_FRONTEND_ORIGINS", "")).split(",")
     if origin.strip()
 ]
 ALLOWED_ORIGINS = list(dict.fromkeys(_default_origins + _custom_origins))
