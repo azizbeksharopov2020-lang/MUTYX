@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MUTX AI yordamchi</title>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YUKNOVA AI yordamchi</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#eef3f9;color:#172033;font-family:Arial,sans-serif}
 header{background:#101d36;color:white;padding:16px 5%;display:flex;justify-content:space-between;align-items:center}
@@ -14,15 +14,15 @@ textarea{flex:1;resize:vertical;min-height:48px;max-height:130px;padding:13px;bo
 button{border:0;border-radius:10px;background:#176fc1;color:white;padding:0 20px;font-weight:bold}
 .note{font-size:12px;color:#64748b;padding:0 18px 16px}
 </style></head><body>
-<header><b>MUTX · AI YORDAMCHI</b><a href="../cabinet.html">Kabinetga qaytish</a></header>
-<main><section class="panel"><div class="top"><h2>Assalomu alaykum!</h2><p>MUTX bo‘yicha savolingizni yozing. Men avtomatik javob beraman.</p></div>
+<header><b>YUKNOVA · AI YORDAMCHI</b><a href="../cabinet.html">Kabinetga qaytish</a></header>
+<main><section class="panel"><div class="top"><h2>Assalomu alaykum!</h2><p>YUKNOVA bo‘yicha savolingizni yozing. Men avtomatik javob beraman.</p></div>
 <div id="messages"><div class="msg ai">Salom! Yuk joylash, buyurtma olish, tariflar yoki hisobingiz bo‘yicha savolingizni yozishingiz mumkin.</div></div>
 <form id="chat"><textarea id="message" maxlength="2000" placeholder="Savolingizni yozing..." required></textarea><button id="send">Yuborish</button></form>
 <div class="note">AI xato qilishi mumkin. To‘lov, jarima va shaxsni tasdiqlash bo‘yicha yakuniy qarorni admin beradi. Parol yoki karta ma’lumotlarini yozmang.</div>
 </section></main>
   <script src="../config.js"></script>
 <script>
-const API = window.MUTX_API_URL,token=localStorage.getItem("mutx_token");
+const API = window.YUKNOVA_API_URL,token=localStorage.getItem("mutx_token");
 const box=document.getElementById("messages"),form=document.getElementById("chat"),input=document.getElementById("message"),send=document.getElementById("send");
 function add(text,kind){const el=document.createElement("div");el.className="msg "+kind;el.textContent=text;box.appendChild(el);box.scrollTop=box.scrollHeight;return el}
 form.addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message)return;if(!token){location.href="../login.html";return}
