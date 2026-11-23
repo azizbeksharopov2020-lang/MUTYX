@@ -34,6 +34,32 @@ input:focus,select:focus,textarea:focus{outline:3px solid #25a9ff2b!important;bo
 a{transition:color .2s,transform .2s}
 @media(max-width:600px){.card,.login-box,.register-box,.panel,.welcome{border-radius:18px!important;box-shadow:0 12px 25px #12365a17!important}button,.btn{min-height:44px}}
 </style>
+<style id="yuknova-advanced-3d">
+/* YUKNOVA advanced 3D surfaces */
+:root{--yn-depth:0 18px 36px rgba(5,28,57,.16),0 5px 0 rgba(10,65,116,.10),inset 0 1px 0 rgba(255,255,255,.9)}
+html{scroll-behavior:smooth}
+body{perspective:1200px}
+main,.container,.content,.dashboard{transform-style:preserve-3d}
+.card,.panel,.welcome,.login-box,.register-box,.feature,.step,.price,.portal-card{
+  transform-style:preserve-3d;
+  backface-visibility:hidden;
+  box-shadow:var(--yn-depth)!important;
+  transition:transform .28s cubic-bezier(.2,.75,.25,1),box-shadow .28s,filter .28s!important;
+}
+.card:hover,.panel:hover,.welcome:hover,.login-box:hover,.register-box:hover,.feature:hover,.step:hover,.price:hover{
+  transform:translateY(-5px) rotateX(1.2deg);
+  box-shadow:0 25px 44px rgba(5,28,57,.20),0 7px 0 rgba(10,65,116,.10),inset 0 1px 0 #fff!important;
+}
+button,.btn,a.button{transform-style:preserve-3d;transition:transform .2s,box-shadow .2s,filter .2s!important}
+button:hover,.btn:hover,a.button:hover{filter:brightness(1.07);transform:translateY(-2px)}
+input,select,textarea{transition:box-shadow .2s,border-color .2s,transform .2s!important}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(22,136,239,.13),inset 0 2px 5px rgba(23,59,92,.06)!important}
+header{position:relative;isolation:isolate}
+header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,#55caff,transparent);opacity:.8;pointer-events:none}
+@media(hover:none){.card:hover,.panel:hover,.welcome:hover,.login-box:hover,.register-box:hover,.feature:hover,.step:hover,.price:hover{transform:none}}
+@media(max-width:600px){.card,.panel,.welcome,.login-box,.register-box,.feature,.step,.price{box-shadow:0 12px 26px rgba(5,28,57,.14),inset 0 1px 0 #fff!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
 </head>
 
 <body>
