@@ -1,4 +1,4 @@
-"""MUTX API (FastAPI)
+"""YUKNOVA API (FastAPI)
 
 Muhim sozlamalar Render'dagi Environment bo'limida turadi (kodga yozilmaydi):
   DATABASE_URL  - bazaga ulanish manzili (Supabase "Session pooler" manzili)
@@ -71,7 +71,7 @@ JWT_AUDIENCE = "mutx-users"
 
 FEE_PER_TONNA = 10000  # har bir tomon uchun so'm / tonna
 
-# Frontend domenlari: Render Environment'da MUTX_FRONTEND_ORIGINS orqali
+# Frontend domenlari: Render Environment'da YUKNOVA_FRONTEND_ORIGINS orqali
 # vergul bilan ajratib qo'shish mumkin (masalan https://mutx.uz,https://www.mutx.uz).
 _default_origins = [
     "https://azizbeksharopov2020-lang.github.io",
@@ -80,7 +80,7 @@ _default_origins = [
 ]
 _custom_origins = [
     origin.strip().rstrip("/")
-    for origin in os.getenv("MUTX_FRONTEND_ORIGINS", "").split(",")
+    for origin in os.getenv("YUKNOVA_FRONTEND_ORIGINS", "").split(",")
     if origin.strip()
 ]
 ALLOWED_ORIGINS = list(dict.fromkeys(_default_origins + _custom_origins))
@@ -419,7 +419,7 @@ def load_public(load: Load, viewer_id: int) -> dict:
 # Ilova
 # ----------------------------------------------------------------------------
 
-app = FastAPI(title="MUTX API")
+app = FastAPI(title="YUKNOVA API")
 
 if os.getenv("RENDER"):
     app.add_middleware(HTTPSRedirectMiddleware)
@@ -836,12 +836,12 @@ def admin_audit(user: User = Depends(current_user), db: Session = Depends(get_db
 
 
 
-# ---------------------------- MUTX AI yordamchisi ---------------------------
+# ---------------------------- YUKNOVA AI yordamchisi ---------------------------
 AI_SYSTEM_PROMPT = """
-Siz MUTX logistika platformasining rasmiy AI yordamchisisiz.
-Faqat MUTX xizmatlari: ro'yxatdan o'tish, haydovchi/yuk egasi, yuk joylash,
+Siz YUKNOVA logistika platformasining rasmiy AI yordamchisisiz.
+Faqat YUKNOVA xizmatlari: ro'yxatdan o'tish, haydovchi/yuk egasi, yuk joylash,
 buyurtma qabul qilish, tariflar, admin va shikoyatlar haqida o'zbek tilida
-aniq va xushmuomala javob bering. MUTX qoidalarida noma'lum bo'lgan narsani
+aniq va xushmuomala javob bering. YUKNOVA qoidalarida noma'lum bo'lgan narsani
 to'qib chiqarmang; "bu masalani admin tasdiqlashi kerak" deb ayting.
 Har bir tomon uchun xizmat haqi 1 tonnaga 10 000 so'm deb tushuntiring.
 Parol, SMS-kod, karta raqami, CVV, API kalit yoki pasport ma'lumotlarini
@@ -875,13 +875,13 @@ async def ai_chat(data: AIChatIn, user: User = Depends(current_user)):
         answer = (response.output_text or "").strip()
         if not answer:
             raise HTTPException(status_code=502, detail="AI javobi bo'sh qaytdi. Qayta urinib ko'ring.")
-        return {"answer": answer, "assistant": "MUTX AI"}
+        return {"answer": answer, "assistant": "YUKNOVA AI"}
     except HTTPException:
         raise
     except Exception as exc:
         # Render Logs'da xato turi va OpenAI statusi ko'rinadi; maxfiy kalit logga yozilmaydi.
         logger.exception(
-            "MUTX AI request failed (type=%s, status=%s, code=%s)",
+            "YUKNOVA AI request failed (type=%s, status=%s, code=%s)",
             type(exc).__name__,
             getattr(exc, "status_code", None),
             getattr(exc, "code", None),
@@ -896,7 +896,7 @@ def health():
             connection.execute(select(1))
         return {"status": "ok", "database": "sqlite" if IS_SQLITE else "postgresql"}
     except Exception:
-        logger.exception("MUTX database health check failed")
+        logger.exception("YUKNOVA database health check failed")
         raise HTTPException(status_code=503, detail="Ma'lumotlar bazasiga ulanishda xatolik")
 
 
@@ -958,7 +958,7 @@ def register(data: RegisterIn, db: Session = Depends(get_db)):
 
     return {
         "success": True,
-        "message": "MUTX hisobingiz yaratildi",
+        "message": "YUKNOVA hisobingiz yaratildi",
         "user_id": user.id,
         "verified": user.verified,
         "token": make_token(user.id),
