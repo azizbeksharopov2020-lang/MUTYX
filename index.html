@@ -292,6 +292,62 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--yn-blue)!im
 header{backdrop-filter:blur(8px)}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+
+<style id="yuknova-homepage-2d-v1">
+/* Homepage refresh: flat 2D, clear actions, responsive layout */
+:root{--yn-ink:#102b4c;--yn-blue:#176fc4;--yn-cyan:#39a9ee;--yn-green:#0ca678;--yn-soft:#eef5fc}
+.mutx-hero{background:linear-gradient(120deg,#0c2c50 0%,#14558d 100%)!important;padding:42px 0 34px!important}
+.mutx-hero:before{background:linear-gradient(180deg,transparent 70%,#0c2c50 100%)!important}
+.mutx-hero>.wrap{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"pill pill" "copy art" "portal portal";align-items:center;column-gap:12px}
+.hero-topline{grid-area:pill}
+.hero-copy-wide{grid-area:copy;max-width:590px;padding:24px 0 10px!important}
+.hero-copy-wide h1{font-size:clamp(36px,4.6vw,58px)!important;line-height:1.08!important;letter-spacing:-1.4px!important}
+.hero-copy-wide h1 span{color:#72c8ff!important}
+.hero-copy-wide p{font-size:16px!important;max-width:510px!important}
+.hero-road-art{grid-area:art;height:330px!important;margin:0!important;align-self:center}
+.hero-truck-real{width:115%!important;right:-8%!important;filter:drop-shadow(0 9px 8px #071a3340)!important}
+.sunset{width:280px;height:180px;right:12%;background:radial-gradient(circle,#f7c66e 0,#f7c66e55 40%,transparent 72%)!important;filter:none!important}
+.mountain{background:#164b78!important;filter:none!important}
+.mountain-front{background:#103d66!important;opacity:1!important}
+.road-label{bottom:0!important;color:#dcefff}
+.hero-portal{grid-area:portal;width:100%;max-width:850px;margin:16px auto 0!important;background:#fff!important;border:1px solid #dceaf8!important;border-radius:18px!important;padding:12px!important;gap:10px!important;box-shadow:0 14px 35px #041a3030!important}
+.portal-card{min-height:112px!important;border:0!important;border-radius:13px!important;box-shadow:none!important;transition:transform .18s,filter .18s!important}
+.portal-card:hover{transform:translateY(-3px)!important;filter:brightness(1.04)}
+.portal-login{background:#eaf3ff!important;color:#164b80!important}
+.portal-owner{background:#e6f8f1!important;color:#08734f!important}
+.portal-driver{background:#eeeaff!important;color:#4934a5!important}
+.portal-register{background:#fff3e4!important;color:#9b4b00!important}
+.portal-sub{color:inherit!important;opacity:.78}
+.portal-arrow{color:inherit!important}
+.portal-logo{width:76px!important;height:76px!important;background:#fff!important;border:3px solid #1986d4!important;color:#123b63!important;box-shadow:0 0 0 5px #fff,0 5px 18px #123b6330!important;font-size:19px!important}
+.portal-logo span{color:#1689d4!important}
+.mutx-stats{background:#10385f!important}
+.register-inner{background:#eaf3fc!important;border:1px solid #d9e8f7}
+@media(max-width:760px){
+ .mutx-hero{padding:28px 0 24px!important}
+ .mutx-hero>.wrap{grid-template-columns:1fr;grid-template-areas:"pill" "copy" "art" "portal";row-gap:4px}
+ .hero-copy-wide{padding:18px 0 0!important;max-width:100%}
+ .hero-copy-wide h1{font-size:clamp(33px,9vw,46px)!important}
+ .hero-copy-wide p{font-size:15px!important}
+ .hero-actions{gap:9px!important;flex-wrap:wrap}
+ .hero-actions .btn{min-width:135px!important;min-height:46px!important;font-size:15px!important}
+ .hero-road-art{height:235px!important;margin-top:0!important}
+ .hero-truck-real{width:110%!important;right:-5%!important;height:100%!important}
+ .road-label{font-size:11px!important;bottom:0!important}
+ .hero-portal{margin-top:10px!important;grid-template-columns:1fr 1fr!important;padding:9px!important;gap:8px!important}
+ .portal-card{min-height:105px!important;padding:13px 28px 12px 13px!important}
+ .portal-icon{font-size:27px!important}
+ .portal-title{font-size:16px!important}
+ .portal-sub{font-size:11px!important}
+ .portal-arrow{right:9px!important;font-size:28px!important}
+ .portal-logo{width:58px!important;height:58px!important;font-size:14px!important;border-width:2px!important}
+ .mutx-stats .stats-grid{grid-template-columns:1fr!important;gap:15px!important}
+ .mutx-stats .stats-grid>div{border-right:0!important;border-bottom:1px solid #ffffff25!important;padding:12px!important}
+ .mutx-stats .stats-grid>div:last-child{border-bottom:0!important}
+ .register-inner{align-items:flex-start!important;flex-direction:column!important;padding:20px!important}
+}
+@media(prefers-reduced-motion:reduce){.portal-card{transition:none!important}}
+</style>
 </head>
 <body>
 <header><div class="wrap navbar">
