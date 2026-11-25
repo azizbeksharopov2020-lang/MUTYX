@@ -97,6 +97,16 @@ h1{font-size:clamp(39px,9vw,52px)}
 .truck-art img{position:relative;z-index:1;width:100%;height:100%;max-height:455px;object-fit:cover;object-position:center;border-radius:28px 0 0 28px;filter:drop-shadow(0 16px 22px #143b5b28)}
 .truck-art .hills{display:none}
 @media(max-width:700px){.truck-art img{max-height:260px;border-radius:22px;object-fit:cover}}
+
+/* Match the requested reference: concise homepage ending after role cards */
+.role-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-top:22px;padding-bottom:38px}
+.role-card{display:flex;align-items:center;gap:18px;padding:19px 22px;border-radius:18px;min-height:106px}
+.role-card>span{font-size:36px;color:#0873e8}
+.role-card h3{margin:0 0 4px;font-size:19px;color:#102746}
+.role-card p{margin:0;color:#526982;font-size:14px}
+.role-owner{background:#e5f3ff}.role-driver{background:#fff3df}.role-freight{background:#e4f8ef}
+.truck-art img{display:none}
+@media(max-width:700px){.role-cards{grid-template-columns:1fr;gap:10px;padding-top:14px}.role-card{min-height:85px;padding:14px 17px}.role-card h3{font-size:16px}}
 </style>
 </head>
 <body>
@@ -112,7 +122,14 @@ h1{font-size:clamp(39px,9vw,52px)}
 
 </div>
 <div class="truck-art"><div class="hills"></div>
-<img src="photo_2026-11-25_11-25-39.jpg" alt="YUKNOVA yuk mashinasi O‘zbekiston yo‘lida" loading="eager"></div></div></section>
+<svg viewBox="0 0 850 440" role="img" aria-label="YUKNOVA yuk mashinasi">
+<defs><linearGradient id="ytbox" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#dcecff"/></linearGradient><linearGradient id="ytcab" x2="1" y2="1"><stop stop-color="#42a5ff"/><stop offset="1" stop-color="#0750a7"/></linearGradient></defs>
+<path d="M0 330Q160 265 330 320T850 300V440H0Z" fill="#75b9e9"/><path d="M0 375Q210 330 400 370T850 350" fill="none" stroke="#fff" stroke-width="7" stroke-dasharray="35 22"/>
+<rect x="80" y="75" width="490" height="245" rx="20" fill="url(#ytbox)" stroke="#9fc9ef" stroke-width="5"/>
+<text x="145" y="220" font-size="66" font-family="Arial" font-weight="900" fill="#102746">YUK</text><text x="300" y="220" font-size="66" font-family="Arial" font-weight="900" fill="#0873e8">NOVA</text>
+<path d="M570 175h100q35 0 55 35l70 95v22H560V195q0-20 10-20Z" fill="url(#ytcab)" stroke="#0750a7" stroke-width="5"/><path d="M600 195h62q18 0 30 20l38 55H600Z" fill="#c9edff" stroke="#fff" stroke-width="5"/><path d="M560 310h300v25H560Z" fill="#132d4b"/>
+<g fill="#14263a"><circle cx="230" cy="335" r="53"/><circle cx="665" cy="335" r="53"/></g><g fill="#d9e9f7" stroke="#809ab2" stroke-width="5"><circle cx="230" cy="335" r="27"/><circle cx="665" cy="335" r="27"/></g><g fill="#6b8299"><circle cx="230" cy="335" r="10"/><circle cx="665" cy="335" r="10"/></g>
+</svg></div></div></section>
 <section class="wrap hero-stats" aria-label="Platforma imkoniyatlari">
 <div class="stat-item"><span class="stat-icon">♙</span><span><b>Yuk egalari</b><small>Yukni joylashtirish</small></span></div>
 <div class="stat-item"><span class="stat-icon">🚚</span><span><b>Haydovchilar</b><small>Mos yukni tanlash</small></span></div>
@@ -126,9 +143,11 @@ h1{font-size:clamp(39px,9vw,52px)}
 </section>
 <section class="content soft" id="about"><div class="wrap"><div class="heading"><span>QANDAY ISHLAYDI?</span><h2>YUKNOVA’dan foydalanish juda oson</h2><p>Bir necha oddiy qadamda yuk yoki transport toping.</p></div>
 <div class="steps"><article class="step"><div class="num">1</div><div class="ico">▤</div><h3>Ro‘yxatdan o‘ting</h3><p>Haydovchi yoki yuk egasi sifatida hisob yarating.</p></article><article class="step"><div class="num">2</div><div class="ico">📦</div><h3>Yuk yoki transport joylang</h3><p>Kerakli ma’lumotlarni kiriting va manzillarni belgilang.</p></article><article class="step"><div class="num">3</div><div class="ico">🤝</div><h3>Buyurtmani kelishing</h3><p>Buyurtma tafsilotlarini ko‘rib chiqing va tasdiqlang.</p></article><article class="step"><div class="num">4</div><div class="ico">🚛</div><h3>Yuk yetkaziladi</h3><p>Yuk belgilangan manzilga yetkazish jarayoniga o‘tadi.</p></article></div></div></section>
-<section class="content"><div class="wrap"><div class="heading"><span>TRANSPORT TURLARI</span><h2>Yukingizga mos transportni tanlang</h2><p>Turli yuklar uchun turli transport imkoniyatlari.</p></div><div class="vehicles"><div class="vehicle"><span>🚚</span><b>Yuk mashinasi</b></div><div class="vehicle"><span>🚐</span><b>Gazel</b></div><div class="vehicle"><span>🚛</span><b>Fura / Tirkama</b></div><div class="vehicle"><span>🧊</span><b>Refrijerator</b></div><div class="vehicle"><span>🚜</span><b>Boshqa</b></div></div></div></section>
-<section class="content soft"><div class="wrap"><div class="trust"><div><h2>Yuk tashish jarayoni — bitta qulay platformada</h2><p>YUKNOVA yuk egasi va haydovchiga kerakli ma’lumotlarni bir joyda ko‘rish, buyurtma tafsilotlarini kelishish va jarayonni boshqarishga yordam beradi.</p></div><div class="trust-list"><div>✓ Yuk va transport ma’lumotlari</div><div>✓ Yuk egasi va haydovchi uchun alohida bo‘limlar</div><div>✓ Buyurtma holati va tasdiqlash jarayoni</div><div>✓ Reyting va fikr bildirish imkoniyati</div></div></div></div></section>
-<section class="wrap"><div class="cta"><div><h2>YUKNOVA bilan ishni boshlang</h2><p>Hisob yarating va o‘zingizga kerakli bo‘limni tanlang.</p></div><a class="btn primary" href="pages/register.html">Ro‘yxatdan o‘tish →</a></div></section>
+<section class="wrap role-cards" aria-label="Platforma bo‘limlari">
+<a class="role-card role-owner" href="pages/owner.html"><span>♙</span><div><h3>Yuk egalari</h3><p>Yukini joylashtiradi</p></div></a>
+<a class="role-card role-driver" href="pages/driver.html"><span>🚚</span><div><h3>Haydovchilar</h3><p>Mos yuklarni topadi</p></div></a>
+<a class="role-card role-freight" href="pages/register.html"><span>⬡</span><div><h3>Yuk tashish</h3><p>Bir platformada</p></div></a>
+</section>
 </main>
 <footer><div class="wrap"><div class="foot"><a class="brand" href="#top" style="color:white">🚚 YUK<span>NOVA</span></a><div class="footlinks"><a href="#top">Bosh sahifa</a><a href="#services">Xizmatlar</a><a href="#about">Biz haqimizda</a><a href="pages/login.html">Kirish</a><a href="pages/register.html">Ro‘yxatdan o‘tish</a></div></div><div class="copyright">© 2026 YUKNOVA. Barcha huquqlar himoyalangan.</div></div></footer>
 <script>
