@@ -68,6 +68,26 @@ h1{font-size:clamp(39px,9vw,52px)}
 .tile h3{font-size:13px}
 }
 
+
+/* Final polish: remove repeated role strip and refine reference layout */
+.hero-grid{min-height:455px}
+.copy{padding:42px 0 36px}
+.truck-art{min-height:455px}
+.hero-stats{padding:18px 0 23px;border-bottom:1px solid #e8f0f8}
+.hero-stats .stat-item{min-width:190px}
+.quick{padding-top:22px;padding-bottom:30px}
+.tile{min-height:116px}
+.content.soft#about{padding-top:48px}
+@media(max-width:700px){
+.hero-grid{min-height:0}
+.copy{padding:30px 0 0}
+.truck-art{min-height:245px}
+.hero-stats{padding:14px 0 18px;gap:12px 18px}
+.hero-stats .stat-item{min-width:0;flex:1 1 28%}
+.quick{padding-top:14px;padding-bottom:20px}
+.tile{min-height:94px}
+}
+
 </style>
 </head>
 <body>
@@ -80,7 +100,7 @@ h1{font-size:clamp(39px,9vw,52px)}
 <section class="hero"><div class="wrap hero-grid">
 <div class="copy"><span class="pill">● O‘zbekiston bo‘ylab logistika platformasi</span><h1>Yuk va transport topish endi <em>oson!</em></h1><p>O‘zbekiston bo‘ylab yuk egalari va haydovchilarni bog‘laydigan zamonaviy logistika platformasi.</p>
 <div class="actions"><a class="btn primary" href="pages/owner.html">◇ Yuk joylashtirish →</a><a class="btn outline" href="pages/driver.html">🚚 Transport topish</a></div>
-<div class="mini"><div><i>♙</i><span><strong>Yuk egalari</strong><small>Yukni joylashtiring</small></span></div><div><i>🚚</i><span><strong>Haydovchilar</strong><small>Mos yukni tanlang</small></span></div><div><i>📍</i><span><strong>Qulay jarayon</strong><small>Manzillarni belgilang</small></span></div></div>
+
 </div>
 <div class="truck-art"><div class="hills"></div>
 <svg viewBox="0 0 850 440" role="img" aria-label="YUKNOVA yozuvli yuk mashinasi">
