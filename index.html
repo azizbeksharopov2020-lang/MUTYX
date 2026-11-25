@@ -23,6 +23,51 @@ footer{background:#102746;color:#dce9f7;padding:32px 0 20px}.foot{display:flex;j
 @media(max-width:700px){header{height:66px}.nav{gap:8px}.brand{font-size:21px}.logo{width:40px}.menu{display:block}nav{display:none;position:absolute;top:65px;left:4%;right:4%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px;box-shadow:0 12px 30px #17395d20;align-items:stretch;flex-direction:column}nav.open{display:flex}nav a{font-size:14px;padding:12px}.nav .outline{display:none}.nav .primary{padding:10px 12px;font-size:12px}.hero-grid{grid-template-columns:1fr;min-height:0}.copy{padding:32px 0 0}h1{font-size:clamp(39px,9vw,52px);margin:17px 0 12px}.copy p{font-size:15px}.actions{gap:9px}.actions .btn{flex:1;padding:13px 10px;font-size:14px}.mini{gap:14px;margin-top:20px}.mini i{font-size:21px}.mini strong{font-size:12px}.mini small{font-size:10px}.truck-art{min-height:230px;margin-top:4px}.truck-art svg{width:112%;max-height:280px}.hills{height:70px}.quick{grid-template-columns:1fr 1fr;gap:9px;padding-top:14px;padding-bottom:18px}.tile{min-height:92px;padding:12px}.tile i{font-size:25px}.tile h3{font-size:13px}.tile p{font-size:10px}.content{padding:43px 0!important}.heading{margin-bottom:22px}.steps{grid-template-columns:1fr 1fr;gap:10px}.step{padding:15px;min-height:160px}.step h3{font-size:14px}.step p{font-size:12px}.vehicles{grid-template-columns:repeat(2,1fr)}.trust{grid-template-columns:1fr;padding:22px;gap:16px}.trust h2{font-size:24px}.cta{display:block;padding:22px;margin-bottom:35px}.cta .btn{width:100%;margin-top:14px}.foot{display:block}.footlinks{margin-top:18px;gap:13px}}
 @media(max-width:390px){.brand{font-size:19px}.nav .primary{font-size:11px;padding:9px}.actions{flex-direction:column}.steps{grid-template-columns:1fr}.step{min-height:0}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* Reference-inspired YUKNOVA premium landing layout */
+.hero{background:linear-gradient(105deg,#eef7ff 0%,#e7f3ff 48%,#cfe8ff 100%)}
+.hero:after{width:760px;height:760px;border:1px solid #ffffffaa;box-shadow:0 0 0 32px #ffffff45,0 0 0 66px #ffffff25;right:-240px;top:-340px}
+.hero-grid{grid-template-columns:.94fr 1.06fr;min-height:430px;gap:0}
+.copy{padding:36px 0 30px}
+.pill{background:#e1efff;border-color:#c6e2ff;color:#1766bd}
+h1{font-size:clamp(43px,4.6vw,65px);line-height:1.02;letter-spacing:-2.4px;max-width:650px}
+.copy p{font-size:18px;max-width:540px}
+.truck-art{min-height:430px;margin-right:-4.3vw;margin-left:5px;overflow:hidden;border-radius:230px 0 0 230px;background:linear-gradient(145deg,#8bcaff 0%,#d7efff 45%,#9ccff0 100%)}
+.truck-art:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#d9efff 0%,transparent 35%),radial-gradient(ellipse at 70% 35%,#ffffff9c,transparent 52%)}
+.truck-art .hills{height:160px;background:linear-gradient(180deg,#8ecb76,#368c61);opacity:.95}
+.truck-art svg{width:118%;max-height:445px;transform:translateX(-2%);filter:drop-shadow(0 20px 18px #143b5b40)}
+.hero-stats{display:flex;gap:30px;align-items:center;flex-wrap:wrap;padding:4px 0 22px}
+.hero-stats .stat-item{display:flex;align-items:center;gap:10px;color:#075fc7}
+.hero-stats .stat-icon{font-size:28px;line-height:1}
+.hero-stats b{display:block;color:#102746;font-size:20px;line-height:1.1}
+.hero-stats small{display:block;color:#526982;font-size:12px;margin-top:3px}
+.quick{padding-top:24px;padding-bottom:27px;gap:18px}
+.tile{min-height:108px;padding:17px 19px;border-radius:17px;box-shadow:0 5px 18px #164a7a08;border:1px solid #e8eff7}
+.tile:nth-child(1){background:#e5f4ff}.tile:nth-child(2){background:#e3f8ef}.tile:nth-child(3){background:#fff2e3}.tile:nth-child(4){background:#f0eaff}
+.tile i{font-size:36px}.tile h3{font-size:17px}
+.heading h2{font-size:clamp(29px,3.5vw,40px)}
+.steps{gap:18px}
+.step{border:0;box-shadow:none;background:transparent;text-align:center;min-height:155px}
+.step .num{margin:0 auto 12px;width:36px;height:36px}
+.step .ico{font-size:34px}
+.content.soft#about{background:#fff}
+@media(max-width:700px){
+.hero-grid{grid-template-columns:1fr;min-height:0}
+.copy{padding:30px 0 0}
+h1{font-size:clamp(39px,9vw,52px)}
+.truck-art{margin:12px -4.9vw 0;border-radius:100px 0 0 0;min-height:240px}
+.truck-art svg{width:115%;max-height:275px}
+.truck-art .hills{height:78px}
+.hero-stats{gap:13px 19px;padding:14px 0 20px}
+.hero-stats .stat-icon{font-size:22px}
+.hero-stats b{font-size:15px}
+.hero-stats small{font-size:10px}
+.quick{padding-top:14px;gap:9px}
+.tile{min-height:92px;padding:12px}
+.tile i{font-size:26px}
+.tile h3{font-size:13px}
+}
+
 </style>
 </head>
 <body>
@@ -45,6 +90,11 @@ footer{background:#102746;color:#dce9f7;padding:32px 0 20px}.foot{display:flex;j
 <path d="M560 175h87q30 0 47 29l67 91q8 11 8 25v12H558V190q0-15 2-15z" fill="url(#cab)" stroke="#0754a5" stroke-width="4"/><path d="M584 191h59q17 0 28 18l39 54H584z" fill="url(#glass)" stroke="#e8f7ff" stroke-width="5"/><path d="M714 273l43 32v16h-43z" fill="#0b4d98" stroke="#9ed6ff" stroke-width="3"/><path d="M728 280l29 23v11h-29z" fill="#fff1bf"/><path d="M560 179l-17-16h-14" fill="none" stroke="#1c5e9d" stroke-width="6"/><rect x="516" y="156" width="18" height="13" rx="4" fill="#0c5aa8"/><path d="M735 316h40v16h-40z" fill="#d7e6f3"/><rect x="748" y="291" width="23" height="12" rx="4" fill="#fff4c8"/>
 <g><circle cx="230" cy="330" r="48" fill="#102033"/><circle cx="230" cy="330" r="25" fill="#b9cfe1" stroke="#edf7ff" stroke-width="4"/><circle cx="230" cy="330" r="10" fill="#637e99"/><circle cx="650" cy="330" r="48" fill="#102033"/><circle cx="650" cy="330" r="25" fill="#b9cfe1" stroke="#edf7ff" stroke-width="4"/><circle cx="650" cy="330" r="10" fill="#637e99"/></g>
 </svg></div></div></section>
+<section class="wrap hero-stats" aria-label="Platforma imkoniyatlari">
+<div class="stat-item"><span class="stat-icon">♙</span><span><b>Yuk egalari</b><small>Yukni joylashtirish</small></span></div>
+<div class="stat-item"><span class="stat-icon">🚚</span><span><b>Haydovchilar</b><small>Mos yukni tanlash</small></span></div>
+<div class="stat-item"><span class="stat-icon">📦</span><span><b>Yuk tashish</b><small>Bir platformada</small></span></div>
+</section>
 <section class="wrap quick" id="services">
 <a class="tile" href="pages/owner.html"><i>📦</i><div><h3>Yuk joylashtirish</h3><p>Yukingizni platformaga joylang</p></div></a>
 <a class="tile" href="pages/driver.html"><i>🚚</i><div><h3>Transport topish</h3><p>O‘zingizga mos yukni tanlang</p></div></a>
