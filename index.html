@@ -92,6 +92,11 @@ h1{font-size:clamp(39px,9vw,52px)}
 /* YUKNOVA final reference polish */
 .hero-grid{min-height:455px}.copy{padding:42px 0 36px}.truck-art{min-height:455px}.hero-stats{padding:18px 0 23px;border-bottom:1px solid #e8f0f8}.hero-stats .stat-item{min-width:190px}.quick{padding-top:22px;padding-bottom:30px}.tile{min-height:116px}.content.soft#about{padding-top:48px}
 @media(max-width:700px){.hero-grid{min-height:0}.copy{padding:30px 0 0}.truck-art{min-height:245px}.hero-stats{padding:14px 0 18px;gap:12px 18px}.hero-stats .stat-item{min-width:0;flex:1 1 28%}.quick{padding-top:14px;padding-bottom:20px}.tile{min-height:94px}}
+
+/* Use the newly uploaded hero photo */
+.truck-art img{position:relative;z-index:1;width:100%;height:100%;max-height:455px;object-fit:cover;object-position:center;border-radius:28px 0 0 28px;filter:drop-shadow(0 16px 22px #143b5b28)}
+.truck-art .hills{display:none}
+@media(max-width:700px){.truck-art img{max-height:260px;border-radius:22px;object-fit:cover}}
 </style>
 </head>
 <body>
@@ -107,13 +112,7 @@ h1{font-size:clamp(39px,9vw,52px)}
 
 </div>
 <div class="truck-art"><div class="hills"></div>
-<svg viewBox="0 0 850 440" role="img" aria-label="YUKNOVA yozuvli yuk mashinasi">
-<defs><linearGradient id="trailer" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#dcecff"/></linearGradient><linearGradient id="cab" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ed0ff"/><stop offset=".5" stop-color="#1478df"/><stop offset="1" stop-color="#06438e"/></linearGradient><linearGradient id="glass" x2="1" y2="1"><stop stop-color="#e4f8ff"/><stop offset="1" stop-color="#5793bd"/></linearGradient></defs>
-<path d="M0 270L90 205l65 38 82-100 82 96 83-65 92 84 84-114 100 119 75-73 97 80v90H0z" fill="#8ec7ed" opacity=".7"/><path d="M0 350Q180 300 370 338T850 318V440H0z" fill="#426987"/><path d="M0 383Q220 340 410 374T850 356" fill="none" stroke="#d7efff" stroke-width="5" opacity=".7"/><path d="M40 420l170-30m300 9l125-25m80 12l90-20" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
-<path d="M105 76Q105 55 128 55h420q20 0 20 22v230H105z" fill="url(#trailer)" stroke="#b7d7f2" stroke-width="4"/><path d="M124 77h423" stroke="#fff" stroke-width="8"/><path d="M140 110v175M530 110v175" stroke="#b7d2e9" stroke-width="3"/><rect x="172" y="157" width="270" height="82" rx="12" fill="#f1f7ff" stroke="#d6e8f8" stroke-width="2"/><text x="190" y="213" font-size="54" font-family="Arial" font-weight="900" fill="#102746">YUK</text><text x="312" y="213" font-size="54" font-family="Arial" font-weight="900" fill="#0873e8">NOVA</text><path d="M170 247h330" stroke="#0a76df" stroke-width="8" stroke-linecap="round"/><path d="M85 304h640v24H85z" fill="#152f4b"/>
-<path d="M560 175h87q30 0 47 29l67 91q8 11 8 25v12H558V190q0-15 2-15z" fill="url(#cab)" stroke="#0754a5" stroke-width="4"/><path d="M584 191h59q17 0 28 18l39 54H584z" fill="url(#glass)" stroke="#e8f7ff" stroke-width="5"/><path d="M714 273l43 32v16h-43z" fill="#0b4d98" stroke="#9ed6ff" stroke-width="3"/><path d="M728 280l29 23v11h-29z" fill="#fff1bf"/><path d="M560 179l-17-16h-14" fill="none" stroke="#1c5e9d" stroke-width="6"/><rect x="516" y="156" width="18" height="13" rx="4" fill="#0c5aa8"/><path d="M735 316h40v16h-40z" fill="#d7e6f3"/><rect x="748" y="291" width="23" height="12" rx="4" fill="#fff4c8"/>
-<g><circle cx="230" cy="330" r="48" fill="#102033"/><circle cx="230" cy="330" r="25" fill="#b9cfe1" stroke="#edf7ff" stroke-width="4"/><circle cx="230" cy="330" r="10" fill="#637e99"/><circle cx="650" cy="330" r="48" fill="#102033"/><circle cx="650" cy="330" r="25" fill="#b9cfe1" stroke="#edf7ff" stroke-width="4"/><circle cx="650" cy="330" r="10" fill="#637e99"/></g>
-</svg></div></div></section>
+<img src="photo_2026-11-25_11-25-39.jpg" alt="YUKNOVA yuk mashinasi O‘zbekiston yo‘lida" loading="eager"></div></div></section>
 <section class="wrap hero-stats" aria-label="Platforma imkoniyatlari">
 <div class="stat-item"><span class="stat-icon">♙</span><span><b>Yuk egalari</b><small>Yukni joylashtirish</small></span></div>
 <div class="stat-item"><span class="stat-icon">🚚</span><span><b>Haydovchilar</b><small>Mos yukni tanlash</small></span></div>
