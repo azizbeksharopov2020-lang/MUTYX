@@ -1,464 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#10233f">
-<title>YUKNOVA — Yuk va transport bir platformada</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>YUKNOVA — Yuk va transport topish endi oson</title>
 <style>
-:root{--navy:#10233f;--navy2:#17385f;--blue:#2678df;--blue2:#4d9cff;--green:#12a879;--ink:#172b45;--muted:#65758b;--bg:#f5f8fc;--line:#e5ecf4;--white:#fff}
-*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
-a{color:inherit;text-decoration:none}.wrap{width:min(1160px,90%);margin:auto}
-header{position:sticky;top:0;z-index:50;background:#10233ff5;backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid #ffffff16}
-.navbar{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:6px;padding-bottom:6px}
-.logo{font-size:27px;font-weight:950;letter-spacing:1.5px;color:#fff}.logo span{color:#56a7ff}
-nav{display:flex;align-items:center;gap:8px}nav a{padding:10px 13px;border-radius:9px;color:#dbe8f8;font-size:14px;font-weight:650}nav a:hover{background:#ffffff15;color:white}
-.nav-actions{display:flex;gap:10px;align-items:center}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:11px;font-weight:800;font-size:14px;transition:.2s;border:1px solid transparent}
-.btn:hover{transform:translateY(-2px)}.btn-blue{background:var(--blue);color:white;box-shadow:0 8px 20px #2678df30}.btn-green{background:var(--green);color:white}.btn-light{background:white;color:#1758a0}
-.menu-wrap{position:relative}
-.menu-toggle{display:block;background:#ffffff15;border:1px solid #ffffff30;color:#fff;border-radius:12px;width:48px;height:46px;font-size:25px;cursor:pointer}
-.menu-panel{position:absolute;right:0;top:58px;width:min(300px,88vw);padding:9px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 48px #06182d35;z-index:80}
-.menu-panel[hidden]{display:none}
-.menu-panel a{display:flex;align-items:center;gap:13px;padding:13px 12px;border-radius:11px;color:var(--ink)}
-.menu-panel a:hover{background:#f0f6fd}
-.menu-panel a>span:first-child{font-size:22px;width:30px;text-align:center}
-.menu-panel b,.menu-panel small{display:block}
-.menu-panel b{font-size:14px}
-.menu-panel small{font-size:12px;color:var(--muted);margin-top:2px}
-.hero{position:relative;overflow:hidden;padding:76px 0 68px;background:radial-gradient(ellipse at 85% 20%,#2e82db55,transparent 35%),linear-gradient(120deg,#10233f,#163e6d 65%,#1e64a6);color:#fff}
-.hero:before,.hero:after{content:"";position:absolute;border:1px solid #ffffff12;border-radius:50%;pointer-events:none}.hero:before{width:520px;height:520px;right:-170px;top:-280px}.hero:after{width:380px;height:380px;right:-100px;top:-210px}
-.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:48px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:99px;background:#ffffff16;border:1px solid #ffffff24;color:#d9eaff;font-size:13px;font-weight:700}
-.eyebrow i{width:7px;height:7px;border-radius:50%;background:#4de0ac;box-shadow:0 0 0 5px #4de0ac20}
-h1{font-size:clamp(36px,5vw,59px);line-height:1.08;letter-spacing:-1.8px;margin:20px 0 18px;max-width:690px}
-.hero-copy{font-size:17px;color:#d8e7f8;max-width:570px;line-height:1.8;margin:0 0 28px}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero-note{font-size:12px;color:#b7cbe2;margin-top:18px}
-.route-card{background:#fff;color:var(--ink);border:1px solid #ffffff50;border-radius:22px;padding:22px;box-shadow:0 28px 65px #06182d55;transform:rotate(1deg)}.truck-scene{position:relative;min-height:355px;display:flex;flex-direction:column;justify-content:space-between;padding:22px 10px 16px;overflow:hidden;border-radius:24px;background:linear-gradient(145deg,#ffffff20,#ffffff08);border:1px solid #ffffff25;box-shadow:0 28px 65px #06182d40}
-.truck-glow{position:absolute;width:310px;height:310px;right:5%;top:10px;border-radius:50%;background:#70baff25;filter:blur(25px)}
-.truck-caption{position:relative;z-index:1;padding:0 14px;color:#fff}
-.truck-caption strong{display:block;font-size:22px;margin-top:13px}
-.truck-caption small{display:block;color:#d7e9fc;margin-top:4px;font-size:13px}
-.hero-truck{position:relative;z-index:1;width:100%;height:auto;max-height:250px;overflow:visible;filter:drop-shadow(0 18px 18px #071a3340)}
-.truck-route{position:relative;z-index:1;display:flex;align-items:center;gap:10px;justify-content:center;color:#eaf5ff;font-size:12px;font-weight:750;padding:0 10px}
-.route-dots{height:2px;flex:1;max-width:80px;background:repeating-linear-gradient(90deg,#9ed0ff 0 7px,transparent 7px 13px)}
-@media(max-width:700px){.truck-scene{min-height:285px;padding:18px 7px 14px}.hero-truck{max-height:205px}.truck-caption strong{font-size:20px}}
-.route-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.route-head strong{font-size:16px}.live{font-size:11px;color:#07875d;background:#e5f8f1;border-radius:30px;padding:6px 9px;font-weight:800}
-.route-line{display:grid;grid-template-columns:22px 1fr;gap:12px}.route-pins{display:flex;flex-direction:column;align-items:center;padding-top:5px}.pin{width:12px;height:12px;border:3px solid #2c83e6;border-radius:50%;background:#fff}.pin.end{border-color:#12a879}.dash{height:55px;border-left:2px dashed #c6d5e6;margin:4px 0}
-.route-point small{display:block;color:#8290a3;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px}.route-point b{display:block;font-size:15px;margin:2px 0 15px}
-.route-footer{border-top:1px solid var(--line);padding-top:15px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}.route-footer b{font-size:13px;color:#1b6dbe}
-.stats{position:relative;z-index:2;margin-top:-1px;background:white;border-bottom:1px solid var(--line)}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);padding:24px 0}.stat{text-align:center;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat b{display:block;font-size:23px;color:#1c68b7}.stat span{font-size:13px;color:var(--muted)}
-section{padding:66px 0}.section-head{text-align:center;max-width:660px;margin:0 auto 32px}.kicker{color:#2477cf;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}.section-head h2{font-size:clamp(27px,3.5vw,37px);letter-spacing:-.8px;margin:8px 0 10px}.section-head p{color:var(--muted);margin:0}
-.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.feature{background:white;border:1px solid var(--line);border-radius:17px;padding:25px;box-shadow:0 9px 25px #102b4d08}.feature-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#eaf3ff;font-size:24px;margin-bottom:17px}.feature h3{font-size:18px;margin:0 0 8px}.feature p{font-size:14px;color:var(--muted);line-height:1.75;margin:0}
-.action-card{display:block;color:inherit;text-decoration:none;transition:transform .2s,box-shadow .2s,border-color .2s}
-.action-card:hover{transform:translateY(-5px);border-color:#9bc7f3;box-shadow:0 18px 36px #176fc41c}
-.action-link{display:inline-block;margin-top:18px;color:#176fc4;font-size:14px;font-weight:850}
-.steps{background:#edf4fc}.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.step{background:#fff;border:1px solid #e0eaf5;border-radius:16px;padding:22px}.step-num{font-size:12px;font-weight:900;color:#2678df;background:#eaf3ff;border-radius:8px;padding:6px 9px;display:inline-block;margin-bottom:13px}.step h3{margin:0 0 7px;font-size:17px}.step p{margin:0;color:var(--muted);font-size:14px}
-.vehicle-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.vehicle{background:white;border:1px solid var(--line);border-radius:14px;padding:18px 12px;text-align:center}.vehicle .emoji{font-size:28px;display:block;margin-bottom:8px}.vehicle b{font-size:13px}
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.price{background:white;border:1px solid var(--line);border-radius:17px;padding:23px}.price.highlight{border:2px solid #2b80df;box-shadow:0 14px 30px #2678df17}.price h3{font-size:16px;margin:0 0 10px}.price strong{font-size:25px;color:#1769bd;display:block}.price p{font-size:13px;color:var(--muted);margin:7px 0 0}.price-note{background:#eaf3ff;border-radius:12px;padding:14px 17px;color:#315274;font-size:13px;margin-top:17px}
-.security{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px}.security h2{font-size:27px;margin:8px 0 12px}.security p{color:var(--muted);font-size:14px}.security-list{display:grid;gap:10px}.security-list div{padding:12px 14px;background:#f5f8fc;border-radius:11px;font-size:14px;font-weight:700}
-.cta{background:linear-gradient(115deg,#12325a,#2678d6);color:#fff;border-radius:22px;padding:36px;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta h2{margin:0 0 7px;font-size:26px}.cta p{margin:0;color:#d8e8fa;font-size:14px}
-footer{background:#10233f;color:#d6e4f5;padding:32px 0 24px}.footer-row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}.footer-brand p{font-size:13px;color:#a9bdd4;margin-top:7px}.footer-links{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#d6e4f5}.copyright{border-top:1px solid #ffffff20;margin-top:24px;padding-top:18px;color:#8fa8c4;font-size:12px}
-@media(max-width:900px){.hero-grid{grid-template-columns:1fr .8fr;gap:25px}.vehicle-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.wrap{width:91%}.navbar{min-height:58px;padding-top:5px;padding-bottom:5px}.logo{font-size:25px}.menu-toggle{width:42px;height:40px;font-size:22px}.hero{padding:48px 0 42px}.hero-grid{grid-template-columns:1fr;gap:30px}h1{font-size:39px;letter-spacing:-1.2px}.hero-copy{font-size:15px}.route-card{max-width:440px;width:100%;margin:auto;transform:none}.stats-grid{padding:18px 0}.stat b{font-size:19px}.stat span{font-size:11px}.stat{padding:0 5px}section{padding:48px 0}.feature-grid,.steps-grid{grid-template-columns:1fr}.feature{padding:20px}.vehicle-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.security{grid-template-columns:1fr;padding:22px;gap:16px}.security h2{font-size:24px}.cta{padding:25px;display:block}.cta .btn{margin-top:17px}.footer-row{display:block}.footer-links{margin-top:18px}}
-@media(max-width:390px){h1{font-size:34px}.nav-actions .btn{padding:9px 10px}.hero-actions .btn{width:100%}.vehicle{padding:15px 8px}}
-/* Compact, focused YUKNOVA landing page */
-.home-hero{background:radial-gradient(circle at 88% 22%,#2466a5 0,transparent 36%),linear-gradient(125deg,#10233f,#174a7e);color:#fff;padding:48px 0 52px;overflow:hidden}
-.home-grid{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:34px}
-.home-copy h1{font-size:clamp(34px,4.2vw,54px);line-height:1.12;letter-spacing:-1.4px;margin:17px 0}
-.home-copy h1 span{color:#79baff}.home-copy>p{font-size:17px;color:#d6e5f6;max-width:520px;line-height:1.75;margin:0}
-.home-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.home-trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;color:#c5dcf4;font-size:12px;font-weight:700}
-.home-hero .truck-scene{min-height:300px;background:linear-gradient(145deg,#ffffff22,#ffffff0a);border:1px solid #ffffff35}
-.home-hero .hero-truck{max-height:220px}
-.choose-section{padding:46px 0 52px;background:#f5f8fc}
-.choose-heading{text-align:center;margin:0 auto 25px;max-width:600px}
-.choose-heading h2{font-size:clamp(25px,3vw,34px);margin:8px 0;color:#172b45}
-.choose-heading p{color:#718096;margin:0}
-.choose-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.choose-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:23px;background:#fff;border:1px solid #e3ebf4;border-radius:18px;box-shadow:0 8px 24px #183b6010;transition:transform .2s,box-shadow .2s}
-.choose-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px #183b601b}
-.choose-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#edf4ff;font-size:24px}
-.choose-title{font-size:19px;font-weight:850;color:#172b45;margin-top:5px}
-.choose-desc{font-size:13px;color:#718096;line-height:1.5}
-.choose-arrow{font-size:13px;font-weight:850;color:#2678df;margin-top:6px}
-.register-strip{margin-top:18px;padding:17px 20px;border-radius:16px;background:#eaf2fc;display:flex;justify-content:space-between;align-items:center;gap:15px}
-.register-strip b,.register-strip span{display:block}.register-strip b{font-size:15px;color:#172b45}.register-strip div span{font-size:12px;color:#718096;margin-top:2px}
-.register-strip>a{font-size:13px;font-weight:850;color:#1673ce;white-space:nowrap}
-@media(max-width:760px){.home-hero{padding:30px 0 34px}.home-grid{grid-template-columns:1fr;gap:24px}.home-copy h1{font-size:35px;max-width:500px}.home-copy>p{font-size:15px}.home-actions .btn{flex:1;justify-content:center}.home-trust{gap:10px}.home-hero .truck-scene{min-height:250px}.home-hero .hero-truck{max-height:175px}.choose-section{padding:32px 0 38px}.choose-heading{margin-bottom:18px}.choose-grid{grid-template-columns:1fr;gap:11px}.choose-card{display:grid;grid-template-columns:48px 1fr auto;align-items:center;column-gap:12px;padding:14px 15px}.choose-icon{grid-row:span 2}.choose-title{font-size:16px;margin:0}.choose-desc{font-size:12px}.choose-arrow{grid-column:3;grid-row:1/3;align-self:center;margin:0}.register-strip{padding:14px;align-items:flex-start;flex-direction:column;gap:8px}}
-@media(min-width:761px){.home-hero .truck-scene{max-width:560px;margin-left:auto}}
-
-/* YUKNOVA approved premium truck homepage */
-.mutx-hero{position:relative;overflow:hidden;color:#fff;padding:38px 0 24px;background:radial-gradient(ellipse at 82% 40%,#f18b3c 0,transparent 25%),radial-gradient(ellipse at 78% 58%,#15599b 0,transparent 42%),linear-gradient(125deg,#031b37 0%,#06305e 52%,#0b2547 100%)}
-.mutx-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,#031b37 100%);pointer-events:none}
-.hero-topline,.hero-copy-wide,.hero-road-art{position:relative;z-index:1}
-.hero-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #24a9ef;border-radius:40px;padding:9px 15px;background:#06294caa;color:#e8f6ff;font-weight:800;font-size:14px}
-.hero-copy-wide{max-width:610px;padding-top:25px}
-.hero-copy-wide h1{font-size:clamp(36px,5.3vw,62px);line-height:1.05;letter-spacing:-1.8px;margin:0 0 16px}
-.hero-copy-wide h1 span{color:#29b5f5}
-.hero-copy-wide p{max-width:570px;font-size:17px;line-height:1.65;color:#e0edfa;margin:0}
-.hero-actions{display:flex;gap:13px;margin-top:24px}
-.hero-actions .btn{min-width:170px;min-height:52px;border-radius:13px;font-size:17px}
-.hero-actions .btn-green{background:linear-gradient(110deg,#00a96b,#00bf80);box-shadow:0 9px 25px #00a96b35}
-.hero-road-art{height:330px;margin-top:-40px;pointer-events:none}
-.sunset{position:absolute;width:370px;height:230px;right:5%;top:4px;border-radius:50%;background:radial-gradient(circle,#ffcf79 0,#f58a3e55 36%,transparent 72%);filter:blur(14px)}
-.mountain{position:absolute;bottom:35px;left:-5%;width:110%;height:125px;background:#092b51;clip-path:polygon(0 75%,12% 43%,23% 70%,38% 20%,50% 63%,66% 31%,82% 72%,92% 38%,100% 70%,100% 100%,0 100%)}
-.mountain-front{height:92px;bottom:20px;background:#0b2441;opacity:.8;clip-path:polygon(0 63%,18% 30%,31% 75%,48% 38%,65% 67%,81% 28%,100% 70%,100% 100%,0 100%)}
-.hero-truck-real{position:absolute;right:0;bottom:0;width:min(780px,100%);height:100%;z-index:2;filter:drop-shadow(0 18px 22px #0008)}
-.road-label{position:absolute;z-index:3;bottom:5px;left:12%;right:12%;display:flex;align-items:center;justify-content:center;gap:14px;color:#dcefff;font-weight:800;font-size:13px}
-.road-label i{height:3px;width:90px;background:repeating-linear-gradient(90deg,#9fd5ff 0 9px,transparent 9px 17px)}
-.service-band{padding:22px 0;background:#f6f9fd}
-.service-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid #e5edf6;border-radius:22px;box-shadow:0 14px 35px #102b4d12;padding:20px 8px}
-.service-grid a{display:flex;min-height:95px;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;border-right:1px solid #dce7f2;padding:8px;color:#132d4d}
-.service-grid a:last-child{border:0}.service-grid a span{font-size:34px;line-height:1;color:#1682ec;font-weight:900}.service-grid a b{font-size:14px}
-.mutx-stats{padding:28px 0 40px;background:linear-gradient(130deg,#031b37,#073967);color:#fff}
-.mutx-stats .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0}
-.mutx-stats .stats-grid>div{display:flex;flex-direction:column;align-items:center;text-align:center;border-right:1px solid #ffffff28;padding:4px 12px}
-.mutx-stats .stats-grid>div:last-child{border:0}.mutx-stats .stats-grid span{font-size:30px;color:#9bdcff}.mutx-stats .stats-grid b{font-size:21px;margin:4px 0}.mutx-stats .stats-grid small{font-size:13px;color:#c6d9ed}
-.register-bottom{padding:35px 0;background:#f3f7fc}
-.register-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#e8f2fc;border-radius:20px;padding:24px 28px}
-.register-inner h2{font-size:25px;margin:5px 0;color:#132d4d}.register-inner p{margin:0;color:#65758b}
-@media(max-width:700px){
-.mutx-hero{padding:25px 0 16px;min-height:0;background:radial-gradient(ellipse at 80% 48%,#e97e37 0,transparent 30%),linear-gradient(145deg,#031a34,#06315e 65%,#082747)}
-.hero-pill{font-size:12px;padding:8px 12px}
-.hero-copy-wide{padding-top:22px}
-.hero-copy-wide h1{font-size:39px;max-width:500px;letter-spacing:-1.2px;margin-bottom:13px}
-.hero-copy-wide p{font-size:15px;line-height:1.55;max-width:470px}
-.hero-actions{gap:10px;margin-top:20px}
-.hero-actions .btn{flex:1;min-width:0;min-height:50px;font-size:15px;padding:11px 12px}
-.hero-road-art{height:250px;margin-top:-4px}
-.sunset{width:260px;height:170px;right:-3%;top:16px}
-.hero-truck-real{width:116%;right:-9%;height:100%}
-.road-label{bottom:0;font-size:11px;gap:9px}
-.road-label i{width:62px}
-.service-band{padding:17px 0}
-.service-grid{grid-template-columns:repeat(4,1fr);border-radius:17px;padding:12px 2px}
-.service-grid a{min-height:80px;padding:6px 3px;gap:7px}
-.service-grid a span{font-size:26px}
-.service-grid a b{font-size:10px;line-height:1.3}
-.mutx-stats{padding:23px 0 28px}
-.mutx-stats .stats-grid>div{padding:2px 5px}
-.mutx-stats .stats-grid span{font-size:24px}
-.mutx-stats .stats-grid b{font-size:14px;line-height:1.3}
-.mutx-stats .stats-grid small{font-size:10px;line-height:1.4}
-.register-inner{display:block;padding:20px}
-.register-inner h2{font-size:22px}
-.register-inner .btn{margin-top:16px;width:100%}
-}
-@media(max-width:370px){.hero-copy-wide h1{font-size:34px}.hero-road-art{height:220px}.service-grid a b{font-size:9px}}
-
-/* YUKNOVA approved premium truck homepage */
-.mutx-hero{position:relative;overflow:hidden;color:#fff;padding:38px 0 24px;background:radial-gradient(ellipse at 82% 40%,#f18b3c 0,transparent 25%),radial-gradient(ellipse at 78% 58%,#15599b 0,transparent 42%),linear-gradient(125deg,#031b37 0%,#06305e 52%,#0b2547 100%)}
-.mutx-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,#031b37 100%);pointer-events:none}
-.hero-topline,.hero-copy-wide,.hero-road-art{position:relative;z-index:1}
-.hero-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #24a9ef;border-radius:40px;padding:9px 15px;background:#06294caa;color:#e8f6ff;font-weight:800;font-size:14px}
-.hero-copy-wide{max-width:610px;padding-top:25px}
-.hero-copy-wide h1{font-size:clamp(36px,5.3vw,62px);line-height:1.05;letter-spacing:-1.8px;margin:0 0 16px}
-.hero-copy-wide h1 span{color:#29b5f5}
-.hero-copy-wide p{max-width:570px;font-size:17px;line-height:1.65;color:#e0edfa;margin:0}
-.hero-actions{display:flex;gap:13px;margin-top:24px}
-.hero-actions .btn{min-width:170px;min-height:52px;border-radius:13px;font-size:17px}
-.hero-actions .btn-green{background:linear-gradient(110deg,#00a96b,#00bf80);box-shadow:0 9px 25px #00a96b35}
-.hero-road-art{height:330px;margin-top:-40px;pointer-events:none}
-.sunset{position:absolute;width:370px;height:230px;right:5%;top:4px;border-radius:50%;background:radial-gradient(circle,#ffcf79 0,#f58a3e55 36%,transparent 72%);filter:blur(14px)}
-.mountain{position:absolute;bottom:35px;left:-5%;width:110%;height:125px;background:#092b51;clip-path:polygon(0 75%,12% 43%,23% 70%,38% 20%,50% 63%,66% 31%,82% 72%,92% 38%,100% 70%,100% 100%,0 100%)}
-.mountain-front{height:92px;bottom:20px;background:#0b2441;opacity:.8;clip-path:polygon(0 63%,18% 30%,31% 75%,48% 38%,65% 67%,81% 28%,100% 70%,100% 100%,0 100%)}
-.hero-truck-real{position:absolute;right:0;bottom:0;width:min(780px,100%);height:100%;z-index:2;filter:drop-shadow(0 18px 22px #0008)}
-.road-label{position:absolute;z-index:3;bottom:5px;left:12%;right:12%;display:flex;align-items:center;justify-content:center;gap:14px;color:#dcefff;font-weight:800;font-size:13px}
-.road-label i{height:3px;width:90px;background:repeating-linear-gradient(90deg,#9fd5ff 0 9px,transparent 9px 17px)}
-.service-band{padding:22px 0;background:#f6f9fd}
-.service-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid #e5edf6;border-radius:22px;box-shadow:0 14px 35px #102b4d12;padding:20px 8px}
-.service-grid a{display:flex;min-height:95px;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;border-right:1px solid #dce7f2;padding:8px;color:#132d4d}
-.service-grid a:last-child{border:0}.service-grid a span{font-size:34px;line-height:1;color:#1682ec;font-weight:900}.service-grid a b{font-size:14px}
-.mutx-stats{padding:28px 0 40px;background:linear-gradient(130deg,#031b37,#073967);color:#fff}
-.mutx-stats .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0}
-.mutx-stats .stats-grid>div{display:flex;flex-direction:column;align-items:center;text-align:center;border-right:1px solid #ffffff28;padding:4px 12px}
-.mutx-stats .stats-grid>div:last-child{border:0}.mutx-stats .stats-grid span{font-size:30px;color:#9bdcff}.mutx-stats .stats-grid b{font-size:21px;margin:4px 0}.mutx-stats .stats-grid small{font-size:13px;color:#c6d9ed}
-.register-bottom{padding:35px 0;background:#f3f7fc}
-.register-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#e8f2fc;border-radius:20px;padding:24px 28px}
-.register-inner h2{font-size:25px;margin:5px 0;color:#132d4d}.register-inner p{margin:0;color:#65758b}
-@media(max-width:700px){
-.mutx-hero{padding:25px 0 16px;min-height:0;background:radial-gradient(ellipse at 80% 48%,#e97e37 0,transparent 30%),linear-gradient(145deg,#031a34,#06315e 65%,#082747)}
-.hero-pill{font-size:12px;padding:8px 12px}.hero-copy-wide{padding-top:22px}
-.hero-copy-wide h1{font-size:39px;max-width:500px;letter-spacing:-1.2px;margin-bottom:13px}
-.hero-copy-wide p{font-size:15px;line-height:1.55;max-width:470px}
-.hero-actions{gap:10px;margin-top:20px}.hero-actions .btn{flex:1;min-width:0;min-height:50px;font-size:15px;padding:11px 12px}
-.hero-road-art{height:250px;margin-top:-4px}.sunset{width:260px;height:170px;right:-3%;top:16px}
-.hero-truck-real{width:116%;right:-9%;height:100%}
-.road-label{bottom:0;font-size:11px;gap:9px}.road-label i{width:62px}
-.service-band{padding:17px 0}.service-grid{grid-template-columns:repeat(4,1fr);border-radius:17px;padding:12px 2px}
-.service-grid a{min-height:80px;padding:6px 3px;gap:7px}.service-grid a span{font-size:26px}.service-grid a b{font-size:10px;line-height:1.3}
-.mutx-stats{padding:23px 0 28px}.mutx-stats .stats-grid>div{padding:2px 5px}
-.mutx-stats .stats-grid span{font-size:24px}.mutx-stats .stats-grid b{font-size:14px;line-height:1.3}
-.mutx-stats .stats-grid small{font-size:10px;line-height:1.4}
-.register-inner{display:block;padding:20px}.register-inner h2{font-size:22px}.register-inner .btn{margin-top:16px;width:100%}
-}
-@media(max-width:370px){.hero-copy-wide h1{font-size:34px}.hero-road-art{height:220px}.service-grid a b{font-size:9px}}
-
-/* refined truck illustration: dimensional bodywork and cleaner mobile scale */
-.hero-truck-real{filter:drop-shadow(0 20px 25px #0009);transform:translateY(2px)}
-.hero-road-art{isolation:isolate}
-.sunset{background:radial-gradient(circle,#ffd18a 0,#f58a3e66 34%,#f58a3e00 72%);opacity:.95}
-@media(max-width:700px){.hero-truck-real{width:119%;right:-10%;height:100%;transform:translateY(0)}.hero-road-art{height:258px}}
-
-/* One-screen YUKNOVA 3D landing portal */
-.mutx-hero{padding-bottom:34px;background:radial-gradient(ellipse at 82% 38%,#ff8a36 0,transparent 27%),linear-gradient(145deg,#03152f 0%,#052e59 55%,#03172f 100%)}
-.hero-road-art{height:340px;margin-top:2px;overflow:visible}
-.hero-truck-real{width:min(820px,100%);right:0;bottom:0}
-.hero-portal{position:relative;z-index:5;max-width:850px;margin:4px auto 0;padding:17px;display:grid;grid-template-columns:1fr 1fr;gap:13px;border:1px solid #36bfff;border-radius:28px;background:linear-gradient(145deg,#092d55ed,#061a36f5);box-shadow:0 0 0 3px #087de733,0 20px 50px #0008,inset 0 1px 0 #ffffff35}
-.portal-card{position:relative;min-height:132px;padding:19px 48px 17px 22px;border-radius:22px;display:flex;flex-direction:column;justify-content:center;text-decoration:none;color:#fff;border:2px solid #5bc7ff;box-shadow:inset 0 1px 0 #ffffff55,0 7px 18px #0004;transition:transform .2s,filter .2s}
-.portal-card:active{transform:scale(.98)}
-.portal-login{background:linear-gradient(135deg,#087ce1,#063e91);border-color:#35caff}
-.portal-owner{background:linear-gradient(135deg,#00b979,#00643f);border-color:#30f0b2}
-.portal-driver{background:linear-gradient(135deg,#6537ee,#30218d);border-color:#a68aff}
-.portal-register{background:linear-gradient(135deg,#ff9c13,#b94b00);border-color:#ffc044}
-.portal-icon{font-size:37px;line-height:1.1;margin-bottom:8px;filter:drop-shadow(0 4px 3px #0005)}
-.portal-title{font-size:21px;line-height:1.2;font-weight:900;letter-spacing:-.3px}
-.portal-sub{font-size:14px;color:#eef7ff;margin-top:6px}
-.portal-arrow{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:38px;font-weight:300;color:#dff6ff}
-.portal-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 25%,#104f8c,#03172e 70%);border:3px solid #08c5ff;box-shadow:0 0 0 5px #061d3d,0 0 28px #00aaffaa;color:#fff;font-size:27px;font-weight:1000;letter-spacing:-1px;pointer-events:none}
-.portal-logo span{color:#23baff}
-.mutx-stats{padding-top:35px}
-@media(max-width:700px){
-.mutx-hero{padding:23px 0 25px}
-.hero-copy-wide{max-width:none}
-.hero-copy-wide h1{font-size:37px;max-width:440px}
-.hero-copy-wide p{max-width:440px}
-.hero-actions{display:none}
-.hero-road-art{height:250px;margin-top:0}
-.hero-truck-real{width:122%;right:-11%;height:100%}
-.hero-portal{margin:5px 0 0;padding:12px;gap:10px;border-radius:22px}
-.portal-card{min-height:119px;padding:14px 28px 13px 15px;border-radius:17px}
-.portal-icon{font-size:31px;margin-bottom:6px}
-.portal-title{font-size:17px}
-.portal-sub{font-size:11px;line-height:1.25}
-.portal-arrow{right:9px;font-size:29px}
-.portal-logo{width:70px;height:70px;font-size:19px;border-width:2px;box-shadow:0 0 0 3px #061d3d,0 0 20px #00aaffaa}
-.road-label{bottom:0}
-.mutx-stats{padding-top:26px}
-}
-@media(max-width:370px){.hero-copy-wide h1{font-size:33px}.portal-card{min-height:110px}.portal-title{font-size:15px}.portal-sub{font-size:10px}}
-
-/* YUKNOVA 3D motion: lightweight, mobile-friendly */
-.hero-truck-real{transform-origin:50% 85%;animation:yn-truck-float 4.8s ease-in-out infinite;will-change:transform}
-.hero-truck-real circle[cx="204"],.hero-truck-real circle[cx="563"]{filter:drop-shadow(0 0 5px #9edaff55)}
-.hero-road-art:after{content:"";position:absolute;z-index:1;left:0;right:0;bottom:12px;height:3px;background:linear-gradient(90deg,transparent,#ffc66f,#e7f7ff,#ffc66f,transparent);filter:drop-shadow(0 0 7px #5bbcff);opacity:.75;animation:yn-road-glow 3.8s ease-in-out infinite}
-.sunset{animation:yn-sunset-pulse 5s ease-in-out infinite}
-.portal-card{transform-style:preserve-3d;perspective:700px;box-shadow:inset 0 1px 0 #ffffff80,0 8px 0 #031a35,0 15px 26px #0005}
-.portal-card:hover{transform:translateY(-6px) rotateX(3deg) rotateY(-2deg);filter:brightness(1.1)}
-.portal-icon{display:inline-block;transform:translateZ(16px);filter:drop-shadow(0 7px 5px #0007)}
-.portal-logo{animation:yn-logo-hover 4s ease-in-out infinite;box-shadow:0 0 0 5px #061d3d,0 0 28px #00aaffaa,inset 0 3px 9px #ffffff45}
-@keyframes yn-truck-float{0%,100%{translate:0 0}50%{translate:0 -7px}}
-@keyframes yn-road-glow{0%,100%{opacity:.35;transform:scaleX(.8)}50%{opacity:1;transform:scaleX(1)}}
-@keyframes yn-sunset-pulse{0%,100%{opacity:.65;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
-@keyframes yn-logo-hover{0%,100%{translate:0 0}50%{translate:0 -7px}}
-@media(hover:none){.portal-card:hover{transform:none}}
-@media(prefers-reduced-motion:reduce){.hero-truck-real,.sunset,.portal-logo,.hero-road-art:after{animation:none!important}.portal-card{transition:none!important}}
-</style>
-<style id="yuknova-advanced-3d">
-/* YUKNOVA advanced 3D surfaces */
-:root{--yn-depth:0 18px 36px rgba(5,28,57,.16),0 5px 0 rgba(10,65,116,.10),inset 0 1px 0 rgba(255,255,255,.9)}
-html{scroll-behavior:smooth}
-body{perspective:1200px}
-main,.container,.content,.dashboard{transform-style:preserve-3d}
-.card,.panel,.welcome,.login-box,.register-box,.feature,.step,.price,.portal-card{
-  transform-style:preserve-3d;
-  backface-visibility:hidden;
-  box-shadow:var(--yn-depth)!important;
-  transition:transform .28s cubic-bezier(.2,.75,.25,1),box-shadow .28s,filter .28s!important;
-}
-.card:hover,.panel:hover,.welcome:hover,.login-box:hover,.register-box:hover,.feature:hover,.step:hover,.price:hover{
-  transform:translateY(-5px) rotateX(1.2deg);
-  box-shadow:0 25px 44px rgba(5,28,57,.20),0 7px 0 rgba(10,65,116,.10),inset 0 1px 0 #fff!important;
-}
-button,.btn,a.button{transform-style:preserve-3d;transition:transform .2s,box-shadow .2s,filter .2s!important}
-button:hover,.btn:hover,a.button:hover{filter:brightness(1.07);transform:translateY(-2px)}
-input,select,textarea{transition:box-shadow .2s,border-color .2s,transform .2s!important}
-input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(22,136,239,.13),inset 0 2px 5px rgba(23,59,92,.06)!important}
-header{position:relative;isolation:isolate}
-header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,#55caff,transparent);opacity:.8;pointer-events:none}
-@media(hover:none){.card:hover,.panel:hover,.welcome:hover,.login-box:hover,.register-box:hover,.feature:hover,.step:hover,.price:hover{transform:none}}
-@media(max-width:600px){.card,.panel,.welcome,.login-box,.register-box,.feature,.step,.price{box-shadow:0 12px 26px rgba(5,28,57,.14),inset 0 1px 0 #fff!important}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
-</style>
-
-<style id="yuknova-2d-design">
-/* YUKNOVA 2D design system: clean, lightweight, mobile-first */
-:root{--yn-blue:#2678df;--yn-navy:#102b4c;--yn-green:#12a879;--yn-paper:#f4f8fd;--yn-border:#e2eaf4}
-html{scroll-behavior:smooth}body{perspective:none!important;background-color:var(--yn-paper)}
-.card,.panel,.welcome,.login-box,.register-box,.feature,.step,.price,.portal-card,.hero-portal{transform: none!important;transform-style:flat!important;backface-visibility:visible!important;box-shadow:0 8px 24px rgba(18,55,94,.09)!important;border:1px solid var(--yn-border)}
-.card:hover,.panel:hover,.welcome:hover,.login-box:hover,.register-box:hover,.feature:hover,.step:hover,.price:hover{transform:translateY(-2px)!important;box-shadow:0 12px 28px rgba(18,55,94,.13)!important}
-button,.btn,a.button{transform:none!important;box-shadow:0 4px 12px rgba(23,87,151,.13)}
-button:hover,.btn:hover,a.button:hover{transform:translateY(-1px)!important}
-input,select,textarea{box-shadow:none!important;border:1px solid #d8e3ef!important}
-input:focus,select:focus,textarea:focus{outline:0;border-color:var(--yn-blue)!important;box-shadow:0 0 0 3px rgba(38,120,223,.12)!important}
-header{backdrop-filter:blur(8px)}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-</style>
-
-<style id="yuknova-homepage-2d-v1">
-/* Homepage refresh: flat 2D, clear actions, responsive layout */
-:root{--yn-ink:#102b4c;--yn-blue:#176fc4;--yn-cyan:#39a9ee;--yn-green:#0ca678;--yn-soft:#eef5fc}
-.mutx-hero{background:linear-gradient(120deg,#0c2c50 0%,#14558d 100%)!important;padding:42px 0 34px!important}
-.mutx-hero:before{background:linear-gradient(180deg,transparent 70%,#0c2c50 100%)!important}
-.mutx-hero>.wrap{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"pill pill" "copy art" "portal portal";align-items:center;column-gap:12px}
-.hero-topline{grid-area:pill}
-.hero-copy-wide{grid-area:copy;max-width:590px;padding:24px 0 10px!important}
-.hero-copy-wide h1{font-size:clamp(36px,4.6vw,58px)!important;line-height:1.08!important;letter-spacing:-1.4px!important}
-.hero-copy-wide h1 span{color:#72c8ff!important}
-.hero-copy-wide p{font-size:16px!important;max-width:510px!important}
-.hero-road-art{grid-area:art;height:330px!important;margin:0!important;align-self:center}
-.hero-truck-real{width:115%!important;right:-8%!important;filter:drop-shadow(0 9px 8px #071a3340)!important}
-.sunset{width:280px;height:180px;right:12%;background:radial-gradient(circle,#f7c66e 0,#f7c66e55 40%,transparent 72%)!important;filter:none!important}
-.mountain{background:#164b78!important;filter:none!important}
-.mountain-front{background:#103d66!important;opacity:1!important}
-.road-label{bottom:0!important;color:#dcefff}
-.hero-portal{grid-area:portal;width:100%;max-width:850px;margin:16px auto 0!important;background:#fff!important;border:1px solid #dceaf8!important;border-radius:18px!important;padding:12px!important;gap:10px!important;box-shadow:0 14px 35px #041a3030!important}
-.portal-card{min-height:112px!important;border:0!important;border-radius:13px!important;box-shadow:none!important;transition:transform .18s,filter .18s!important}
-.portal-card:hover{transform:translateY(-3px)!important;filter:brightness(1.04)}
-.portal-login{background:#eaf3ff!important;color:#164b80!important}
-.portal-owner{background:#e6f8f1!important;color:#08734f!important}
-.portal-driver{background:#eeeaff!important;color:#4934a5!important}
-.portal-register{background:#fff3e4!important;color:#9b4b00!important}
-.portal-sub{color:inherit!important;opacity:.78}
-.portal-arrow{color:inherit!important}
-.portal-logo{width:76px!important;height:76px!important;background:#fff!important;border:3px solid #1986d4!important;color:#123b63!important;box-shadow:0 0 0 5px #fff,0 5px 18px #123b6330!important;font-size:19px!important}
-.portal-logo span{color:#1689d4!important}
-.mutx-stats{background:#10385f!important}
-.register-inner{background:#eaf3fc!important;border:1px solid #d9e8f7}
-@media(max-width:760px){
- .mutx-hero{padding:28px 0 24px!important}
- .mutx-hero>.wrap{grid-template-columns:1fr;grid-template-areas:"pill" "copy" "art" "portal";row-gap:4px}
- .hero-copy-wide{padding:18px 0 0!important;max-width:100%}
- .hero-copy-wide h1{font-size:clamp(33px,9vw,46px)!important}
- .hero-copy-wide p{font-size:15px!important}
- .hero-actions{gap:9px!important;flex-wrap:wrap}
- .hero-actions .btn{min-width:135px!important;min-height:46px!important;font-size:15px!important}
- .hero-road-art{height:235px!important;margin-top:0!important}
- .hero-truck-real{width:110%!important;right:-5%!important;height:100%!important}
- .road-label{font-size:11px!important;bottom:0!important}
- .hero-portal{margin-top:10px!important;grid-template-columns:1fr 1fr!important;padding:9px!important;gap:8px!important}
- .portal-card{min-height:105px!important;padding:13px 28px 12px 13px!important}
- .portal-icon{font-size:27px!important}
- .portal-title{font-size:16px!important}
- .portal-sub{font-size:11px!important}
- .portal-arrow{right:9px!important;font-size:28px!important}
- .portal-logo{width:58px!important;height:58px!important;font-size:14px!important;border-width:2px!important}
- .mutx-stats .stats-grid{grid-template-columns:1fr!important;gap:15px!important}
- .mutx-stats .stats-grid>div{border-right:0!important;border-bottom:1px solid #ffffff25!important;padding:12px!important}
- .mutx-stats .stats-grid>div:last-child{border-bottom:0!important}
- .register-inner{align-items:flex-start!important;flex-direction:column!important;padding:20px!important}
-}
-@media(prefers-reduced-motion:reduce){.portal-card{transition:none!important}}
+:root{--blue:#0866e8;--navy:#102746;--text:#172b45;--muted:#586e88;--line:#e3edf7}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:80px}body{margin:0;font-family:Arial,Inter,sans-serif;color:var(--text);line-height:1.5}a{text-decoration:none;color:inherit}.wrap{width:min(1420px,92%);margin:auto}
+header{height:76px;background:#fff;border-bottom:1px solid #edf2f8;position:sticky;top:0;z-index:10}.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:9px;font-weight:950;font-size:25px;letter-spacing:-1px;color:var(--navy)}.brand span{color:var(--blue)}.brand small{display:block;font-size:11px;letter-spacing:0;color:#647992;font-weight:600}.logo{width:48px;height:40px;color:var(--blue)}nav{display:flex;align-items:center;gap:7px}nav a{padding:10px 13px;border-radius:22px;font-size:14px;font-weight:700}nav a:hover,nav a:first-child{background:#e8f2ff;color:var(--blue)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 19px;border-radius:13px;font-size:15px;font-weight:800;border:1.5px solid var(--blue);transition:.2s}.btn:hover{transform:translateY(-2px)}.primary{background:var(--blue);color:white;box-shadow:0 8px 20px #0866e82b}.outline{color:var(--blue);background:#fff}.menu{display:none;border:0;border-radius:10px;background:#edf4fc;font-size:23px;padding:8px 12px}
+.hero{background:linear-gradient(110deg,#f1f7ff,#dceeff);overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:600px;height:600px;border:45px solid #ffffff50;border-radius:50%;right:-180px;top:-250px}.hero-grid{min-height:440px;display:grid;grid-template-columns:.9fr 1.1fr;align-items:center;position:relative;z-index:1}.copy{padding:42px 0}.pill{display:inline-block;background:#e1efff;border:1px solid #cce3ff;border-radius:30px;padding:8px 13px;color:#075dc9;font-weight:800;font-size:13px}h1{font-size:clamp(42px,5vw,68px);line-height:1.04;letter-spacing:-2px;margin:20px 0 15px;color:var(--navy)}h1 em{font-style:normal;color:var(--blue)}.copy p{font-size:18px;line-height:1.6;color:#4e6681;max-width:540px;margin:0}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.actions .btn{padding:15px 22px;font-size:16px}.mini{display:flex;gap:25px;flex-wrap:wrap;margin-top:28px}.mini div{display:flex;align-items:center;gap:9px}.mini strong{display:block;font-size:14px}.mini small{display:block;color:#657b94;font-size:12px}.mini i{font-style:normal;font-size:25px;color:var(--blue)}
+.truck-art{align-self:end;position:relative;min-height:390px;display:flex;align-items:end}.truck-art svg{width:112%;max-height:420px;position:relative;z-index:1}.hills{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(#8bc8f1,#55a8df);clip-path:polygon(0 45%,12% 20%,25% 48%,39% 15%,52% 47%,66% 18%,80% 43%,92% 20%,100% 38%,100% 100%,0 100%)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:17px;padding-top:25px;padding-bottom:25px}.tile{display:flex;align-items:center;gap:14px;padding:19px;border-radius:17px;min-height:108px}.tile:nth-child(1){background:#e6f4ff}.tile:nth-child(2){background:#e4f8ef}.tile:nth-child(3){background:#fff2e3}.tile:nth-child(4){background:#f0eaff}.tile i{font-style:normal;font-size:34px}.tile h3{margin:0 0 4px;font-size:16px}.tile p{margin:0;color:#566c84;font-size:12px}
+section.content{padding:58px 0}.soft{background:#f7faff}.heading{text-align:center;max-width:680px;margin:0 auto 30px}.heading span{font-size:12px;font-weight:900;letter-spacing:1.5px;color:var(--blue)}.heading h2{font-size:clamp(28px,3.5vw,39px);margin:8px 0;color:var(--navy)}.heading p{color:var(--muted);margin:0}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.step{padding:21px;border:1px solid var(--line);border-radius:17px;background:white;min-height:170px}.num{display:grid;place-items:center;width:34px;height:34px;background:var(--blue);color:#fff;border-radius:50%;font-weight:900;margin-bottom:13px}.step .ico{font-size:29px;color:var(--blue)}.step h3{font-size:16px;margin:8px 0 5px}.step p{font-size:13px;color:var(--muted);margin:0}
+.vehicles{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}.vehicle{border:1px solid var(--line);border-radius:15px;text-align:center;padding:20px 9px;background:#fff}.vehicle span{display:block;font-size:31px;margin-bottom:8px}.vehicle b{font-size:13px}
+.trust{display:grid;grid-template-columns:1fr 1fr;gap:24px;background:linear-gradient(120deg,#0c2d51,#1268b5);color:white;padding:30px;border-radius:22px}.trust h2{font-size:29px;line-height:1.2;margin:0 0 10px}.trust p{color:#d8e9fa;margin:0}.trust-list{display:grid;gap:9px}.trust-list div{background:#ffffff14;border:1px solid #ffffff30;padding:12px 14px;border-radius:11px;font-weight:700;font-size:14px}
+.cta{padding:30px;border-radius:18px;background:#eaf4ff;display:flex;justify-content:space-between;align-items:center;gap:20px;margin:0 auto 48px}.cta h2{margin:0 0 5px;font-size:25px}.cta p{margin:0;color:var(--muted)}
+footer{background:#102746;color:#dce9f7;padding:32px 0 20px}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footlinks{display:flex;gap:17px;flex-wrap:wrap;font-size:13px}.copyright{border-top:1px solid #ffffff28;margin-top:22px;padding-top:16px;color:#a9bfd5;font-size:12px}
+@media(max-width:900px){nav{gap:0}nav a{padding:9px;font-size:12px}.quick{gap:9px}.tile{padding:13px;gap:9px}.tile i{font-size:27px}}
+@media(max-width:700px){header{height:66px}.nav{gap:8px}.brand{font-size:21px}.logo{width:40px}.menu{display:block}nav{display:none;position:absolute;top:65px;left:4%;right:4%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px;box-shadow:0 12px 30px #17395d20;align-items:stretch;flex-direction:column}nav.open{display:flex}nav a{font-size:14px;padding:12px}.nav .outline{display:none}.nav .primary{padding:10px 12px;font-size:12px}.hero-grid{grid-template-columns:1fr;min-height:0}.copy{padding:32px 0 0}h1{font-size:clamp(39px,9vw,52px);margin:17px 0 12px}.copy p{font-size:15px}.actions{gap:9px}.actions .btn{flex:1;padding:13px 10px;font-size:14px}.mini{gap:14px;margin-top:20px}.mini i{font-size:21px}.mini strong{font-size:12px}.mini small{font-size:10px}.truck-art{min-height:230px;margin-top:4px}.truck-art svg{width:112%;max-height:280px}.hills{height:70px}.quick{grid-template-columns:1fr 1fr;gap:9px;padding-top:14px;padding-bottom:18px}.tile{min-height:92px;padding:12px}.tile i{font-size:25px}.tile h3{font-size:13px}.tile p{font-size:10px}.content{padding:43px 0!important}.heading{margin-bottom:22px}.steps{grid-template-columns:1fr 1fr;gap:10px}.step{padding:15px;min-height:160px}.step h3{font-size:14px}.step p{font-size:12px}.vehicles{grid-template-columns:repeat(2,1fr)}.trust{grid-template-columns:1fr;padding:22px;gap:16px}.trust h2{font-size:24px}.cta{display:block;padding:22px;margin-bottom:35px}.cta .btn{width:100%;margin-top:14px}.foot{display:block}.footlinks{margin-top:18px;gap:13px}}
+@media(max-width:390px){.brand{font-size:19px}.nav .primary{font-size:11px;padding:9px}.actions{flex-direction:column}.steps{grid-template-columns:1fr}.step{min-height:0}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
-<header><div class="wrap navbar">
-<a class="logo" href="#top">YUK<span>NOVA</span></a>
-<div class="menu-wrap">
-<button class="menu-toggle" id="menuToggle" aria-label="Menyuni ochish" aria-expanded="false">☰</button>
-<div class="menu-panel" id="menuPanel" hidden>
-<a href="pages/login.html"><span>🔐</span><span><b>Kirish</b><small>Akkauntingizga kiring</small></span></a>
-<a href="pages/owner.html"><span>📦</span><span><b>Yuk joylash</b><small>Yuk egasi bo‘limi</small></span></a>
-<a href="pages/driver.html"><span>🚚</span><span><b>Yuklarni tanlash</b><small>Haydovchi bo‘limi</small></span></a>
-<a href="pages/register.html"><span>✚</span><span><b>Ro‘yxatdan o‘tish</b><small>Yangi hisob yaratish</small></span></a>
-</div></div>
+<header><div class="wrap nav">
+<a class="brand" href="#top"><svg class="logo" viewBox="0 0 90 70" fill="none"><path d="M7 23h49v31H7zM56 32h15l12 13v9H56z" fill="currentColor"/><path d="M62 36h8l8 9H62z" fill="white"/><circle cx="24" cy="57" r="8" fill="#102746" stroke="currentColor" stroke-width="5"/><circle cx="68" cy="57" r="8" fill="#102746" stroke="currentColor" stroke-width="5"/><path d="M3 15h39M0 7h31" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg><span>YUK<span>NOVA</span><small>Yuk tashish platformasi</small></span></a>
+<nav id="nav"><a href="#top">Bosh sahifa</a><a href="pages/owner.html">Yuklar</a><a href="pages/driver.html">Haydovchilar</a><a href="#services">Xizmatlar</a><a href="#about">Biz haqimizda</a></nav>
+<div style="display:flex;gap:9px;align-items:center"><a class="btn outline" href="pages/login.html">♙ Kirish</a><a class="btn primary" href="pages/register.html">♙ Ro‘yxatdan o‘tish</a><button class="menu" id="menu" aria-label="Menyu">☰</button></div>
 </div></header>
 <main id="top">
-<section class="mutx-hero">
-<div class="wrap">
-<div class="hero-topline"><span class="hero-pill">🚚 Yuk va transport — bir platformada</span></div>
-<div class="hero-copy-wide">
-<h1>Yukingizga mos transportni <span>oson toping.</span></h1>
-<p>YUKNOVA yuk egalarini va haydovchilarni bir joyda uchrashtiradi. Yukni joylashtiring va mos transportni toping.</p>
-<div class="hero-actions"><a class="btn btn-green" href="pages/register.html">Boshlash <b>→</b></a><a class="btn btn-light" href="pages/login.html">Kirish</a></div>
+<section class="hero"><div class="wrap hero-grid">
+<div class="copy"><span class="pill">● O‘zbekiston bo‘ylab logistika platformasi</span><h1>Yuk va transport topish endi <em>oson!</em></h1><p>O‘zbekiston bo‘ylab yuk egalari va haydovchilarni bog‘laydigan zamonaviy logistika platformasi.</p>
+<div class="actions"><a class="btn primary" href="pages/owner.html">◇ Yuk joylashtirish →</a><a class="btn outline" href="pages/driver.html">🚚 Transport topish</a></div>
+<div class="mini"><div><i>♙</i><span><strong>Yuk egalari</strong><small>Yukni joylashtiring</small></span></div><div><i>🚚</i><span><strong>Haydovchilar</strong><small>Mos yukni tanlang</small></span></div><div><i>📍</i><span><strong>Qulay jarayon</strong><small>Manzillarni belgilang</small></span></div></div>
 </div>
-<div class="hero-road-art" role="img" aria-label="YUKNOVA yozuvli ko‘k yuk mashinasi quyosh botishida yo‘lda">
-<div class="sunset"></div><div class="mountain mountain-back"></div><div class="mountain mountain-front"></div>
-<svg class="hero-truck-real" viewBox="0 0 780 390" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<defs>
-<linearGradient id="mutxTrailer" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#287fdc"/><stop offset=".35" stop-color="#1558a5"/><stop offset="1" stop-color="#08264e"/></linearGradient>
-<linearGradient id="mutxCab" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#75c5ff"/><stop offset=".28" stop-color="#2585e4"/><stop offset=".7" stop-color="#0753a6"/><stop offset="1" stop-color="#05264f"/></linearGradient>
-<linearGradient id="mutxGlass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e0f7ff"/><stop offset=".4" stop-color="#8ac9ef"/><stop offset="1" stop-color="#275b8d"/></linearGradient>
-<linearGradient id="mutxMetal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d8e8f7"/><stop offset=".5" stop-color="#718ca8"/><stop offset="1" stop-color="#243f5d"/></linearGradient>
-<linearGradient id="mutxRoad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#203d5b"/><stop offset="1" stop-color="#071b32"/></linearGradient>
-<filter id="truckShadow"><feGaussianBlur stdDeviation="10"/></filter>
-<filter id="softGlow"><feGaussianBlur stdDeviation="7"/></filter>
-</defs>
-<!-- Road and warm reflections -->
-<ellipse cx="405" cy="333" rx="322" ry="30" fill="#020d1c" opacity=".65" filter="url(#truckShadow)"/>
-<path d="M0 324 Q190 297 390 321 T780 310 V390 H0Z" fill="url(#mutxRoad)"/>
-<path d="M0 355 Q220 329 390 350 T780 337" fill="none" stroke="#7bbcff" stroke-width="4" opacity=".35"/>
-<path d="M25 373 L205 354 M575 355 L758 335" stroke="#ffc66f" stroke-width="5" stroke-linecap="round" opacity=".8"/>
-<!-- Trailer frame -->
-<path d="M92 76 Q92 54 116 54 H493 Q516 54 516 78 V282 H92Z" fill="#061b36" opacity=".55"/>
-<path d="M100 70 Q100 56 117 56 H492 Q508 56 508 73 V276 H100Z" fill="url(#mutxTrailer)" stroke="#78bfff" stroke-width="4"/>
-<path d="M112 82 H496" stroke="#b4ddff" stroke-width="5" opacity=".48"/>
-<path d="M112 93 H496" stroke="#051f42" stroke-width="4" opacity=".5"/>
-<path d="M119 107 V260 M490 107 V260" stroke="#80bfff" stroke-width="3" opacity=".2"/>
-<path d="M126 116 H482 M126 251 H482" stroke="#d5edff" stroke-width="2" opacity=".13"/>
-<path d="M140 131 H467" stroke="#fff" stroke-width="2" opacity=".08"/>
-<!-- YUKNOVA mark -->
-<rect x="176" y="142" width="257" height="77" rx="10" fill="#06264d" opacity=".35"/>
-<text x="300" y="202" fill="#fff" font-size="48" font-family="Arial,sans-serif" font-weight="900" text-anchor="middle" letter-spacing="1">YUK</text><text x="392" y="202" fill="#53c2ff" font-size="48" font-family="Arial,sans-serif" font-weight="900">NOVA</text>
-<!-- Chassis and fuel tank -->
-<path d="M86 274 H686 V297 H86Z" fill="#0a2342"/>
-<path d="M104 278 H678" stroke="#8bcaff" stroke-width="5" opacity=".8"/>
-<rect x="480" y="281" width="48" height="22" rx="5" fill="url(#mutxMetal)"/>
-<rect x="535" y="282" width="38" height="18" rx="4" fill="#183b5e"/>
-<!-- Cabin -->
-<path d="M508 177 H579 Q603 177 621 201 L674 266 Q682 276 682 290 V302 H508Z" fill="#05264d" opacity=".8"/>
-<path d="M510 174 H578 Q603 174 620 199 L672 264 Q678 273 678 286 V295 H510Z" fill="url(#mutxCab)" stroke="#6dbbff" stroke-width="4"/>
-<path d="M535 188 H580 Q595 188 608 207 L634 239 H535Z" fill="url(#mutxGlass)" stroke="#d6f1ff" stroke-width="5"/>
-<path d="M542 195 H578 Q590 195 600 210 L618 232 H542Z" fill="#b9e7ff" opacity=".26"/>
-<path d="M625 245 L664 275 V285 H625Z" fill="#0b376a" stroke="#5ca9ed" stroke-width="3"/>
-<path d="M640 252 L671 280 V290 H640Z" fill="#f5fbff" opacity=".9"/>
-<path d="M510 244 V294" stroke="#9bd5ff" stroke-width="4" opacity=".8"/>
-<path d="M519 252 H527 V289 H519Z" fill="#123e70"/>
-<path d="M559 245 V288" stroke="#a9d9ff" stroke-width="2" opacity=".5"/>
-<!-- Side door and handle -->
-<path d="M543 246 V286 H608" fill="none" stroke="#8bcaff" stroke-width="2" opacity=".5"/>
-<rect x="577" y="250" width="15" height="4" rx="2" fill="#d9f2ff"/>
-<!-- Front bumper, grille, lights -->
-<path d="M649 288 H684 V303 H648Z" fill="url(#mutxMetal)" stroke="#d5e7f7" stroke-width="2"/>
-<path d="M654 292 H674 M654 296 H674 M654 300 H674" stroke="#294b6d" stroke-width="2"/>
-<rect x="666" y="270" width="16" height="9" rx="3" fill="#fff1bd"/>
-<rect x="668" y="281" width="13" height="5" rx="2" fill="#ff6e5d"/>
-<!-- Mirrors -->
-<path d="M515 185 L499 169 L489 169" stroke="#a8d9ff" stroke-width="5" stroke-linecap="round" fill="none"/>
-<rect x="480" y="163" width="16" height="11" rx="4" fill="#1a5d9d" stroke="#9bd8ff" stroke-width="2"/>
-<!-- Wheels -->
-<g>
-<circle cx="204" cy="300" r="45" fill="#030d1a"/><circle cx="204" cy="300" r="35" fill="#111e2c"/>
-<circle cx="204" cy="300" r="25" fill="url(#mutxMetal)" stroke="#d5e7f5" stroke-width="3"/>
-<circle cx="204" cy="300" r="11" fill="#526f8c"/><circle cx="204" cy="300" r="5" fill="#d8e8f5"/>
-<circle cx="563" cy="300" r="45" fill="#030d1a"/><circle cx="563" cy="300" r="35" fill="#111e2c"/>
-<circle cx="563" cy="300" r="25" fill="url(#mutxMetal)" stroke="#d5e7f5" stroke-width="3"/>
-<circle cx="563" cy="300" r="11" fill="#526f8c"/><circle cx="563" cy="300" r="5" fill="#d8e8f5"/>
-<g stroke="#71869b" stroke-width="3" opacity=".65"><path d="M204 278 V283 M204 317 V322 M182 300 H187 M221 300 H226 M188 284 L192 288 M216 312 L220 316 M220 284 L216 288 M192 312 L188 316"/><path d="M563 278 V283 M563 317 V322 M541 300 H546 M580 300 H585 M547 284 L551 288 M575 312 L579 316 M579 284 L575 288 M551 312 L547 316"/></g>
-</g>
-<path d="M40 345 H740" stroke="#a5d5ff" stroke-width="2" opacity=".25"/>
-</svg>
-<div class="road-label"><span>📍 Toshkent</span><i></i><span>📍 Buxoro</span></div>
-</div>
-<nav class="hero-portal" aria-label="YUKNOVA asosiy bo‘limlari">
-<a class="portal-card portal-login" href="pages/login.html"><span class="portal-icon">🔐</span><span class="portal-title">Kirish</span><span class="portal-sub">Akkauntingizga kiring</span><span class="portal-arrow">›</span></a>
-<a class="portal-card portal-owner" href="pages/owner.html"><span class="portal-icon">📦</span><span class="portal-title">Yuk joylash</span><span class="portal-sub">Yuk egasi bo‘limi</span><span class="portal-arrow">›</span></a>
-<a class="portal-card portal-driver" href="pages/driver.html"><span class="portal-icon">🚚</span><span class="portal-title">Yuklarni tanlash</span><span class="portal-sub">Haydovchi bo‘limi</span><span class="portal-arrow">›</span></a>
-<a class="portal-card portal-register" href="pages/register.html"><span class="portal-icon">👤</span><span class="portal-title">Ro‘yxatdan o‘tish</span><span class="portal-sub">Yangi hisob yaratish</span><span class="portal-arrow">›</span></a>
-<div class="portal-logo">YUK<span>NOVA</span></div>
-</nav>
-</div></section>
-
-<section class="mutx-stats"><div class="wrap stats-grid">
-<div><span>🚚</span><b>Transport</b><small>Yuk uchun mos transport</small></div>
-<div><span>♧</span><b>Yuk egasi va haydovchi</b><small>Bitta platformada</small></div>
-<div><span>◈</span><b>24/7</b><small>Platformadan foydalanish</small></div>
-</div></section>
-<section class="register-bottom"><div class="wrap register-inner"><div><span class="kicker">YUKNOVA PLATFORMASI</span><h2>Yuk tashishni bugun boshlang</h2><p>Hisob yarating va o‘zingizga kerakli xizmatni tanlang.</p></div><a class="btn btn-green" href="pages/register.html">Ro‘yxatdan o‘tish →</a></div></section>
+<div class="truck-art"><div class="hills"></div>
+<svg viewBox="0 0 850 440" role="img" aria-label="YUKNOVA yozuvli yuk mashinasi">
+<defs><linearGradient id="trailer" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#dcecff"/></linearGradient><linearGradient id="cab" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ed0ff"/><stop offset=".5" stop-color="#1478df"/><stop offset="1" stop-color="#06438e"/></linearGradient><linearGradient id="glass" x2="1" y2="1"><stop stop-color="#e4f8ff"/><stop offset="1" stop-color="#5793bd"/></linearGradient></defs>
+<path d="M0 270L90 205l65 38 82-100 82 96 83-65 92 84 84-114 100 119 75-73 97 80v90H0z" fill="#8ec7ed" opacity=".7"/><path d="M0 350Q180 300 370 338T850 318V440H0z" fill="#426987"/><path d="M0 383Q220 340 410 374T850 356" fill="none" stroke="#d7efff" stroke-width="5" opacity=".7"/><path d="M40 420l170-30m300 9l125-25m80 12l90-20" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+<path d="M105 76Q105 55 128 55h420q20 0 20 22v230H105z" fill="url(#trailer)" stroke="#b7d7f2" stroke-width="4"/><path d="M124 77h423" stroke="#fff" stroke-width="8"/><path d="M140 110v175M530 110v175" stroke="#b7d2e9" stroke-width="3"/><rect x="172" y="157" width="270" height="82" rx="12" fill="#f1f7ff" stroke="#d6e8f8" stroke-width="2"/><text x="190" y="213" font-size="54" font-family="Arial" font-weight="900" fill="#102746">YUK</text><text x="312" y="213" font-size="54" font-family="Arial" font-weight="900" fill="#0873e8">NOVA</text><path d="M170 247h330" stroke="#0a76df" stroke-width="8" stroke-linecap="round"/><path d="M85 304h640v24H85z" fill="#152f4b"/>
+<path d="M560 175h87q30 0 47 29l67 91q8 11 8 25v12H558V190q0-15 2-15z" fill="url(#cab)" stroke="#0754a5" stroke-width="4"/><path d="M584 191h59q17 0 28 18l39 54H584z" fill="url(#glass)" stroke="#e8f7ff" stroke-width="5"/><path d="M714 273l43 32v16h-43z" fill="#0b4d98" stroke="#9ed6ff" stroke-width="3"/><path d="M728 280l29 23v11h-29z" fill="#fff1bf"/><path d="M560 179l-17-16h-14" fill="none" stroke="#1c5e9d" stroke-width="6"/><rect x="516" y="156" width="18" height="13" rx="4" fill="#0c5aa8"/><path d="M735 316h40v16h-40z" fill="#d7e6f3"/><rect x="748" y="291" width="23" height="12" rx="4" fill="#fff4c8"/>
+<g><circle cx="230" cy="330" r="48" fill="#102033"/><circle cx="230" cy="330" r="25" fill="#b9cfe1" stroke="#edf7ff" stroke-width="4"/><circle cx="230" cy="330" r="10" fill="#637e99"/><circle cx="650" cy="330" r="48" fill="#102033"/><circle cx="650" cy="330" r="25" fill="#b9cfe1" stroke="#edf7ff" stroke-width="4"/><circle cx="650" cy="330" r="10" fill="#637e99"/></g>
+</svg></div></div></section>
+<section class="wrap quick" id="services">
+<a class="tile" href="pages/owner.html"><i>📦</i><div><h3>Yuk joylashtirish</h3><p>Yukingizni platformaga joylang</p></div></a>
+<a class="tile" href="pages/driver.html"><i>🚚</i><div><h3>Transport topish</h3><p>O‘zingizga mos yukni tanlang</p></div></a>
+<a class="tile" href="pages/driver.html"><i>📍</i><div><h3>Manzil xaritasi</h3><p>Olish va yetkazish joylari</p></div></a>
+<a class="tile" href="pages/register.html"><i>⭐</i><div><h3>Reyting va ishonch</h3><p>Foydalanuvchi baholari</p></div></a>
+</section>
+<section class="content soft" id="about"><div class="wrap"><div class="heading"><span>QANDAY ISHLAYDI?</span><h2>YUKNOVA’dan foydalanish juda oson</h2><p>Bir necha oddiy qadamda yuk yoki transport toping.</p></div>
+<div class="steps"><article class="step"><div class="num">1</div><div class="ico">▤</div><h3>Ro‘yxatdan o‘ting</h3><p>Haydovchi yoki yuk egasi sifatida hisob yarating.</p></article><article class="step"><div class="num">2</div><div class="ico">📦</div><h3>Yuk yoki transport joylang</h3><p>Kerakli ma’lumotlarni kiriting va manzillarni belgilang.</p></article><article class="step"><div class="num">3</div><div class="ico">🤝</div><h3>Buyurtmani kelishing</h3><p>Buyurtma tafsilotlarini ko‘rib chiqing va tasdiqlang.</p></article><article class="step"><div class="num">4</div><div class="ico">🚛</div><h3>Yuk yetkaziladi</h3><p>Yuk belgilangan manzilga yetkazish jarayoniga o‘tadi.</p></article></div></div></section>
+<section class="content"><div class="wrap"><div class="heading"><span>TRANSPORT TURLARI</span><h2>Yukingizga mos transportni tanlang</h2><p>Turli yuklar uchun turli transport imkoniyatlari.</p></div><div class="vehicles"><div class="vehicle"><span>🚚</span><b>Yuk mashinasi</b></div><div class="vehicle"><span>🚐</span><b>Gazel</b></div><div class="vehicle"><span>🚛</span><b>Fura / Tirkama</b></div><div class="vehicle"><span>🧊</span><b>Refrijerator</b></div><div class="vehicle"><span>🚜</span><b>Boshqa</b></div></div></div></section>
+<section class="content soft"><div class="wrap"><div class="trust"><div><h2>Yuk tashish jarayoni — bitta qulay platformada</h2><p>YUKNOVA yuk egasi va haydovchiga kerakli ma’lumotlarni bir joyda ko‘rish, buyurtma tafsilotlarini kelishish va jarayonni boshqarishga yordam beradi.</p></div><div class="trust-list"><div>✓ Yuk va transport ma’lumotlari</div><div>✓ Yuk egasi va haydovchi uchun alohida bo‘limlar</div><div>✓ Buyurtma holati va tasdiqlash jarayoni</div><div>✓ Reyting va fikr bildirish imkoniyati</div></div></div></div></section>
+<section class="wrap"><div class="cta"><div><h2>YUKNOVA bilan ishni boshlang</h2><p>Hisob yarating va o‘zingizga kerakli bo‘limni tanlang.</p></div><a class="btn primary" href="pages/register.html">Ro‘yxatdan o‘tish →</a></div></section>
 </main>
-<footer><div class="wrap"><div class="footer-row"><div class="footer-brand"><a class="logo" href="#top">YUK<span>NOVA</span></a><p>Yuk va transport bir platformada.</p></div><div class="footer-links"><a href="#services">Xizmatlar</a><a href="#vehicles">Transportlar</a><a href="#prices">Tariflar</a><a href="pages/login.html">Kirish</a></div></div><div class="copyright">© 2026 YUKNOVA. Barcha huquqlar himoyalangan.</div></div></footer>
+<footer><div class="wrap"><div class="foot"><a class="brand" href="#top" style="color:white">🚚 YUK<span>NOVA</span></a><div class="footlinks"><a href="#top">Bosh sahifa</a><a href="#services">Xizmatlar</a><a href="#about">Biz haqimizda</a><a href="pages/login.html">Kirish</a><a href="pages/register.html">Ro‘yxatdan o‘tish</a></div></div><div class="copyright">© 2026 YUKNOVA. Barcha huquqlar himoyalangan.</div></div></footer>
 <script>
-const toggle=document.getElementById("menuToggle"),panel=document.getElementById("menuPanel");
-toggle.addEventListener("click",()=>{const open=panel.hidden;panel.hidden=!open;toggle.setAttribute("aria-expanded",String(open));toggle.textContent=open?"✕":"☰";});
-document.addEventListener("click",e=>{if(!e.target.closest(".menu-wrap")){panel.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}});
-panel.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{panel.hidden=true;toggle.setAttribute("aria-expanded","false");toggle.textContent="☰";}));
+const menu=document.getElementById('menu'),nav=document.getElementById('nav');
+menu.addEventListener('click',()=>{nav.classList.toggle('open');menu.textContent=nav.classList.contains('open')?'✕':'☰';});
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.textContent='☰';}));
 </script>
-</body></html>
+</body>
+</html>
