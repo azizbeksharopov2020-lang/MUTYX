@@ -201,16 +201,23 @@ function drawLoads(id,items,available){
    if(x.my_role==="driver"&&x.status==="accepted"){
     const navBox=document.createElement("div");navBox.className="notice";
     const navTitle=document.createElement("strong");navTitle.textContent="🧭 Navigator";navBox.appendChild(navTitle);
-    const addNav=(label,lat,lng)=>{
+    const addNav=(label,lat,lng,avoid="")=>{
      if(lat==null||lng==null)return;
      const a=document.createElement("a");
-     a.href="https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(lat+","+lng)+"&travelmode=driving";
+     a.href="https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(lat+","+lng)+"&travelmode=driving"+(avoid?"&avoid="+avoid:"");
      a.target="_blank";a.rel="noopener noreferrer";a.textContent=label;
      a.style.display="inline-block";a.style.margin="8px 12px 4px 0";a.style.fontWeight="800";a.style.color="#1769bd";
      navBox.appendChild(a);
     };
-    addNav("📍 Yukni olish joyiga borish",x.pickup_lat,x.pickup_lng);
-    addNav("🏁 Yukni yetkazish joyiga borish",x.dropoff_lat,x.dropoff_lng);
+    const addDestinationRoutes=(prefix,lat,lng)=>{
+     if(lat==null||lng==null)return;
+     addNav("📍 "+prefix+" — yo‘l variantlari",lat,lng);
+     addNav("Pullik yo‘llarsiz",lat,lng,"tolls");
+     addNav("Magistral yo‘llarsiz",lat,lng,"highways");
+    };
+    addDestinationRoutes("Yukni olish joyiga",x.pickup_lat,x.pickup_lng);
+    addDestinationRoutes("Yukni yetkazish joyiga",x.dropoff_lat,x.dropoff_lng);
+    const tip=document.createElement("p");tip.textContent="Google Maps ochilgach, xaritada taklif qilingan yo‘llarni solishtirib, o‘zingizga qulayini tanlang.";navBox.appendChild(tip);
     if(x.pickup_lat==null&&x.dropoff_lat==null){const no=document.createElement("p");no.textContent="Bu buyurtmada xarita koordinatalari mavjud emas.";navBox.appendChild(no);}
     card.appendChild(navBox);
     addActionButton(card,"Yuk yetkazildi — yakunlash",async()=>{if(!confirm("Yuk yetkazilganini tasdiqlaysizmi?"))return;try{await request("/loads/"+x.id+"/complete",{method:"POST"});await refreshMine();}catch(e){alert(e.message)}});
