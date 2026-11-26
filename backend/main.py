@@ -75,6 +75,8 @@ FEE_PER_TONNA = 10000  # har bir tomon uchun so'm / tonna
 # vergul bilan ajratib qo'shish mumkin (masalan https://yuknova.uz,https://www.yuknova.uz).
 _default_origins = [
     "https://azizbeksharopov2020-lang.github.io",
+    "https://yuknova.uz",
+    "https://www.yuknova.uz",
     "http://127.0.0.1:5500",
     "http://localhost:5500",
 ]
