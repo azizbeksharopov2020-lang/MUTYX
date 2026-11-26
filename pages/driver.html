@@ -109,6 +109,18 @@ header{backdrop-filter:blur(8px)}
 <header><a class="logo" href="../index.html">YUK<span>NOVA</span></a><nav style="display:flex;gap:7px;flex-wrap:wrap"><a href="../index.html">Bosh sahifa</a><a href="owner.html">Yuk joylash</a><a href="driver.html">Yuklarni tanlash</a></nav></header>
 <main>
 <section class="welcome"><h1>Shaxsiy kabinet</h1><p id="welcomeText">Ma’lumot yuklanmoqda...</p></section>
+<section class="card" id="routePlannerSection">
+<h2>🧭 Istalgan yo‘lni xaritada ko‘rish</h2>
+<p class="muted">Boshlanish va borish manzilini yozing. Xarita yo‘nalish va mavjud yo‘l variantlarini ko‘rsatadi.</p>
+<div class="grid">
+<div><label for="routeFrom">Qayerdan?</label><input id="routeFrom" placeholder="Masalan: Toshkent, Chilonzor"></div>
+<div><label for="routeTo">Qayerga?</label><input id="routeTo" placeholder="Masalan: Buxoro, markaz"></div>
+</div>
+<div class="map-actions"><button type="button" id="routeUseMyLocation">📍 Hozirgi joyimdan</button><button type="button" id="routeBuild">Yo‘lni ko‘rsat</button><button type="button" id="routeClear">Tozalash</button></div>
+<div id="routePlannerMap" style="height:340px;border-radius:15px;border:1px solid #dce5f0;margin:14px 0;z-index:1"></div>
+<div id="routePlannerInfo" class="notice" aria-live="polite">Manzillarni kiriting yoki hozirgi joyingizdan foydalaning.</div>
+<div id="routeChoices" class="map-results"></div>
+</section>
 <div class="grid">
 <section class="card" id="profileSection"><h2>👤 Profilim</h2><div id="profile" class="muted">Yuklanmoqda...</div>
 <label for="profileName">Ism va familiya</label><input id="profileName" maxlength="80" minlength="2">
@@ -160,6 +172,59 @@ function initLoadMap(){
  el("pickDropoff").onclick=()=>{activePoint="dropoff";el("pickDropoff").classList.add("active");el("pickPickup").classList.remove("active");};
  setTimeout(()=>loadMap.invalidateSize(),300);
 }
+
+let routePlannerMap=null,routeFromMarker=null,routeToMarker=null,routePlannerLayers=[];
+async function geocodeRoutePlace(query){
+ const url="https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q="+encodeURIComponent(query);
+ const response=await fetch(url,{headers:{"Accept":"application/json"}});
+ if(!response.ok)throw new Error("Manzil qidirish xizmati vaqtincha ishlamayapti.");
+ const places=await response.json();if(!places.length)throw new Error("Manzil topilmadi: "+query);
+ return {lat:Number(places[0].lat),lng:Number(places[0].lon),label:places[0].display_name};
+}
+function initRoutePlanner(){
+ if(!window.L||routePlannerMap)return;
+ routePlannerMap=L.map("routePlannerMap").setView([41.3,64.0],6);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(routePlannerMap);
+ setTimeout(()=>routePlannerMap.invalidateSize(),250);
+}
+function clearRoutePlanner(){
+ if(routePlannerMap){routePlannerLayers.forEach(layer=>routePlannerMap.removeLayer(layer));routePlannerLayers=[];if(routeFromMarker)routePlannerMap.removeLayer(routeFromMarker);if(routeToMarker)routePlannerMap.removeLayer(routeToMarker);}
+ routeFromMarker=null;routeToMarker=null;el("routeChoices").innerHTML="";el("routePlannerInfo").textContent="Manzillarni kiriting yoki hozirgi joyingizdan foydalaning.";
+}
+async function buildRoutePlanner(fromPoint){
+ const fromText=el("routeFrom").value.trim(),toText=el("routeTo").value.trim();
+ if(!fromPoint&&!fromText)throw new Error("Boshlanish manzilini kiriting yoki hozirgi joyingizni tanlang.");
+ if(!toText)throw new Error("Borish manzilini kiriting.");
+ const start=fromPoint||await geocodeRoutePlace(fromText),finish=await geocodeRoutePlace(toText);
+ clearRoutePlanner();
+ routeFromMarker=L.marker([start.lat,start.lng]).addTo(routePlannerMap).bindPopup("Boshlanish: "+(start.label||"Hozirgi joyingiz"));
+ routeToMarker=L.marker([finish.lat,finish.lng]).addTo(routePlannerMap).bindPopup("Manzil: "+finish.label);
+ const info=el("routePlannerInfo");info.textContent="Yo‘nalishlar qidirilmoqda...";
+ const url="https://router.project-osrm.org/route/v1/driving/"+start.lng+","+start.lat+";"+finish.lng+","+finish.lat+"?overview=full&geometries=geojson&alternatives=3&steps=true";
+ const response=await fetch(url);if(!response.ok)throw new Error("Yo‘l hisoblash xizmati vaqtincha ishlamayapti.");
+ const data=await response.json();if(data.code!=="Ok"||!data.routes?.length)throw new Error("Bu manzillar orasida avtomobil yo‘li topilmadi.");
+ const bounds=[];
+ data.routes.forEach((route,index)=>{
+  const layer=L.geoJSON(route.geometry,{style:{color:index===0?"#0878df":"#8aa7c4",weight:index===0?6:4,opacity:index===0?.95:.7,dashArray:index===0?null:"7 7"}}).addTo(routePlannerMap);
+  routePlannerLayers.push(layer);bounds.push(layer.getBounds());
+  const km=(route.distance/1000).toFixed(1),mins=Math.round(route.duration/60);
+  const card=document.createElement("div");card.className="item";
+  const title=document.createElement("b");title.textContent=(index===0?"Tavsiya etilgan yo‘l":"Muqobil yo‘l "+(index+1));card.appendChild(title);
+  const detail=document.createElement("p");detail.className="muted";detail.textContent=km+" km · taxminan "+(mins>=60?Math.floor(mins/60)+" soat "+(mins%60)+" daqiqa":mins+" daqiqa");card.appendChild(detail);
+  const choose=addActionButton(card,"Xaritada ko‘rsatish",()=>{routePlannerMap.fitBounds(layer.getBounds(),{padding:[24,24]});layer.setStyle({color:"#0878df",weight:6,opacity:1});});
+  el("routeChoices").appendChild(card);
+ });
+ routePlannerMap.fitBounds(L.latLngBounds(bounds),{padding:[25,25]});
+ info.textContent=""+data.routes.length+" ta yo‘l varianti topildi. Variantni tanlab xaritada ko‘ring. Masofa va vaqt taxminiy.";
+}
+el("routeBuild").addEventListener("click",async()=>{const b=el("routeBuild");b.disabled=true;try{await buildRoutePlanner(null);}catch(e){el("routePlannerInfo").textContent=e.message;}finally{b.disabled=false;}});
+el("routeUseMyLocation").addEventListener("click",()=>{
+ if(!navigator.geolocation){el("routePlannerInfo").textContent="Bu qurilmada joylashuv aniqlanmaydi.";return;}
+ el("routePlannerInfo").textContent="Hozirgi joyingiz aniqlanmoqda...";
+ navigator.geolocation.getCurrentPosition(async pos=>{try{const p={lat:pos.coords.latitude,lng:pos.coords.longitude,label:"Hozirgi joyingiz"};el("routeFrom").value="Hozirgi joyim";await buildRoutePlanner(p);}catch(e){el("routePlannerInfo").textContent=e.message;}},err=>{el("routePlannerInfo").textContent="Joylashuvga ruxsat berilmadi yoki aniqlanmadi. Manzilni qo‘lda kiriting."},{enableHighAccuracy:true,timeout:12000});
+});
+el("routeClear").addEventListener("click",()=>{el("routeFrom").value="";el("routeTo").value="";clearRoutePlanner();});
+
 function show(id,msg){el(id).className="notice";el(id).textContent=msg;}
 async function request(path,options={}){const r=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.detail||"Server xatosi: "+r.status);return d;}
 if(!token){location.href="login.html";}
@@ -245,7 +310,7 @@ loadProfile().then(()=>{
  const view="driver";
  const owner=el("ownerSection"),driver=el("driverSection"),profile=el("profileSection"),ai=el("aiSection"),orders=el("ordersSection");
  if(view==="owner"){driver.hidden=true;ai.hidden=true;owner.hidden=false;profile.hidden=false;orders.hidden=false;document.querySelector(".welcome h1").textContent="Yuk joylash kabineti";document.querySelector(".welcome p").textContent="Yuk ma’lumotlarini kiriting va buyurtmangizni boshqaring.";initLoadMap();refreshMine();}
- else if(view==="driver"){owner.hidden=true;ai.hidden=true;driver.hidden=false;profile.hidden=false;orders.hidden=false;document.querySelector(".welcome h1").textContent="Yuklarni tanlash kabineti";document.querySelector(".welcome p").textContent="Mavjud yuklarni qidiring va mos buyurtmani tanlang.";refreshAvailable();refreshMine();}
+ else if(view==="driver"){owner.hidden=true;ai.hidden=true;driver.hidden=false;profile.hidden=false;orders.hidden=false;document.querySelector(".welcome h1").textContent="Yuklarni tanlash kabineti";document.querySelector(".welcome p").textContent="Mavjud yuklarni qidiring va mos buyurtmani tanlang.";initRoutePlanner();refreshAvailable();refreshMine();}
  else{if(!driver.hidden)refreshAvailable();if(!orders.hidden)refreshMine();if(!owner.hidden)initLoadMap();}
 });
 </script></body></html>
