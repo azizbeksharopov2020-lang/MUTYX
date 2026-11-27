@@ -20,18 +20,19 @@ function translateNode(n,lang){
  if(n.nodeType===3){
    if(!original.has(n))original.set(n,n.nodeValue);
    const src=original.get(n),key=src.trim();
-   if(dict[key])n.nodeValue=src.replace(key,dict[key]);
+   if(dict[key]){const next=src.replace(key,dict[key]);if(n.nodeValue!==next)n.nodeValue=next;}
  }else if(n.nodeType===1){
    attrs.forEach(a=>{if(n.hasAttribute(a)){const k='data-i18n-original-'+a;if(!n.hasAttribute(k))n.setAttribute(k,n.getAttribute(a));const src=n.getAttribute(k);if(dict[src])n.setAttribute(a,dict[src]);}});
    n.childNodes.forEach(ch=>translateNode(ch,lang));
  }
 }
+const baseTitle=document.title;
 function apply(lang){
  lang=['uz','ru','en'].includes(lang)?lang:'uz';
  document.documentElement.lang=lang;
  translateNode(document.body,lang);
  const s=document.getElementById('languageSwitch');if(s)s.value=lang;
- document.title=(D[lang]||{})[document.title]||document.title;
+ document.title=lang==='ru'?(baseTitle.includes('Ro‘yxatdan')?'YUKNOVA — Регистрация':baseTitle.includes('Tizimga')?'YUKNOVA — Вход':baseTitle.includes('Yuk joylash')?'YUKNOVA — Кабинет владельца груза':baseTitle.includes('Yuk tanlash')?'YUKNOVA — Кабинет водителя':baseTitle):lang==='en'?(baseTitle.includes('Ro‘yxatdan')?'YUKNOVA — Sign up':baseTitle.includes('Tizimga')?'YUKNOVA — Log in':baseTitle.includes('Yuk joylash')?'YUKNOVA — Cargo owner dashboard':baseTitle.includes('Yuk tanlash')?'YUKNOVA — Driver dashboard':baseTitle):baseTitle;
  try{localStorage.setItem('yuknova-language',lang)}catch(e){}
 }
 function addSelector(){
