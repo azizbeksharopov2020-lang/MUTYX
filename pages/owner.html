@@ -104,9 +104,11 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--yn-blue)!im
 header{backdrop-filter:blur(8px)}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<style>.yuknova-language{margin-left:auto;height:36px;padding:0 9px;border:1px solid #dce5f0;border-radius:9px;background:#fff;color:#17243b;font-weight:800;cursor:pointer;font-size:13px}header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}@media(max-width:600px){.yuknova-language{height:34px;padding:0 6px;font-size:12px}}</style>
 </head>
 <body>
-<header><a class="logo" href="../index.html">YUK<span>NOVA</span></a><nav style="display:flex;gap:7px;flex-wrap:wrap"><a href="../index.html">Bosh sahifa</a><a href="owner.html">Yuk joylash</a><a href="driver.html">Yuklarni tanlash</a></nav></header>
+<header><a class="logo" href="../index.html">YUK<span>NOVA</span></a><nav style="display:flex;gap:7px;flex-wrap:wrap"><a href="../index.html">Bosh sahifa</a><a href="owner.html">Yuk joylash</a><a href="driver.html">Yuklarni tanlash</a></nav><select id="languageSwitch" class="yuknova-language" aria-label="Tilni tanlang"><option value="uz">🇺🇿 UZ</option><option value="ru">🇷🇺 RU</option><option value="en">🇬🇧 EN</option></select>
+</header>
 <main>
 <section class="welcome"><h1>Shaxsiy kabinet</h1><p id="welcomeText">Ma’lumot yuklanmoqda...</p></section>
 <div class="grid">
@@ -263,4 +265,5 @@ loadProfile().then(()=>{
  else if(view==="driver"){owner.hidden=true;ai.hidden=true;driver.hidden=false;profile.hidden=false;orders.hidden=false;document.querySelector(".welcome h1").textContent="Yuklarni tanlash kabineti";document.querySelector(".welcome p").textContent="Mavjud yuklarni qidiring va mos buyurtmani tanlang.";refreshAvailable();refreshMine();}
  else{if(!driver.hidden)refreshAvailable();if(!orders.hidden)refreshMine();if(!owner.hidden)initLoadMap();}
 });
-</script></body></html>
+</script><script src="i18n.js"></script>
+</body></html>
