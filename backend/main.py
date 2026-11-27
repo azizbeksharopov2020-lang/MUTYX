@@ -15,6 +15,10 @@ import os
 import re
 import secrets
 import time
+import json
+import threading
+import urllib.request
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
@@ -133,6 +137,18 @@ class User(Base):
     roles: Mapped[str] = mapped_column(String(40))  # "driver", "owner" yoki "driver,owner"
     verified: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class TelegramRegistration(Base):
+    __tablename__ = "mutx_telegram_registrations"
+    challenge_id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    phone: Mapped[str] = mapped_column(String(20), index=True)
+    code_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    chat_id: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    verified_token_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    verified_until: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Load(Base):
@@ -909,11 +925,168 @@ class RegisterIn(BaseModel):
     phone: str
     password: str
     roles: List[str]
+    verification_token: Optional[str] = None
 
 
 class LoginIn(BaseModel):
     phone: str
     password: str
+
+
+
+
+# Telegram OTP polling; bot token is read only from server environment.
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME", "YUKNOVA_verify_bot").strip().lstrip("@")
+_telegram_offset = 0
+_telegram_thread_started = False
+
+def _tg_call(method: str, payload: dict, timeout: int = 35):
+    if not TELEGRAM_BOT_TOKEN:
+        raise RuntimeError("Telegram bot token is not configured")
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/{method}"
+    body = urllib.parse.urlencode({k: json.dumps(v) if isinstance(v, (dict, list)) else str(v) for k, v in payload.items()}).encode()
+    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"})
+    with urllib.request.urlopen(req, timeout=timeout) as response:
+        data = json.loads(response.read().decode("utf-8"))
+    if not data.get("ok"):
+        raise RuntimeError("Telegram API request failed")
+    return data.get("result")
+
+def _phone_digits(value: str) -> str:
+    digits = re.sub(r"\\D", "", value or "")
+    if len(digits) == 9:
+        digits = "998" + digits
+    return digits
+
+def _telegram_send(chat_id: str, text: str, reply_markup=None):
+    payload = {"chat_id": chat_id, "text": text}
+    if reply_markup:
+        payload["reply_markup"] = reply_markup
+    _tg_call("sendMessage", payload, timeout=15)
+
+def _handle_telegram_update(update: dict):
+    message = update.get("message") or {}
+    chat_id = str((message.get("chat") or {}).get("id", ""))
+    sender = message.get("from") or {}
+    if not chat_id:
+        return
+    text = (message.get("text") or "").strip()
+    if text.startswith("/start"):
+        parts = text.split(maxsplit=1)
+        if len(parts) != 2 or not re.fullmatch(r"[A-Za-z0-9_-]{20,40}", parts[1]):
+            _telegram_send(chat_id, "YUKNOVA tasdiqlashini saytdan boshlang. Saytdagi Telegram tugmasini bosing.")
+            return
+        db = SessionLocal()
+        try:
+            pending = db.get(TelegramRegistration, parts[1])
+            expiry = pending.expires_at if pending and pending.expires_at.tzinfo else (pending.expires_at.replace(tzinfo=timezone.utc) if pending else None)
+            if not pending or expiry < utcnow():
+                _telegram_send(chat_id, "Tasdiqlash havolasi eskirgan. Saytga qaytib, qayta urinib ko'ring.")
+                return
+            pending.chat_id = chat_id
+            pending.code_hash = None
+            pending.verified_token_hash = None
+            db.commit()
+            markup = {"keyboard": [[{"text": "📱 Telefon raqamimni ulashish", "request_contact": True}]], "resize_keyboard": True, "one_time_keyboard": True}
+            _telegram_send(chat_id, "YUKNOVA ro'yxatdan o'tishini tasdiqlash uchun pastdagi tugmani bosing. Telegram kontakt raqamingiz saytdagi raqam bilan mos bo'lishi kerak.", markup)
+        finally:
+            db.close()
+        return
+    contact = message.get("contact")
+    if contact:
+        if str(contact.get("user_id", "")) != str(sender.get("id", "")):
+            _telegram_send(chat_id, "Iltimos, faqat o'zingizning telefon kontaktingizni ulashing.")
+            return
+        db = SessionLocal()
+        try:
+            pending = db.scalar(select(TelegramRegistration).where(TelegramRegistration.chat_id == chat_id).order_by(TelegramRegistration.expires_at.desc()))
+            expiry = pending.expires_at if pending and pending.expires_at.tzinfo else (pending.expires_at.replace(tzinfo=timezone.utc) if pending else None)
+            if not pending or expiry < utcnow():
+                _telegram_send(chat_id, "Faol tasdiqlash so'rovi topilmadi. Saytdan qayta boshlang.")
+                return
+            if _phone_digits(contact.get("phone_number", "")) != _phone_digits(pending.phone):
+                _telegram_send(chat_id, "Telegram kontakt raqami saytdagi raqam bilan mos emas. To'g'ri raqam bilan qayta urinib ko'ring.")
+                return
+            code = f"{secrets.randbelow(1000000):06d}"
+            pending.code_hash = hashlib.sha256((pending.challenge_id + code + SECRET_KEY).encode()).hexdigest()
+            pending.expires_at = utcnow() + timedelta(minutes=5)
+            pending.attempts = 0
+            db.commit()
+            _telegram_send(chat_id, f"YUKNOVA tasdiqlash kodingiz: {code}\nKod 5 daqiqa amal qiladi. Uni hech kimga bermang.", {"remove_keyboard": True})
+        finally:
+            db.close()
+
+def _telegram_poll_loop():
+    global _telegram_offset
+    while True:
+        try:
+            updates = _tg_call("getUpdates", {"offset": _telegram_offset, "timeout": 25, "allowed_updates": ["message"]}, timeout=35) or []
+            for item in updates:
+                _telegram_offset = max(_telegram_offset, int(item.get("update_id", 0)) + 1)
+                try:
+                    _handle_telegram_update(item)
+                except Exception:
+                    logger.exception("Telegram update handling failed")
+        except Exception:
+            logger.exception("Telegram polling failed; retrying")
+            time.sleep(5)
+
+@app.on_event("startup")
+def start_telegram_polling():
+    global _telegram_thread_started
+    if TELEGRAM_BOT_TOKEN and not _telegram_thread_started:
+        try:
+            _tg_call("deleteWebhook", {"drop_pending_updates": False}, timeout=10)
+        except Exception:
+            logger.exception("Could not prepare Telegram polling")
+        threading.Thread(target=_telegram_poll_loop, daemon=True, name="yuknova-telegram-poll").start()
+        _telegram_thread_started = True
+
+class TelegramStartIn(BaseModel):
+    phone: str
+
+class TelegramVerifyIn(BaseModel):
+    challenge_id: str
+    phone: str
+    code: str
+
+@app.post("/telegram/register/start")
+def telegram_register_start(data: TelegramStartIn, db: Session = Depends(get_db)):
+    phone = data.phone.strip()
+    if not PHONE_RE.fullmatch(phone):
+        raise HTTPException(status_code=400, detail="Telefon raqam +998 formatida bo'lishi kerak")
+    if not TELEGRAM_BOT_TOKEN:
+        raise HTTPException(status_code=503, detail="Telegram bot hali serverga ulanmagan")
+    if db.scalar(select(User).where(User.phone == phone)):
+        raise HTTPException(status_code=409, detail="Bu telefon raqam allaqachon ro'yxatdan o'tgan")
+    for item in db.scalars(select(TelegramRegistration).where(TelegramRegistration.phone == phone)):
+        db.delete(item)
+    challenge = secrets.token_urlsafe(18)
+    db.add(TelegramRegistration(challenge_id=challenge, phone=phone, expires_at=utcnow()+timedelta(minutes=10), attempts=0))
+    db.commit()
+    return {"challenge_id": challenge, "telegram_url": f"https://t.me/{TELEGRAM_BOT_USERNAME}?start={challenge}", "expires_in": 600}
+
+@app.post("/telegram/register/verify")
+def telegram_register_verify(data: TelegramVerifyIn, db: Session = Depends(get_db)):
+    pending = db.get(TelegramRegistration, data.challenge_id)
+    if not pending or pending.phone != data.phone:
+        raise HTTPException(status_code=400, detail="Tasdiqlash so'rovi topilmadi. Qayta boshlang.")
+    expiry = pending.expires_at if pending.expires_at.tzinfo else pending.expires_at.replace(tzinfo=timezone.utc)
+    if expiry < utcnow() or not pending.code_hash:
+        raise HTTPException(status_code=400, detail="Kod hali yuborilmadi yoki muddati tugadi")
+    if pending.attempts >= 5:
+        raise HTTPException(status_code=429, detail="Urinishlar soni tugadi. Qayta kod oling.")
+    expected = hashlib.sha256((pending.challenge_id + data.code + SECRET_KEY).encode()).hexdigest()
+    if not re.fullmatch(r"[0-9]{6}", data.code) or not hmac.compare_digest(expected, pending.code_hash):
+        pending.attempts += 1
+        db.commit()
+        raise HTTPException(status_code=400, detail="Tasdiqlash kodi noto'g'ri")
+    ticket = secrets.token_urlsafe(32)
+    pending.verified_token_hash = hashlib.sha256(ticket.encode()).hexdigest()
+    pending.verified_until = utcnow() + timedelta(minutes=10)
+    db.commit()
+    return {"verified": True, "verification_token": ticket}
 
 
 @app.post("/register")
@@ -943,13 +1116,25 @@ def register(data: RegisterIn, db: Session = Depends(get_db)):
 
     if db.scalar(select(User).where(User.phone == phone)):
         raise HTTPException(status_code=409, detail="Bu telefon raqam allaqachon ro'yxatdan o'tgan")
+    if not data.verification_token:
+        raise HTTPException(status_code=403, detail="Avval Telegram orqali telefon raqamingizni tasdiqlang")
+    ticket_hash = hashlib.sha256(data.verification_token.encode()).hexdigest()
+    pending = db.scalar(select(TelegramRegistration).where(
+        TelegramRegistration.phone == phone,
+        TelegramRegistration.verified_token_hash == ticket_hash,
+    ))
+    if not pending or not pending.verified_until:
+        raise HTTPException(status_code=403, detail="Telegram tasdiqlashi topilmadi. Qayta tasdiqlang")
+    verified_until = pending.verified_until if pending.verified_until.tzinfo else pending.verified_until.replace(tzinfo=timezone.utc)
+    if verified_until < utcnow():
+        raise HTTPException(status_code=403, detail="Tasdiqlash muddati tugadi. Qayta tasdiqlang")
 
     user = User(
         full_name=full_name,
         phone=phone,
         password_hash=hash_password(data.password),
         roles=",".join(roles),
-        verified=False,
+        verified=True,
     )
     db.add(user)
     try:
@@ -958,6 +1143,8 @@ def register(data: RegisterIn, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=409, detail="Bu telefon raqam allaqachon ro'yxatdan o'tgan")
 
+    db.delete(pending)
+    db.commit()
     return {
         "success": True,
         "message": "YUKNOVA hisobingiz yaratildi",
