@@ -74,6 +74,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--yn-blue)!im
 header{backdrop-filter:blur(8px)}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<style>.yuknova-language{margin-left:auto;height:36px;padding:0 9px;border:1px solid #dce5f0;border-radius:9px;background:#fff;color:#17243b;font-weight:800;cursor:pointer;font-size:13px}header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}@media(max-width:600px){.yuknova-language{height:34px;padding:0 6px;font-size:12px}}</style>
 </head>
 
 <body>
@@ -81,6 +82,7 @@ header{backdrop-filter:blur(8px)}
 <header>
     <a href="../index.html" class="logo">YUK<span>NOVA</span></a>
     <a class="home-link" href="../index.html">Bosh sahifa</a>
+<select id="languageSwitch" class="yuknova-language" aria-label="Tilni tanlang"><option value="uz">🇺🇿 UZ</option><option value="ru">🇷🇺 RU</option><option value="en">🇬🇧 EN</option></select>
 </header>
 
 <div class="container">
@@ -236,5 +238,6 @@ form.addEventListener("submit", async (event) => {
 });
 </script>
 
+<script src="i18n.js"></script>
 </body>
 </html>           
