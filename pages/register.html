@@ -126,17 +126,7 @@ header{backdrop-filter:blur(8px)}
             </div>
 
 
-            <div class="form-group" id="telegramVerifyPanel">
-                <label>Telefonni Telegram orqali tasdiqlash</label>
-                <button type="button" id="sendTelegramCode" class="telegram-action">Telegram orqali kod olish</button>
-                <div id="telegramCodeArea" hidden>
-                    <p class="telegram-help">Telegram botga o‘ting, /start tugmasini bosing va telefon kontaktingizni ulashing. Bot yuborgan 6 xonali kodni kiriting.</p>
-                    <input type="text" id="telegramCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 xonali kod">
-                    <button type="button" id="verifyTelegramCode" class="telegram-action">Kodni tasdiqlash</button>
-                </div>
-                <div id="telegramStatus" class="telegram-help" aria-live="polite"></div>
-            </div>
-
+            
             <div class="form-group">
                 <label for="password">Parol</label>
                 <div class="password-wrap">
@@ -185,9 +175,17 @@ header{backdrop-filter:blur(8px)}
                 </label>
             </div>
 
-            <button type="submit">
-                Ro‘yxatdan o‘tish
-            </button>
+            <div class="form-group" id="telegramVerifyPanel">
+                <label>Ro‘yxatdan o‘tishni Telegram kodi bilan tasdiqlash</label>
+                <div id="telegramCodeArea" hidden>
+                    <p class="telegram-help">Telegram botda /start ni bosing, telefon kontaktingizni ulashing. Bot yuborgan 6 xonali kodni shu yerga kiriting.</p>
+                    <input type="text" id="telegramCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 xonali tasdiqlash kodi">
+                    <button type="button" id="verifyTelegramCode" class="telegram-action">Kodni tasdiqlash va hisob yaratish</button>
+                </div>
+                <div id="telegramStatus" class="telegram-help" aria-live="polite"></div>
+            </div>
+
+            <button type="submit" id="registerSubmit">Ro‘yxatdan o‘tish va Telegram kodini olish</button>
 
             <div class="notice" id="notice"></div>
 
@@ -217,28 +215,34 @@ function normalizeUzPhone(value){
 }
 const phoneInput=document.getElementById("phone");
 phoneInput.addEventListener("blur",()=>{const normalized=normalizeUzPhone(phoneInput.value);if(normalized)phoneInput.value=normalized;});
-let telegramChallenge=null, telegramVerificationToken=null;
+let telegramChallenge=null, telegramVerificationToken=null, pendingRegistration=null;
 const telegramStatus=document.getElementById("telegramStatus");
-const sendTelegramCode=document.getElementById("sendTelegramCode");
 const telegramCodeArea=document.getElementById("telegramCodeArea");
 const verifyTelegramCode=document.getElementById("verifyTelegramCode");
+const registerSubmit=document.getElementById("registerSubmit");
 function showTelegramStatus(message,ok=false){telegramStatus.textContent=message;telegramStatus.style.color=ok?"#167344":"#a12525";}
-sendTelegramCode.addEventListener("click",async()=>{
+function collectRegistration(){
+ const password=document.getElementById("password").value;
+ if(password.length<8) throw new Error("Parol kamida 8 ta belgidan iborat bo‘lsin.");
+ if(password!==document.getElementById("confirmPassword").value) throw new Error("Parollar bir xil emas.");
+ const roles=Array.from(document.querySelectorAll('input[name="role"]:checked')).map(x=>x.value);
+ if(!roles.length) throw new Error("Kamida bitta rolni tanlang.");
  const phone=normalizeUzPhone(phoneInput.value);
- if(!phone){showTelegramStatus("Avval telefon raqamingizni +998901234567 ko‘rinishida kiriting.");phoneInput.focus();return;}
- sendTelegramCode.disabled=true;showTelegramStatus("So‘rov yuborilmoqda...",true);
- try{
-  const response=await fetch(API+"/telegram/register/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone})});
-  const data=await response.json();if(!response.ok)throw new Error(data.detail||"Telegram so‘rovini boshlashda xato.");
-  telegramChallenge={id:data.challenge_id,phone};telegramVerificationToken=null;
-  telegramCodeArea.hidden=false;
-  showTelegramStatus("Telegram bot ochiladi. Botda /start ni bosing va telefon kontaktni ulashing.",true);
-  window.open(data.telegram_url,"_blank","noopener");
- }catch(error){showTelegramStatus(error.message||"Server bilan aloqa yo‘q.");}
- finally{sendTelegramCode.disabled=false;}
-});
+ if(!phone) throw new Error("Telefon raqamni +998901234567 ko‘rinishida kiriting.");
+ phoneInput.value=phone;
+ return {full_name:document.getElementById("fullname").value.trim(),phone,password,roles};
+}
+async function createAccount(){
+ const payload={...pendingRegistration,verification_token:telegramVerificationToken};
+ const response=await fetch(API+"/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+ const data=await response.json();
+ if(!response.ok) throw new Error(data.detail||"Ro‘yxatdan o‘tishda xato.");
+ localStorage.setItem("mutx_token",data.token);
+ showTelegramStatus("Hisob yaratildi. Kabinet ochilmoqda...",true);
+ setTimeout(()=>{location.href=pendingRegistration.roles.includes("owner")?"owner.html":"driver.html";},700);
+}
 verifyTelegramCode.addEventListener("click",async()=>{
- if(!telegramChallenge){showTelegramStatus("Avval Telegram orqali kod oling.");return;}
+ if(!telegramChallenge||!pendingRegistration){showTelegramStatus("Avval barcha ma’lumotlarni to‘ldirib, ro‘yxatdan o‘tishni boshlang.");return;}
  const code=document.getElementById("telegramCode").value.trim();
  if(!/^[0-9]{6}$/.test(code)){showTelegramStatus("6 xonali kodni kiriting.");return;}
  verifyTelegramCode.disabled=true;showTelegramStatus("Kod tekshirilmoqda...",true);
@@ -246,47 +250,35 @@ verifyTelegramCode.addEventListener("click",async()=>{
   const response=await fetch(API+"/telegram/register/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({challenge_id:telegramChallenge.id,phone:telegramChallenge.phone,code})});
   const data=await response.json();if(!response.ok)throw new Error(data.detail||"Kod noto‘g‘ri.");
   telegramVerificationToken=data.verification_token;
-  showTelegramStatus("Telefon Telegram orqali tasdiqlandi. Endi ro‘yxatdan o‘tishingiz mumkin.",true);
-  verifyTelegramCode.textContent="Tasdiqlandi ✓";verifyTelegramCode.disabled=true;
+  showTelegramStatus("Kod to‘g‘ri. Hisob yaratilmoqda...",true);
+  await createAccount();
  }catch(error){showTelegramStatus(error.message||"Kodni tekshirishda xato.");verifyTelegramCode.disabled=false;}
 });
+document.querySelectorAll(".toggle-password").forEach(button=>{
+ button.addEventListener("click",()=>{
+  const field=document.getElementById(button.dataset.target),visible=field.type==="password";
+  field.type=visible?"text":"password";button.textContent=visible?"🙈":"👁";
+  button.setAttribute("aria-label",visible?"Parolni yashirish":"Parolni ko‘rsatish");
+  button.setAttribute("aria-pressed",String(visible));
+ });
+});
+form.addEventListener("submit",async(event)=>{
+ event.preventDefault();notice.style.display="block";notice.className="notice";
+ try{pendingRegistration=collectRegistration();}catch(error){notice.classList.add("error");notice.textContent=error.message;return;}
+ registerSubmit.disabled=true;registerSubmit.textContent="Telegram kodi so‘ralmoqda...";
+ showTelegramStatus("Telegram tasdiqlashi boshlanmoqda...",true);
+ try{
+  const response=await fetch(API+"/telegram/register/start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:pendingRegistration.phone})});
+  const data=await response.json();if(!response.ok)throw new Error(data.detail||"Telegram kodini yuborishda xato.");
+  telegramChallenge={id:data.challenge_id,phone:pendingRegistration.phone};
+  telegramCodeArea.hidden=false;
+  registerSubmit.textContent="Telegram ilovasiga o‘tish";registerSubmit.disabled=false;
+  showTelegramStatus("Telegram botda /start ni bosing va o‘zingizning telefon kontaktingizni ulashing. Bot yuborgan kodni shu sahifaga kiriting.",true);
+  const opened=window.open(data.telegram_url,"_blank");
+  if(!opened) location.href=data.telegram_url;
+ }catch(error){showTelegramStatus(error.message||"Server bilan aloqa yo‘q.");registerSubmit.disabled=false;registerSubmit.textContent="Qayta urinish";}
+});
 
-document.querySelectorAll(".toggle-password").forEach(button => {
-  button.addEventListener("click", () => {
-    const field = document.getElementById(button.dataset.target);
-    const visible = field.type === "password";
-    field.type = visible ? "text" : "password";
-    button.textContent = visible ? "🙈" : "👁";
-    button.setAttribute("aria-label", visible ? "Parolni yashirish" : "Parolni ko‘rsatish");
-    button.setAttribute("aria-pressed", String(visible));
-  });
-});
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  notice.style.display = "block"; notice.className = "notice";
-  const password = document.getElementById("password").value;
-  if (password.length < 8) { notice.classList.add("error"); notice.textContent = "Parol kamida 8 ta belgidan iborat bo‘lsin."; return; }
-  if (password !== document.getElementById("confirmPassword").value) {
-    notice.classList.add("error"); notice.textContent = "Parollar bir xil emas."; return;
-  }
-  const roles = Array.from(document.querySelectorAll('input[name="role"]:checked')).map(x => x.value);
-  if (!roles.length) { notice.classList.add("error"); notice.textContent = "Kamida bitta rolni tanlang."; return; }
-  const normalizedPhone=normalizeUzPhone(phoneInput.value);
-  if(!normalizedPhone){notice.classList.add("error");notice.textContent="Telefon raqamni +998901234567 yoki 901234567 ko‘rinishida kiriting.";return;}
-  phoneInput.value=normalizedPhone;
-  if(!telegramVerificationToken){notice.classList.add("error");notice.textContent="Avval Telegram orqali telefon raqamingizni tasdiqlang.";return;}
-  const payload = {full_name:document.getElementById("fullname").value.trim(), phone:normalizedPhone, password, roles, verification_token:telegramVerificationToken};
-  const btn = form.querySelector('button[type="submit"]'); btn.disabled = true; btn.textContent = "Yuborilmoqda...";
-  try {
-    const response = await fetch(API + "/register", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.detail || "Ro‘yxatdan o‘tishda xato.");
-    localStorage.setItem("mutx_token", data.token);
-    notice.classList.add("success"); notice.textContent = "Hisob yaratildi. Kabinet ochilmoqda...";
-    setTimeout(()=>{location.href=roles.includes("owner")?"owner.html":"driver.html";},700);
-  } catch (error) { notice.classList.add("error"); notice.textContent = error.message || "Server bilan aloqa yo‘q."; }
-  finally { btn.disabled = false; btn.textContent = "Ro‘yxatdan o‘tish"; }
-});
 </script>
 
 <script src="i18n.js?v=telegram-otp-1"></script>
