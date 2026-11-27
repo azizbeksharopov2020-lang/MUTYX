@@ -457,6 +457,9 @@ async def security_headers(request, call_next):
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
+    # Permit the production YUKNOVA apex/www subdomains even if the browser
+    # reaches the site through a redirect or an additional first-party subdomain.
+    allow_origin_regex=r"^https://([a-z0-9-]+\\.)*yuknova\\.uz$",
     allow_methods=["*"],
     allow_headers=["*"],
 )
