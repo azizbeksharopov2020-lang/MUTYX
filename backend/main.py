@@ -954,7 +954,7 @@ def _tg_call(method: str, payload: dict, timeout: int = 35):
     return data.get("result")
 
 def _phone_digits(value: str) -> str:
-    digits = re.sub(r"\\D", "", value or "")
+    digits = re.sub(r"\D", "", value or "")
     if len(digits) == 9:
         digits = "998" + digits
     return digits
