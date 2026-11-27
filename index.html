@@ -329,13 +329,15 @@ h1{font-size:clamp(39px,9vw,52px);margin:0 0 12px}
 .copy .hero-stats small{font-size:7px}
 }
 
+
+.language-switch{height:38px;border:1px solid #dce6f2;border-radius:10px;padding:0 9px;background:#fff;color:#172b45;font-weight:800;cursor:pointer;font-size:13px;outline:none}.language-switch:focus{border-color:#0866e8;box-shadow:0 0 0 3px #0866e822}@media(max-width:760px){.language-switch{height:35px;padding:0 6px;font-size:12px}}
 </style>
 </head>
 <body>
 <header><div class="wrap nav">
 <a class="brand" href="#top"><svg class="logo" viewBox="0 0 90 70" fill="none"><path d="M7 23h49v31H7zM56 32h15l12 13v9H56z" fill="currentColor"/><path d="M62 36h8l8 9H62z" fill="white"/><circle cx="24" cy="57" r="8" fill="#102746" stroke="currentColor" stroke-width="5"/><circle cx="68" cy="57" r="8" fill="#102746" stroke="currentColor" stroke-width="5"/><path d="M3 15h39M0 7h31" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg><span>YUK<span>NOVA</span><small>Yuk tashish platformasi</small></span></a>
 <nav id="nav"><a href="#top">Bosh sahifa</a><a href="pages/owner.html">Yuklar</a><a href="pages/driver.html">Haydovchilar</a><a href="#services">Xizmatlar</a><a href="#about">Biz haqimizda</a></nav>
-<div style="display:flex;gap:9px;align-items:center"><a class="btn outline" href="pages/login.html">♙ Kirish</a><a class="btn primary" href="pages/register.html">♙ Ro‘yxatdan o‘tish</a><button class="menu" id="menu" aria-label="Menyu">☰</button></div>
+<div style="display:flex;gap:9px;align-items:center"><select class="language-switch" id="languageSwitch" aria-label="Tilni tanlang"><option value="uz">🇺🇿 UZ</option><option value="ru">🇷🇺 RU</option><option value="en">🇬🇧 EN</option></select><a class="btn outline" href="pages/login.html">♙ Kirish</a><a class="btn primary" href="pages/register.html">♙ Ro‘yxatdan o‘tish</a><button class="menu" id="menu" aria-label="Menyu">☰</button></div>
 </div></header>
 <main id="top">
 <section class="hero"><div class="wrap hero-grid">
@@ -369,6 +371,47 @@ h1{font-size:clamp(39px,9vw,52px);margin:0 0 12px}
 const menu=document.getElementById('menu'),nav=document.getElementById('nav');
 menu.addEventListener('click',()=>{nav.classList.toggle('open');menu.textContent=nav.classList.contains('open')?'✕':'☰';});
 nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.textContent='☰';}));
+
+const translations={
+ru:{
+'Yuk tashish platformasi':'Логистическая платформа','Bosh sahifa':'Главная','Yuklar':'Грузы','Haydovchilar':'Водители','Xizmatlar':'Услуги','Biz haqimizda':'О нас','♙ Kirish':'♙ Войти','♙ Ro‘yxatdan o‘tish':'♙ Регистрация',
+'Yuk va transport topish endi ':'Находить грузы и транспорт теперь ','oson!':'легко!','O‘zbekiston bo‘ylab yuk egalari va haydovchilarni bog‘laydigan zamonaviy logistika platformasi.':'Современная логистическая платформа, объединяющая владельцев грузов и водителей по всему Узбекистану.',
+'◇ Yuk joylashtirish →':'◇ Разместить груз →','🚚 Transport topish':'🚚 Найти транспорт','Foydalanuvchi':'Пользователи','Faol haydovchi':'Активные водители','Yetkazilgan yuk':'Доставленные грузы',
+'Yuk joylashtirish':'Размещение груза','Yukingizni platformaga joylang':'Разместите свой груз на платформе','Transport topish':'Поиск транспорта','O‘zingizga mos yukni tanlang':'Выберите подходящий груз','Manzil xaritasi':'Карта маршрута','Olish va yetkazish joylari':'Места загрузки и доставки','Reyting va ishonch':'Рейтинг и доверие','Foydalanuvchi baholari':'Оценки пользователей',
+'Qanday ishlaydi?':'Как это работает?','Ro‘yxatdan o‘ting':'Зарегистрируйтесь','Haydovchi yoki yuk egasi sifatida hisob yarating.':'Создайте аккаунт водителя или владельца груза.','Yuk yoki transport joylang':'Разместите груз или транспорт','Kerakli ma’lumotlarni kiriting va manzillarni belgilang.':'Введите необходимые данные и укажите адреса.','Buyurtmani kelishing':'Согласуйте заказ','Buyurtma tafsilotlarini ko‘rib chiqing va tasdiqlang.':'Изучите детали заказа и подтвердите его.','Yuk yetkaziladi':'Груз будет доставлен','Yuk belgilangan manzilga yetkazish jarayoniga o‘tadi.':'Груз будет доставлен по указанному адресу.',
+'Yuk egalari':'Владельцы грузов','Yukini joylashtiradi':'Размещают свои грузы','Mos yuklarni topadi':'Находят подходящие грузы','Yuk tashish':'Грузоперевозки','Bir platformada':'На одной платформе','Barcha huquqlar himoyalangan.':'Все права защищены.'
+},
+en:{
+'Yuk tashish platformasi':'Logistics platform','Bosh sahifa':'Home','Yuklar':'Loads','Haydovchilar':'Drivers','Xizmatlar':'Services','Biz haqimizda':'About us','♙ Kirish':'♙ Log in','♙ Ro‘yxatdan o‘tish':'♙ Sign up',
+'Yuk va transport topish endi ':'Finding cargo and transport is now ','oson!':'easy!','O‘zbekiston bo‘ylab yuk egalari va haydovchilarni bog‘laydigan zamonaviy logistika platformasi.':'A modern logistics platform connecting cargo owners and drivers across Uzbekistan.',
+'◇ Yuk joylashtirish →':'◇ Post a load →','🚚 Transport topish':'🚚 Find transport','Foydalanuvchi':'Users','Faol haydovchi':'Active drivers','Yetkazilgan yuk':'Delivered loads',
+'Yuk joylashtirish':'Post a load','Yukingizni platformaga joylang':'Post your cargo on the platform','Transport topish':'Find transport','O‘zingizga mos yukni tanlang':'Choose a suitable load','Manzil xaritasi':'Route map','Olish va yetkazish joylari':'Pickup and delivery locations','Reyting va ishonch':'Ratings and trust','Foydalanuvchi baholari':'User ratings',
+'Qanday ishlaydi?':'How it works','Ro‘yxatdan o‘ting':'Sign up','Haydovchi yoki yuk egasi sifatida hisob yarating.':'Create an account as a driver or cargo owner.','Yuk yoki transport joylang':'Post cargo or transport','Kerakli ma’lumotlarni kiriting va manzillarni belgilang.':'Enter the required details and set the locations.','Buyurtmani kelishing':'Agree on the order','Buyurtma tafsilotlarini ko‘rib chiqing va tasdiqlang.':'Review the order details and confirm.','Yuk yetkaziladi':'Cargo is delivered','Yuk belgilangan manzilga yetkazish jarayoniga o‘tadi.':'The cargo proceeds to delivery at the specified destination.',
+'Yuk egalari':'Cargo owners','Yukini joylashtiradi':'Post their cargo','Mos yuklarni topadi':'Find matching loads','Yuk tashish':'Freight transport','Bir platformada':'All in one platform','Barcha huquqlar himoyalangan.':'All rights reserved.'
+}};
+const langSelect=document.getElementById('languageSwitch');
+const originalTexts=new Map();
+const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+while(walker.nextNode()){const n=walker.currentNode;if(n.nodeValue.trim())originalTexts.set(n,n.nodeValue);}
+function setLanguage(lang){
+ const dict=translations[lang]||{};
+ document.documentElement.lang=lang;
+ for(const [node,original] of originalTexts){
+   let value=original;
+   const trimmed=original.trim();
+   if(dict[trimmed]) value=original.replace(trimmed,dict[trimmed]);
+   else {
+     for(const [from,to] of Object.entries(dict)){if(value.includes(from)){value=value.replace(from,to);}}
+   }
+   node.nodeValue=value;
+ }
+ document.title=lang==='ru'?'YUKNOVA — Найти груз и транспорт':lang==='en'?'YUKNOVA — Find cargo and transport':'YUKNOVA — Yuk va transport topish endi oson';
+ langSelect.value=lang;
+ try{localStorage.setItem('yuknova-language',lang)}catch(e){}
+}
+let saved='uz';try{saved=localStorage.getItem('yuknova-language')||'uz'}catch(e){}
+langSelect.addEventListener('change',e=>setLanguage(e.target.value));
+setLanguage(saved);
 </script>
 </body>
 </html>
