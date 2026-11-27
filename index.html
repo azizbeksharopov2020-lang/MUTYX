@@ -247,7 +247,89 @@ h1{font-size:clamp(39px,9vw,52px);margin:0 0 12px}
 .hero-stats small{font-size:8px}
 .actions .btn{font-size:12px}
 }
-\n</style>
+
+/* Corrected to match the user's reference image precisely */
+.hero-grid{grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);min-height:415px;gap:10px}
+.copy{display:flex;flex-direction:column;justify-content:center;align-items:stretch;padding:26px 0}
+.copy h1{max-width:560px;font-size:clamp(44px,4.5vw,64px);line-height:1.03;margin:0 0 14px}
+.copy p{max-width:540px;font-size:17px;line-height:1.45}
+.copy .actions{margin-top:21px}
+.copy .hero-stats{width:100%;max-width:590px;margin:0;padding:25px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.copy .hero-stats .stat-item{display:flex;align-items:center;gap:8px;min-width:0;flex:initial}
+.copy .hero-stats .stat-icon{font-size:29px;color:#0873df}
+.copy .hero-stats b{font-size:19px;line-height:1.1;white-space:nowrap}
+.copy .hero-stats small{font-size:12px;white-space:nowrap}
+.truck-art{height:415px;min-height:415px;align-self:stretch;margin:0 -4.3vw 0 0;border-radius:150px 0 0 150px;overflow:hidden;background:#d9efff}
+.truck-art img{position:relative;inset:auto;display:block;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center 54%;border-radius:0;filter:none}
+.quick{grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;padding-top:20px;padding-bottom:20px}
+.tile{min-height:102px;padding:15px 18px;border:0;border-radius:16px}
+.content.soft#about{background:#fff;padding:8px 0 36px}
+.content.soft#about .heading{display:flex;align-items:center;justify-content:center;gap:28px;max-width:none;margin:0 auto 18px}
+.content.soft#about .heading:before,.content.soft#about .heading:after{content:"";display:block;height:2px;width:min(19vw,260px);background:linear-gradient(90deg,transparent,#1769ce)}
+.content.soft#about .heading:after{transform:scaleX(-1)}
+.content.soft#about .heading h2{font-size:clamp(29px,3vw,38px);margin:0;color:#071a43}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.step{position:relative;min-height:145px;padding:56px 24px 8px 68px;border:0;border-radius:0;background:transparent;box-shadow:none;text-align:left}
+.step .num{position:absolute;left:0;top:22px;width:38px;height:38px;margin:0;font-size:17px}
+.step .ico{position:absolute;left:68px;top:0;font-size:34px;line-height:1.1}
+.step h3{font-size:16px;line-height:1.2;margin:0 0 5px;color:#071a43}
+.step p{font-size:13px;line-height:1.35;margin:0;color:#253b57}
+.step:not(:last-child):after{content:"›";position:absolute;right:-5px;top:53px;font-size:43px;line-height:1;color:#7eaddb;font-weight:300}
+.role-cards{display:none!important}
+@media(max-width:900px){
+.hero-grid{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);min-height:370px}
+.truck-art{height:370px;min-height:370px}
+.copy .hero-stats{gap:6px}
+.copy .hero-stats .stat-icon{font-size:21px}
+.copy .hero-stats b{font-size:14px}
+.copy .hero-stats small{font-size:9px}
+.tile{padding:11px;gap:8px}
+.tile i{font-size:27px}
+.tile h3{font-size:14px}
+.step{padding-left:53px;padding-right:15px}
+.step .ico{left:53px}
+.step h3{font-size:14px}
+.step p{font-size:12px}
+}
+@media(max-width:700px){
+.hero-grid{grid-template-columns:1fr;min-height:0;gap:0}
+.copy{padding:28px 0 0}
+.copy h1{font-size:clamp(39px,9vw,52px);margin-bottom:12px}
+.copy p{font-size:15px}
+.copy .actions{margin-top:17px;gap:9px}
+.copy .actions .btn{flex:1;padding:12px 9px;font-size:13px}
+.copy .hero-stats{padding:16px 0 15px;gap:5px}
+.copy .hero-stats .stat-item{gap:4px}
+.copy .hero-stats .stat-icon{font-size:19px}
+.copy .hero-stats b{font-size:12px}
+.copy .hero-stats small{font-size:8px}
+.truck-art{height:auto;min-height:0;aspect-ratio:1.7/1;margin:0 -4.9vw;border-radius:65px 0 0 0}
+.truck-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 54%}
+.quick{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:13px 0 18px}
+.tile{min-height:88px;padding:10px;gap:8px}
+.tile i{font-size:24px}
+.tile h3{font-size:12px}
+.tile p{font-size:10px}
+.content.soft#about{padding:8px 0 28px}
+.content.soft#about .heading{gap:10px;margin-bottom:12px}
+.content.soft#about .heading:before,.content.soft#about .heading:after{width:12vw}
+.content.soft#about .heading h2{font-size:25px;white-space:nowrap}
+.steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.step{min-height:132px;padding:48px 5px 5px 43px}
+.step .num{top:18px;width:32px;height:32px;font-size:14px}
+.step .ico{left:51px;top:0;font-size:28px}
+.step h3{font-size:13px}
+.step p{font-size:11px}
+.step:not(:last-child):after{display:none}
+}
+@media(max-width:390px){
+.copy .hero-stats{gap:3px}
+.copy .hero-stats .stat-icon{font-size:16px}
+.copy .hero-stats b{font-size:11px}
+.copy .hero-stats small{font-size:7px}
+}
+
+</style>
 </head>
 <body>
 <header><div class="wrap nav">
