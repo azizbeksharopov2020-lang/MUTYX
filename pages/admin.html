@@ -106,8 +106,32 @@ async function loadIdentityReview(){
   }
  }catch(e){root.textContent=e.message;}
 }
-async function init(){if(!token){location.href="login.html";return}try{const a=await req("/admin/me");$("status").textContent="Rol: "+a.role+" | Ruxsatlar: "+(a.permissions.join(", ")||"—");loadIdentityReview();loadOverview();loadLoads();const term=$("userSearch").value.trim();const users=await req("/admin/users"+(term?"?q="+encodeURIComponent(term):""));$("users").innerHTML=users.map(u=>'<div class="item"><b>'+esc(u.full_name)+'</b> · '+esc(u.phone)+'<br><span class="muted">ID: '+u.id+' | '+u.roles.join(", ")+' | '+(u.verified?"Tasdiqlangan":"Tasdiqlanmagan")+'</span></div>').join("")||"Foydalanuvchilar yo‘q";
-try{const cs=await req("/admin/complaints");$("complaints").innerHTML=cs.map(c=>'<div class="item"><b>Shikoyat #'+c.id+' · Yuk #'+c.load_id+'</b><br>'+esc(c.reason)+'<br><span class="muted">Holat: '+esc(c.status)+' | Murojaatchi ID: '+c.reporter_id+'</span>'+(c.status==="open"?' <button onclick="decide('+c.id+')">Ko‘rib chiqish</button>':'<br>Qaror: '+esc(c.decision||"—")+' | Jarima: '+c.penalty_amount+' so‘m')+'</div>').join("")||"Shikoyatlar yo‘q";}catch(e){$("complaints").textContent=e.message;}}catch(e){$("status").className="error";$("status").textContent=e.message;$("users").textContent="Ruxsat yoki ma’lumot mavjud emas.";}}
+async function loadUsers(){
+ const root=$("users");root.textContent="Yuklanmoqda...";
+ try{
+  const term=$("userSearch").value.trim();
+  const rows=await req("/admin/users"+(term?"?q="+encodeURIComponent(term):""));
+  root.innerHTML=rows.map(u=>'<div class="item"><b>'+esc(u.full_name)+'</b> · '+esc(u.phone)+'<br><span class="muted">ID: '+u.id+' | '+u.roles.map(esc).join(", ")+' | '+(u.verified?"Tasdiqlangan":"Tasdiqlanmagan")+'</span></div>').join("")||"Foydalanuvchilar yo‘q";
+ }catch(e){root.textContent=e.message;}
+}
+async function loadComplaints(){
+ const root=$("complaints");root.textContent="Yuklanmoqda...";
+ try{
+  const rows=await req("/admin/complaints");
+  root.innerHTML=rows.map(c=>'<div class="item"><b>Shikoyat #'+c.id+' · Yuk #'+c.load_id+'</b><br>'+esc(c.reason)+'<br><span class="muted">Holat: '+esc(c.status)+' | Murojaatchi ID: '+c.reporter_id+'</span>'+(c.status==="open"?' <button data-complaint="'+c.id+'">Ko‘rib chiqish</button>':'<br>Qaror: '+esc(c.decision||"—")+' | Jarima: '+Number(c.penalty_amount||0).toLocaleString("uz-UZ")+' so‘m')+'</div>').join("")||"Shikoyatlar yo‘q.";
+  root.querySelectorAll("[data-complaint]").forEach(b=>b.addEventListener("click",()=>decide(Number(b.dataset.complaint))));
+ }catch(e){root.textContent=e.message;}
+}
+async function init(){
+ if(!token){location.href="login.html";return;}
+ $("status").textContent="Admin vakolati tekshirilmoqda...";
+ try{
+  const a=await req("/admin/me");
+  $("status").className="ok";
+  $("status").textContent="Rol: "+a.role+" | Ruxsatlar: "+(a.permissions.join(", ")||"—");
+  await Promise.all([loadOverview(),loadLoads(),loadUsers(),loadComplaints(),loadIdentityReview()]);
+ }catch(e){$("status").className="error";$("status").textContent=e.message;}
+}
 async function decide(id){const decision=prompt("Admin qarorini yozing (kamida 5 belgi):");if(!decision)return;const penalty=Number(prompt("Jarima miqdori (so‘m), jarima bo‘lmasa 0:", "0"));if(!Number.isInteger(penalty)||penalty<0){alert("Jarima miqdori noto‘g‘ri");return}try{await req("/admin/complaints/"+id+"/decision",{method:"POST",body:JSON.stringify({decision,penalty_amount:penalty,status:"resolved"})});alert("Shikoyat ko‘rib chiqildi");init()}catch(e){alert(e.message)}}
 function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 $("reload").onclick=init;$("searchUsers").onclick=init;$("logout").onclick=()=>{localStorage.removeItem("mutx_token");location.href="login.html"};init();
