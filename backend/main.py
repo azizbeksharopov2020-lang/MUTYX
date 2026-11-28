@@ -474,6 +474,37 @@ def admin_me(user: User = Depends(current_user), db: Session = Depends(get_db)):
         "active": access.active,
     }
 
+@app.get("/admin/overview")
+def admin_overview(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    require_admin(user, db)
+    return {
+        "users_total": db.scalar(select(func.count()).select_from(User)) or 0,
+        "loads_total": db.scalar(select(func.count()).select_from(Load)) or 0,
+        "loads_new": db.scalar(select(func.count()).select_from(Load).where(Load.status == "new")) or 0,
+        "loads_active": db.scalar(select(func.count()).select_from(Load).where(Load.status.in_(("pending", "accepted")))) or 0,
+        "complaints_open": db.scalar(select(func.count()).select_from(Complaint).where(Complaint.status == "open")) or 0,
+        "identity_pending": db.scalar(select(func.count()).select_from(IdentityDocument).where(IdentityDocument.status == "pending")) or 0,
+    }
+
+
+@app.get("/admin/loads")
+def admin_loads(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    require_admin(user, db, "loads.read")
+    rows = db.scalars(select(Load).order_by(Load.id.desc()).limit(200))
+    result = []
+    for item in rows:
+        owner = db.get(User, item.owner_id)
+        driver = db.get(User, item.driver_id) if item.driver_id else None
+        result.append({
+            "id": item.id, "cargo": item.cargo, "tonna": item.tonna,
+            "from_city": item.from_city, "to_city": item.to_city,
+            "transport": item.transport, "price": item.price, "status": item.status,
+            "owner": owner.full_name if owner else "Noma'lum",
+            "driver": driver.full_name if driver else None,
+            "created_at": item.created_at.isoformat() if item.created_at else None,
+        })
+    return result
+
 
 class SuperAdminSetupIn(BaseModel):
     setup_key: str
