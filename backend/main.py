@@ -481,7 +481,7 @@ def admin_overview(user: User = Depends(current_user), db: Session = Depends(get
         "users_total": db.scalar(select(func.count()).select_from(User)) or 0,
         "loads_total": db.scalar(select(func.count()).select_from(Load)) or 0,
         "loads_new": db.scalar(select(func.count()).select_from(Load).where(Load.status == "new")) or 0,
-        "loads_active": db.scalar(select(func.count()).select_from(Load).where(Load.status.in_(("pending", "accepted")))) or 0,
+        "loads_active": db.scalar(select(func.count()).select_from(Load).where(Load.status == "accepted")) or 0,
         "complaints_open": db.scalar(select(func.count()).select_from(Complaint).where(Complaint.status == "open")) or 0,
         "identity_pending": db.scalar(select(func.count()).select_from(IdentityDocument).where(IdentityDocument.status == "pending")) or 0,
     }
