@@ -58,6 +58,8 @@ header{backdrop-filter:blur(8px)}
 </head>
 <body><header><b>YUKNOVA | ADMIN</b><a href="cabinet.html">Kabinetga qaytish</a></header><main>
 <section class="card"><h2>Admin boshqaruv paneli</h2><p id="status" class="muted">Tekshirilmoqda...</p><button id="reload">Yangilash</button><button id="logout">Chiqish</button></section>
+<section class="card"><h3>Platforma ko‘rsatkichlari</h3><div id="overview" class="checks">Yuklanmoqda...</div></section>
+<section class="card"><h3>Yuklar nazorati</h3><p class="muted">Oxirgi 200 ta yuk va ularning holati.</p><div id="loads">Yuklanmoqda...</div></section>
 <section class="card"><h3>Foydalanuvchilar</h3><input id="userSearch" placeholder="Ism, telefon yoki ID bo‘yicha qidirish"><button id="searchUsers">Qidirish</button><div id="users">Yuklanmoqda...</div></section>
 <section class="card"><h3>ID-karta / pasport tekshiruvi</h3><p class="muted">Bu bo‘lim identity.review ruxsatiga ega adminlarga ko‘rinadi. Hujjatlar maxfiy.</p><div id="identityQueue">Yuklanmoqda...</div></section>
 <section class="card"><h3>Shikoyatlar</h3><p class="muted">Faqat complaints.manage ruxsatiga ega adminlar ko‘ra oladi.</p><div id="complaints">Yuklanmoqda...</div></section>
@@ -65,6 +67,26 @@ header{backdrop-filter:blur(8px)}
 <script>
 const API = window.YUKNOVA_API_URL,token=localStorage.getItem("mutx_token"),H={"Authorization":"Bearer "+token,"Content-Type":"application/json"},$=id=>document.getElementById(id);
 async function req(path,opt={}){const r=await fetch(API+path,{...opt,headers:{...H,...(opt.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.detail||"Server xatosi "+r.status);return d}
+async function loadOverview(){
+ try{
+  const x=await req("/admin/overview");
+  $("overview").innerHTML=[
+   ["Foydalanuvchilar",x.users_total],["Jami yuklar",x.loads_total],
+   ["Yangi yuklar",x.loads_new],["Faol buyurtmalar",x.loads_active],
+   ["Ochiq shikoyatlar",x.complaints_open],["Tekshiruvdagi hujjatlar",x.identity_pending]
+  ].map(([k,v])=>'<div class="item"><b>'+esc(k)+'</b><br><strong style="font-size:24px">'+Number(v)+'</strong></div>').join("");
+ }catch(e){$("overview").textContent=e.message;}
+}
+async function loadLoads(){
+ try{
+  const rows=await req("/admin/loads");
+  $("loads").innerHTML=rows.map(x=>'<div class="item"><b>Yuk #'+x.id+' · '+esc(x.cargo)+'</b><br>'+
+   esc(x.from_city)+' → '+esc(x.to_city)+' · '+esc(x.transport)+' · '+x.tonna+' t<br>'+
+   '<span class="muted">Egasi: '+esc(x.owner)+' · Haydovchi: '+esc(x.driver||"hali biriktirilmagan")+
+   ' · Holat: '+esc(x.status)+' · Narx: '+Number(x.price).toLocaleString("uz-UZ")+' so‘m</span></div>'
+  ).join("")||"Yuklar hozircha yo‘q.";
+ }catch(e){$("loads").textContent=e.message;}
+}
 async function loadIdentityReview(){
  const root=$("identityQueue");root.textContent="Tekshiruvdagilar yuklanmoqda...";
  try{
@@ -84,7 +106,7 @@ async function loadIdentityReview(){
   }
  }catch(e){root.textContent=e.message;}
 }
-async function init(){if(!token){location.href="login.html";return}try{const a=await req("/admin/me");$("status").textContent="Rol: "+a.role+" | Ruxsatlar: "+(a.permissions.join(", ")||"—");loadIdentityReview();const term=$("userSearch").value.trim();const users=await req("/admin/users"+(term?"?q="+encodeURIComponent(term):""));$("users").innerHTML=users.map(u=>'<div class="item"><b>'+esc(u.full_name)+'</b> · '+esc(u.phone)+'<br><span class="muted">ID: '+u.id+' | '+u.roles.join(", ")+' | '+(u.verified?"Tasdiqlangan":"Tasdiqlanmagan")+'</span></div>').join("")||"Foydalanuvchilar yo‘q";
+async function init(){if(!token){location.href="login.html";return}try{const a=await req("/admin/me");$("status").textContent="Rol: "+a.role+" | Ruxsatlar: "+(a.permissions.join(", ")||"—");loadIdentityReview();loadOverview();loadLoads();const term=$("userSearch").value.trim();const users=await req("/admin/users"+(term?"?q="+encodeURIComponent(term):""));$("users").innerHTML=users.map(u=>'<div class="item"><b>'+esc(u.full_name)+'</b> · '+esc(u.phone)+'<br><span class="muted">ID: '+u.id+' | '+u.roles.join(", ")+' | '+(u.verified?"Tasdiqlangan":"Tasdiqlanmagan")+'</span></div>').join("")||"Foydalanuvchilar yo‘q";
 try{const cs=await req("/admin/complaints");$("complaints").innerHTML=cs.map(c=>'<div class="item"><b>Shikoyat #'+c.id+' · Yuk #'+c.load_id+'</b><br>'+esc(c.reason)+'<br><span class="muted">Holat: '+esc(c.status)+' | Murojaatchi ID: '+c.reporter_id+'</span>'+(c.status==="open"?' <button onclick="decide('+c.id+')">Ko‘rib chiqish</button>':'<br>Qaror: '+esc(c.decision||"—")+' | Jarima: '+c.penalty_amount+' so‘m')+'</div>').join("")||"Shikoyatlar yo‘q";}catch(e){$("complaints").textContent=e.message;}}catch(e){$("status").className="error";$("status").textContent=e.message;$("users").textContent="Ruxsat yoki ma’lumot mavjud emas.";}}
 async function decide(id){const decision=prompt("Admin qarorini yozing (kamida 5 belgi):");if(!decision)return;const penalty=Number(prompt("Jarima miqdori (so‘m), jarima bo‘lmasa 0:", "0"));if(!Number.isInteger(penalty)||penalty<0){alert("Jarima miqdori noto‘g‘ri");return}try{await req("/admin/complaints/"+id+"/decision",{method:"POST",body:JSON.stringify({decision,penalty_amount:penalty,status:"resolved"})});alert("Shikoyat ko‘rib chiqildi");init()}catch(e){alert(e.message)}}
 function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
